@@ -5,24 +5,25 @@ from pygame.locals import *
 
 #variable creation------------------------------------------------------------
 
-	#list of joystick objects and total presses of each button
-	joystickrecords = [] 
-	joysticks =[]
-    robots = []
-	#command constants
-		comPause = ['stop','Stop','STOP','!p','pause']
-        comEnd = ['!term','!eom','!end']
-		comSetup = ['!su','setup']
-		comStart = ['!run']
-		comEcho = ['!echo','echo']
-		comHelp = ['!h','help','Help','HELP']
-		comCom = ['','/r']
-		
-	#command variables
-		echoOn == False
-		command == True
-		end == False
-		pause == False
+#list of joystick objects and total presses of each button
+joystickrecords = [] 
+joysticks =[]
+robots = []
+
+#command constants
+comPause = ['stop','Stop','STOP','!p','pause']
+comEnd = ['!term','!eom','!end']
+comSetup = ['!su','setup']
+comStart = ['!run']
+comEcho = ['!echo','echo']
+comHelp = ['!h','help','Help','HELP']
+comCom = ['','/r']
+        
+#command variables
+echoOn = False
+command = True
+end = False
+pause = False
 
 	
 		
@@ -30,108 +31,103 @@ from pygame.locals import *
 	
 #functions and app setup-------------------------------------------------------
 
-	# start pygame	
-	pygame.init()
+# start pygame	
+pygame.init()
 
 
-	#set-up the joystick data array
-	def prepare():
-		numJoy = pygame.joystick.get_count()
-			#print (numJoy)
+#set-up the joystick data array
+def prepare():
+    numJoy = pygame.joystick.get_count()
+    #print (numJoy)
 
 
-		for i in range(numJoy):
-			joysticks.append (pygame.joystick.Joystick(i))
-			joysticks[i].init()
-			
-		for i in range(numJoy): # append a array with number of buttons characters
-			joystickrecords.append([])
-			for b in range(self.joysticks[i].get_numbuttons()):
-				joystickrecords[-1].append(0)
-				
-		pygame.event.set_allowed(10) #only allow button down events in the event list
+    for i in range(numJoy):
+        joysticks.append (pygame.joystick.Joystick(i))
+        joysticks[i].init()
+                
+    for i in range(numJoy): # append a array with number of buttons characters
+        joystickrecords.append([])
+        for b in range(self.joysticks[i].get_numbuttons()):
+            joystickrecords[-1].append(0)
+                        
+    pygame.event.set_allowed(10) #only allow button down events in the event list
+        
+        
+#record a button press
+def record(self,j,b):
+        joystickrecords[j][b] += 1 
+        
+#run the button press grab event loop
+def run():
+    while not end:
+        if not pause:	
+            if pygame.event.peek(10):
+                for evt in pygame.event.get():
+                    if evt.type == 10:#!!!if (pygame.event.set_allowed(10) #only allow button down events in the event list) works  then line unnecessary
+                        record(evt.joy, evt.button)
+                        if echoOn and not command: 
+                            print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))
+            else:
+                sleep(.05)
+
+def setup():
+    # enter robots in match
+    while True:
+        #This is going to be an infinite loop, are you sure you want it structured like this?
+        for i in range(6):
+            robots.append([0,'',0])#(number,team(red is one, blue is two), joystick)
+            if i<3:    
+                robots[-1][1] = input('Input Red Allience Bot # %s' % (i+1));
+                robots[-1][2] = 'red'
+                if i<3:    
+                    robots[-1][1] = input('Input Blue Allience Bot # %s' % (i-2));
+                robots[-1][2] = 'blue'
+        
+        for i in range(6):
+            print ('/n' + robots[i][1] + robots[i][1])
+
+        yn = ''
+
+        while yn != 'y' and yn != 'n':
+        
+            yn = input('are these names and teams correct - y/n').lower()
+            if yn != 'y' and yn != 'n':
+                print ('That is not A valid answer')
+
+                
+        if yn == 'n':
+            yn = ''
+            continue
+
+        for i in range(6):
+            pass
+            # this is where i felt like stopping next step is to grab which joysticks map to which robots
+    
+#process the command
+def commandCheck(com):
+    if com in comEnd:
+        pass
+
+    elif com in comStart:
+        pass
+
+    elif com in comSetup:
+        setup()
+
+    elif com in comHelp:
+        f = open('help.txt', 'r')
+        print (df.read())
+        f.close()
+
+    elif com in comPause:
+        pause = not pause
+        
+    elif com in comCom:
+        command = not command
+                        
+    elif com in comEcho:
+        echoOn = not echoOn
 		
-		
-	#record a button press
-	def record(self,j,b):
-		joystickrecords[j][b] += 1 
-		
-	#run the button press grab event loop
-	def run():
-		while True:
-			if !pause:	
-				if pygame.event.peek(10):
-					for evt in pygame.event.get():
-						if evt.type == 10:#!!!if (pygame.event.set_allowed(10) #only allow button down events in the event list) works  then line unnecessary
-							record (evt.joy, evt.button)
-							if echoOn & !command 
-								print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))
-				else:
-					sleep(.05)
-			if end:
-				break
-    def setup
-        # enter robots in match
-        while True:
-            for i in range(6):
-                robots.append([0,'',0])#(number,team(red is one, blue is two), joystick)
-                if i<3    
-        		    robots[-1][1] = input('Input Red Allience Bot # %s' % (i+1));
-                    robots[-1][2] = 'red
-	            if i<3    
-        		    robots[-1][1] = input('Input Blue Allience Bot # %s' % (i-2));
-                    robots[-1][2] = 'blue'
-            while True:
-                for i in range(6):
-                    print ('/n' + robots[i][1] + robots[i][1])
-                yn = input('are these names and teams correct - y/n')
-                if yn == 'y':
-                    break
-                elif yn == 'n':
-                    break
-                else: 
-                    print ('That is not A valid answer') 
-            if yn == 'n':
-                yn = ''
-                continue
-
-            for i in range(6):
-                # this is where i felt like stopping next step is to grab which joysticks map to which robots
-            
-	#process the command
-	def commandCheck(com):
-		if com in comEnd:
-		elif com in comStart:
-		elif com in comSetup:
-            setup()
-		elif com in comHelp:
-            f = open('help.txt', 'r')
-            print f.read()
-            f.close()
-
-
-        elif com in comPause:
-            if pause
-				pause=False
-			if !pause 
-				pause=True
-		
-		elif com in comCom:
-			if command
-				command=False
-			if !command 
-				command=True
-				
-		elif com in comEcho:
-			if 	echoOn
-				echoOn=False
-			if !echoOn 
-				echoOn=True
-		
-
-
-
-
 
 '''for joy in joysticks:
 for button in range(joy.get_numbuttons()):
