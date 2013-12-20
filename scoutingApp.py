@@ -18,6 +18,13 @@ comStart = ['!run']
 comEcho = ['!echo','echo']
 comHelp = ['!h','help','Help','HELP']
 comCom = ['','/r']
+comAbout = ['about']
+
+
+#Version Numbers
+versionNumberMajor = '0'
+versionNumberMinor = '0'
+verionNumberRevision = '1'
         
 #command variables
 echoOn = False
@@ -54,6 +61,12 @@ def prepare():
         
         
 #record a button press
+
+#display information about the app
+def about():
+    print('Version Number: ' + versionNumberMajor + "." + versionNumberMinor + "." + versionNumberRevision)
+    print('\nThis Application was created by FRC Team 2228 CougarTech for the 2014 competition season')
+
 
         
 #run the button press grab event loop
@@ -117,6 +130,9 @@ def commandCheck(com):
         f = open('help.txt', 'r')
         print (df.read())
         f.close()
+
+    elif com in self.comAbout:
+        about()
 
     elif com in comPause:
         pause = not pause

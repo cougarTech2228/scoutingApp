@@ -23,11 +23,11 @@ Produced by FIRST Team 2228 CougarTech
 
 This is an in progress application for recording FRC match information and streaming it to a database, for the purpose of statagy.
 
-The application will be terminal based and use 6 joysticks (other input devices MAY be implemented) 
+The application will be terminal based and use 6 joysticks (other input devices MAY be implemented)
 
-The current name is "CATS" a scrambled acronym for "CougarTech Scouting Application" 
+The current name is "CATS" a scrambled acronym for "CougarTech Scouting Application"
 
 The goal is to have a simple and effective means of FRC scouting, which can easily be modified for next years game
 
 Pit scouting is expected to be implemented as well
-
+						 
