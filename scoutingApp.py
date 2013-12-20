@@ -23,6 +23,7 @@ class ScoutingApp:
         self.comHelp = ['!h','help','Help','HELP']
         self.comCom = ['','\r']
                 
+<<<<<<< HEAD
         #command variables
         self.echoOn = False
         self.command = True
@@ -66,6 +67,41 @@ class ScoutingApp:
         while not e:
             for i in range(6):
                 self.robots.append([0,'',0])#(number,team(red, blue), joystick)
+=======
+    for i in range(numJoy): # append a array with number of buttons characters
+        joystickrecords.append([])
+        for b in range(self.joysticks[i].get_numbuttons()):
+            joystickrecords[-1].append(0)
+                        
+    pygame.event.set_allowed(10) #only allow button down events in the event list
+        
+        
+#record a button press
+
+        
+#run the button press grab event loop
+def run():
+    while not end:
+        if not pause:	
+            if pygame.event.peek(10):
+                for evt in pygame.event.get():
+                    if evt.type == 10:#!!!if (pygame.event.set_allowed(10) #only allow button down events in the event list) works  then line unnecessary
+                        record(evt.joy, evt.button)
+                        if echoOn and not command: 
+                            print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))
+            else:
+                sleep(.05)
+
+def setup():
+    # enter robots in match
+    while True:
+        #This is going to be an infinite loop, are you sure you want it structured like this?
+        for i in range(6):
+            robots.append([0,'',0])#(number,team(red is one, blue is two), joystick)
+            if i<3:    
+                robots[-1][1] = input('Input Red Allience Bot # %s' % (i+1));
+                robots[-1][2] = 'red'
+>>>>>>> upstream/master
                 if i<3:    
                     self.robots[-1][0] = input('Input Red Allience Bot # %s: ' % (i+1));
                     self.robots[-1][1] = 'red'
