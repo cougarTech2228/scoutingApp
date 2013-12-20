@@ -54,8 +54,7 @@ def prepare():
         
         
 #record a button press
-def record(self,j,b):
-        joystickrecords[j][b] += 1 
+
         
 #run the button press grab event loop
 def run():
