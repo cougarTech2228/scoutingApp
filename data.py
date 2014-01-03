@@ -40,5 +40,5 @@ class robot:
 			
 class roboRecords:
     def __init__(comp, myMatch, robot, alliance)
-        # variable being recorded
+        # variables being recorded ex)shots missed, points scored, climberlevel reached
                 
