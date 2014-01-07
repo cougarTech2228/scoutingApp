@@ -1,0 +1,34 @@
+A Running TODO list of all things that need to be completed
+
+Abbreviations and notation:
+HG = High Goal
+LG = Low Goal
+
+[] = not completed
+[x] = completed
+[#] = # of sub-items completed (?)
+
+Important:
+- Joystick communication						[]
+- Identifying Trackable Actions:					[7]
+    - Throw over truss
+    - Catch after thrown
+    - Shoot/Made HG
+    - Shoot/Made LG
+    - Block HG
+    - Block LG
+    - (Successful) Pass to other robot
+
+- Create Standard formatting guide (tabs or spaces, variable naming	[] 
+	conventions, etc)
+
+- Standard save/load files						[]
+
+
+Less Important:
+- Algorithm for ranking robots						[]
+- Integrate pit scouting with main					[]
+
+
+Not Really Important:
+- Create GUI for master user						[]
