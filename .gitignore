@@ -1,0 +1,7 @@
+/.project
+
+# Compiled Python Files #
+*.pyc
+
+# Data (Pit Scouting) Files #
+*.dat
