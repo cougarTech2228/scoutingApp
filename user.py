@@ -4,7 +4,7 @@
 import cmd
 import string, sys
 
-import main
+#import main
 import data
 import joy
 
