@@ -35,20 +35,96 @@ class Match:
         for teamNumber in robotNums:
             # This will create a new robot each time it is called,
             # We don't want that to happen for existing robots
-            robots[n] = Robot(self, teamNumber, n)
-            n += 1
+            ##robots[n] = Robot(teamNumber, n)
+            ##n += 1
+            pass
 	
+
+class RobotList(list):
+    """This class inherits from the list class, it will handle all robot objects"""
+    def __init__(self):
+        self.current_robot_index = 0
+##        self.robotKeys = []
+
+
+    def __str__(self):
+        return str([robot.robotNum for robot in self])
+
+    def addRobot(self, robot):
+        """
+        if the list is empty it just adds the robot, like wise if it is
+        the largest member of the list.  Otherwise it places the robot before
+        the next greatest number through a binary search
+        """
+        #at this point if two different robots share the same number,
+        #it will try to add the robot, but may end up freaking out.
+        if robot in self:
+            return False
+        elif self == []:
+            self.append(robot)
+        elif robot.robotNum >= self[-1].robotNum:
+            self.robotList.append(robot)
+        else:
+            index = self._binSearchIndex(robot.robotNum)
+            self.insert(index, robot)
+        self.robotKeys = [robot.robotNum for robot in self]
+        # Update the key List
+        return True
+
+
+    def getRobot(self, robotNum):
+        # Get a robot specified by it's id (number)
+        pass
+
+    def removeRobot(self, robot):
+        # Try statement scheduled to be removed, will take care of error handly in Form
+        try: self.remove(robot)
+
+        except:
+            "I need to look up what goes here"
+            pass
+
+    def removeRobotNum(self, robotNum):
+        # Removes a robot based on it's number
+        robotVar = self.getRobot(robotNum)
+        self.removeRobot(robotVar)
+
+    def _binSearchIndex(self, robotNum):
+        # After much consternation this works!, it returns the index of the lowest
+        # roboNum above the given one
+        import math
+        tmpRoboList = self[:]
+        while len(tmpRoboList) != 1:
+            tmpIndex = math.ceil(len(tmpRoboList)/2) - 1 #Splits the list in half, bias towards lower number
+            if robotNum < tmpRoboList[tmpIndex].robotNum:
+                tmpRoboList = tmpRoboList[:(tmpIndex+1)]
+
+            elif robotNum > tmpRoboList[tmpIndex].robotNum:
+                tmpRoboList = tmpRoboList[(tmpIndex+1):]
+                
+        return self.index(tmpRoboList[0])
+        # Returns the index of the robot just greater than the tested one, I hope
+
+
 	
-# an  instance of a robot for a specific match in a specific competitian with team number and alliance (will later have variables for collecting match data and possibly a variable for its joystick)
+# An instance of a robot object, generally handled by RobotList object, represents a Team's robot
 class Robot:
     
-    def __init__(self, myMatch, team, roboNumber):
-        self.match = [myMatch]
-        
-        if roboNumber < 3:
-            self.alliance = 'RED'
+    def __init__(self, teamNumber):
+        self.teamNumber = teamNumber
+        self.matchHistory = {}
+
+    def updateHistory(matchNumber, allianceNumber):
+        if allianceNumber < 3:
+            alliance = 'RED'
         else:
-            self.alliance = 'BLUE'
+            alliance = 'BLUE'
+
+        self.matchHistory[matchNumber] = [matchNumber, alliance]
+
+        
+
+        
         ##records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance)
 
 			
