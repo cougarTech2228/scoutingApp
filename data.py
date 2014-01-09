@@ -85,7 +85,7 @@ class RobotList(list):
             "I need to look up what goes here"
             pass
 
-    def removeteamNumber(self, teamNumber):
+    def removeTeamNumber(self, teamNumber):
         # Removes a robot based on it's number
         robotVar = self.getRobot(teamNumber)
         self.removeRobot(robotVar)
