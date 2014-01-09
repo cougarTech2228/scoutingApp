@@ -16,18 +16,18 @@ class CLI(cmd.Cmd):
         self.prompt = '> '
 
     def do_hello(self, arg):
-        print "hello again", arg, "!"
+        print("hello again", arg, "!")
 
     def help_hello(self):
-        print "syntax: hello [message]",
-        print "-- prints a hello message"
+        print("syntax: hello [message]")
+        print("-- prints a hello message")
 
     def do_quit(self, arg):
         sys.exit(1)
 
     def help_quit(self):
-        print "syntax: quit",
-        print "-- terminates the application"
+        print("syntax: quit")
+        print("-- terminates the application")
 
     # shortcuts
     do_q = do_quit
