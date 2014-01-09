@@ -6,10 +6,11 @@
 
 class MatchList(list):
     
-    def __init__(self, numMatches, name):
+    def __init__(self, numMatches=0, name="Test"):
         # If numMatches = 0 then number of matches in competician is unknown
         # name is a name given for this competitian ex) 'FLR seeding', 'FLR
         # final', 'nationals Finals'
+        self.name = name
         self.current_match = 0
         self.last_match = 0
         ##self.append(0)
@@ -17,10 +18,10 @@ class MatchList(list):
     def newMatch(self, robots):
         # New Match takes a list of robot numbers as an argument
         ##self[0] += 1
-        self.append(Match(self.last_match, robotNums))
+        self.append(Match(self.last_match, teamNumbers))
 
-    def editMatch(self, matchNumber, robotNums):
-        self[matchNumber-1] = Match(self.last_match, robotNums)
+    def editMatch(self, matchNumber, teamNumbers):
+        self[matchNumber-1] = Match(self.last_match, teamNumbers)
 
 
 
@@ -28,11 +29,11 @@ class MatchList(list):
 # an instance of a match with a number and six robot objects
 class Match:
     
-    def __init__(self, num, robotNums):
+    def __init__(self, num, teamNumbers):
         self.number = num
         self.robots = [] # [0:2] red, [3:5] blue
         n = 0
-        for teamNumber in robotNums:
+        for teamNumber in teamNumbers:
             # This will create a new robot each time it is called,
             # We don't want that to happen for existing robots
             ##robots[n] = Robot(teamNumber, n)
@@ -44,11 +45,11 @@ class RobotList(list):
     """This class inherits from the list class, it will handle all robot objects"""
     def __init__(self):
         self.current_robot_index = 0
-##        self.robotKeys = []
+        self.robotKeys = []
 
 
     def __str__(self):
-        return str([robot.robotNum for robot in self])
+        return str([robot.teamNumber for robot in self])
 
     def addRobot(self, robot):
         """
@@ -62,17 +63,17 @@ class RobotList(list):
             return False
         elif self == []:
             self.append(robot)
-        elif robot.robotNum >= self[-1].robotNum:
-            self.robotList.append(robot)
+        elif robot.teamNumber >= self[-1].teamNumber:
+            self.append(robot)
         else:
-            index = self._binSearchIndex(robot.robotNum)
+            index = self._binSearchIndex(robot.teamNumber)
             self.insert(index, robot)
-        self.robotKeys = [robot.robotNum for robot in self]
+        self.robotKeys = [robot.teamNumber for robot in self]
         # Update the key List
         return True
 
 
-    def getRobot(self, robotNum):
+    def getRobot(self, teamNumber):
         # Get a robot specified by it's id (number)
         pass
 
@@ -84,22 +85,22 @@ class RobotList(list):
             "I need to look up what goes here"
             pass
 
-    def removeRobotNum(self, robotNum):
+    def removeteamNumber(self, teamNumber):
         # Removes a robot based on it's number
-        robotVar = self.getRobot(robotNum)
+        robotVar = self.getRobot(teamNumber)
         self.removeRobot(robotVar)
 
-    def _binSearchIndex(self, robotNum):
+    def _binSearchIndex(self, teamNumber):
         # After much consternation this works!, it returns the index of the lowest
         # roboNum above the given one
         import math
         tmpRoboList = self[:]
         while len(tmpRoboList) != 1:
             tmpIndex = math.ceil(len(tmpRoboList)/2) - 1 #Splits the list in half, bias towards lower number
-            if robotNum < tmpRoboList[tmpIndex].robotNum:
+            if teamNumber < tmpRoboList[tmpIndex].teamNumber:
                 tmpRoboList = tmpRoboList[:(tmpIndex+1)]
 
-            elif robotNum > tmpRoboList[tmpIndex].robotNum:
+            elif teamNumber > tmpRoboList[tmpIndex].teamNumber:
                 tmpRoboList = tmpRoboList[(tmpIndex+1):]
                 
         return self.index(tmpRoboList[0])
