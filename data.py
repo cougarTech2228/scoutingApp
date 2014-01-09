@@ -1,8 +1,8 @@
 # Database module
 
-#import main
-import user
-import joy
+##import main
+##import user
+##import joy
 
 class Competition:
     

@@ -13,4 +13,4 @@ BLUE = 2
 pygame.init()
 pygame.event.set_allowed(10)
 terminalInterface = user.CLI()
-joy.joystick_init(True)
+joy.joystick_init()
