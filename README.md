@@ -30,4 +30,6 @@ The current name is "CATS" a scrambled acronym for "CougarTech Scouting Applicat
 The goal is to have a simple and effective means of FRC scouting, which can easily be modified for next years game
 
 Pit scouting is expected to be implemented as well
+
+This program should be coded according to the guidelines outlined in PEP8, (This means spaces, no tabs)
 						 
