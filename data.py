@@ -13,12 +13,12 @@ class MatchList(list):
         self.name = name
         self.current_match = 0
         self.last_match = 0
-        ##self.append(0)
         
-    def newMatch(self, robots):
+    def newMatch(self, teamNumbers):
         # New Match takes a list of robot numbers as an argument
         ##self[0] += 1
         self.append(Match(self.last_match, teamNumbers))
+        self.last_match += 1
 
     def editMatch(self, matchNumber, teamNumbers):
         self[matchNumber-1] = Match(self.last_match, teamNumbers)
@@ -32,14 +32,13 @@ class Match:
     def __init__(self, num, teamNumbers):
         self.number = num
         self.robots = [] # [0:2] red, [3:5] blue
-        n = 0
+        i = 0
         for teamNumber in teamNumbers:
             # This will create a new robot each time it is called,
             # We don't want that to happen for existing robots
-            ##robots[n] = Robot(teamNumber, n)
-            ##n += 1
-            pass
-	
+            self.robots[i] = RobotMatchPerformance(teamNumber, self, i)
+            i += 1
+            	
 
 class RobotList(list):
     """This class inherits from the list class, it will handle all robot objects"""
@@ -122,12 +121,14 @@ class Robot:
             alliance = 'BLUE'
 
         self.matchHistory[matchNumber] = [matchNumber, alliance]
-
-        
-
         
         ##records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance)
 
+class RobotMatchPerformacne():
+
+    def __init__(self, teamNumber, myMatch, num):
+        # I don't know what comp does, and it isn't used in the program
+        pass
 			
 class RobotRecords:
     def __init__(self, comp, myMatch, robot, alliance):

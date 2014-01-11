@@ -14,19 +14,43 @@ class Main():
         self.matchList = MatchList()
         self.robotList = RobotList()
         self.add_robots_from_file()
-        print(self.robotList)
+##        print(self.robotList)
         
         
         pygame.init()
         
 
     def set_up(self):
+        pygame.init()
         pygame.event.set_allowed(10)
         terminalInterface = user.CLI()
         joy.joystick_init(True)
 
     def run(self):
         while 1:
+            myAnswer = input(">>> ")
+
+            if myAnswer == "start":
+                self.start_match()
+            elif myAnswer == "quit":
+                break
+            elif myAnswer == "robots":
+                print(self.robotList)
+            elif myAnswer == "matches":
+                print(self.matchList)
+
+                    
+
+
+    def add_robots_from_file(self, fileName="robots_test.txt"):
+        file = open(fileName).readlines()
+        for teamNumber in file:
+            self.robotList.addRobot(Robot(teamNumber.strip()))
+
+    def start_match(self):
+        pause = True
+        start = True
+        if start is True:
             for evt in pygame.event.get():
                 #if evt.type == 10:
                 #!!!if [(pygame.event.set_allowed(10)
@@ -39,10 +63,11 @@ class Main():
                     '''if echoOn and not command: 
                     print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
 
-    def add_robots_from_file(self, fileName="robots_test.txt"):
-        file = open(fileName).readlines()
-        for teamNumber in file:
-            self.robotList.addRobot(Robot(teamNumber.strip()))
+                if evt.type == pygame.KEYDOWN:
+                    pass
+
+
+
 
 if __name__ == "__main__":
     myGame = Main()
