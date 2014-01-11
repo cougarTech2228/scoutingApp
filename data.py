@@ -34,7 +34,7 @@ class Match:
         n = 0
         for teamNumber in teamNumbers:
             # This will create a new robot each time it is called,
-            robots[n] = Robot(teamNumber,self, n, comp)
+            robots[n] = InMatchRobot(teamNumber,self, n, comp)
             n += 1
             pass
 	
@@ -107,7 +107,7 @@ class RobotList(list):
 '''
 	
 # An instance of a robot in one match in one competician, will be diffent for the same teams robot in diffent matches and competicians
-class Robot:
+class InMatchRobot:
     
     def __init__(self, teamNumber, myMatch, num, comp):
         self.teamNumber = teamNumber
