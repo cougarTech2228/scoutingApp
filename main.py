@@ -6,6 +6,7 @@ from pygame.locals import *
 
 import user
 from sData import *
+from data import *
 import joy
 
 RED = 1
@@ -125,3 +126,5 @@ if __name__ == "__main__":
     myGame = Main()
     myGame.set_up()
     myGame.run()
+	
+	
