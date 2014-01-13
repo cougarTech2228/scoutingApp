@@ -19,6 +19,7 @@ class Competition(list):
         self.append(Match(self.last_match, teamNumbers))
         self.last_match += 1
         self.inMatches=len(self)+1
+        #inmatches is the #of inputed matches
         self.append(Match(self.inMatches, robots, self.name))
 
     def editMatch(self, matchNumber, teamNumbers):
@@ -57,25 +58,21 @@ class InMatchRobot:
             self.alliance = 'RED'
         else:
             self.alliance = 'BLUE'
-        self.matchHistory[matchNumber] = [matchNumber, alliance]
+        # this does not belong here - self.matchHistory[matchNumber] = [matchNumber, alliance]
         
-        ##records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance)
+        self.records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance) # this should be in match robot records
 
-class RobotMatchPerformacne():
-
-    def __init__(self, teamNumber, myMatch, num):
-        # I don't know what comp does, and it isn't used in the program
-        pass
-			
+# this class is redundent (all it does is create a in match robot records object)
+'''
 class RobotRecords:
     def __init__(self, comp, myMatch, robot, alliance):
         records = InMatchRobotRecords(comp,self.match,self.teamNumber,self.alliance)
-
+'''
                         
 class InMatchRobotRecords:
     def __init__(self, compName, myMatch, robot, ally):
-        self.comp = compName
-        self.match = myMatch
+        self.comp = compName #compatician name
+        self.match = myMatch #match object
         self.roboNum = robot
         self.alliance = ally # string (RED or BLUE)
         # variables being recorded ex)shots missed, points scored, climberlevel reached
