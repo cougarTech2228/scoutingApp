@@ -1,30 +1,6 @@
 # Database module
 
-##import main
-##import user
-##import joy
-'''
- 
 
-+class competition:
-
-+    def __init__(numMatches, name):
-
-+        #if numMatches = 0 then number of matches in competician is unknown
-
-+        #name is a name given for this competitian ex) 'FLR seeding', 'FLR final', 'nationals Finals'
-
-+        matchList[]
-
-+        matchlist.append(0)
-
-+    def newMatch(robots):
-
-+        matchList[0] += 1
-
-+        matchlist.append(match(self, matchList[0], robots))
-
-'''
 
 class Competition(list):
     
@@ -79,6 +55,7 @@ class Match:
             n += 1  # [0:2] red, [3:5] blue
             pass
         
+<<<<<<< HEAD
 '''
 >>>>>>> 4abbc335e276a7fd742987496ce89e22740b2d55
 class RobotList(list):
@@ -147,6 +124,8 @@ return self.index(tmpRoboList[0])
 
 '''
         
+=======
+>>>>>>> c448af1f0379c7d39e340945a6079ccc35be0f67
 # An instance of a robot in one match in one competician, will be diffent for the same teams robot in diffent matches and competicians
 class InMatchRobot:
     
