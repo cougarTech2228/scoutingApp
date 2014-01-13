@@ -1,14 +1,5 @@
 #Stored data
-
-#This is for your work in the data modual joe
-
-
 # Database module
-
-##import main
-##import user
-##import joy
-
 
 class RobotList(list):
     """This class inherits from the list class, it will handle all robot objects"""
