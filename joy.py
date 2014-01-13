@@ -6,7 +6,8 @@ import string, sys
 import data
 import user
 
-pause, end = False
+pause = False
+end = False
 #joysticks = []
 #eventHistory = []
 #joyHistory = [[],[],[],[],[],[]]
@@ -18,14 +19,14 @@ class input:
  #this will have a pointer to a inMatchRobot and a pointer to a joystick(or other input device
  # will have bindings
  
-	 def record(self,j, b):
-		# will record event and increment data
-		#global eventHistory, joyHistory
-		#eventHistory.append([j,b])
-		#joyHistory[j].append(b)
+    def record(self,j, b):
+        # will record event and increment data
+        #global eventHistory, joyHistory
+        #eventHistory.append([j,b])
+        #joyHistory[j].append(b)
+        pass
 		
-		
-def joystick_init(test = False):	
+def joystick_init(test = False):
     # get and check number of joysticks
     import pygame
     numJoy = pygame.joystick.get_count()
@@ -53,13 +54,12 @@ def joystick_init(test = False):
 	 
 	 
 def run(joyNum):
-	global pause, end ###is this needed (global)
+    global pause, end ###is this needed (global)
     while not end:
-		if not pause:
-			for evt in main.pygame.event.get():
-				if evt.type == 10:#!!!if [(pygame.event.set_allowed(10)(only allow button down events in the event list)] works  then line unnecessary
-					inputs[evt.joy].record(evt.button)
-					##if echoOn and not command:
-					##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
-	pass
+        if not pause:
+            for evt in main.pygame.event.get():
+                if evt.type == 10:#!!!if [(pygame.event.set_allowed(10)(only allow button down events in the event list)] works  then line unnecessary
+                    inputs[evt.joy].record(evt.button)
+                    ##if echoOn and not command:
+                    ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
 	
