@@ -17,24 +17,14 @@ class Main():
         self.matchList = Competition()
         self.robotList = RobotList()
         self.add_robots_from_file()
-<<<<<<< HEAD
 ##        print(self.robotList)
-        
-        
         pygame.init()
-=======
-## print(self.robotList)
->>>>>>> c448af1f0379c7d39e340945a6079ccc35be0f67
+
         
 
     def set_up(self):
         pygame.init()
-<<<<<<< HEAD
         pygame.event.set_allowed(10)
-=======
-
-## pygame.event.set_allowed(10)
->>>>>>> c448af1f0379c7d39e340945a6079ccc35be0f67
         terminalInterface = user.CLI()
         joy.joystick_init(True)
 
@@ -51,7 +41,6 @@ class Main():
             elif myAnswer == "matches":
                 print(self.matchList)
 
-<<<<<<< HEAD
                     
 
 
@@ -75,8 +64,7 @@ class Main():
                     record(evt.joy, evt.button)
                     '''if echoOn and not command: 
                     print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
-=======
->>>>>>> c448af1f0379c7d39e340945a6079ccc35be0f67
+
 
                 if evt.type == pygame.KEYDOWN:
                     pass
