@@ -82,19 +82,38 @@ class GameEventList(list):
 
     def add(self, event):
         self.append(event)
+        # Have the old event point to the added event
+        # and the new event point to the preceding event
+        self.HEAD.setAntecedingEvent(event)
         event.setPrecedingEvent(self.HEAD)
         self.eventIndexCounter += 1
         self.HEAD = self[self.eventIndexCounter]
         
 
     def undo(self):
-        self.HEAD = self.HEAD.precedingEvent
+        if self.HEAD.predecingEvent is not None:
+            self.HEAD = self.HEAD.precedingEvent
+
+    def redo(self):
+        if self.HEAD.antecedingEvent is not None:
+            self.HEAD = self.HEAD.antecedingEvent
+
+    # getMainList returns a list starting at head, and moves through
+    # all of the preceding events until it gets to Start
+    def getMainList(self):
+        mainList = []
+        event = self.HEAD
+        while pre_event is not None:
+            mainList.append(event)
+            event = event.precedingEvent
 
 
 # The Game event and all of its children are the specific event objects to be recorded
-# as the primary data type, not sure how undoing data will be handled. I think I want
-# it handled like git, so no data is lost, it just moves to another branch. Note: I fail
-# to see utility in keeping the data, but better to have it I suppose.
+# as the primary data type. Note: I fail to see utility in keeping the data, but better
+# to have it I suppose.
+
+# Game event is the superclass for all other class events, for now, I may want to include
+# a Program event later, we'll se
 class GameEvent():
     def __init__(self, precedingEvent=None):
         self.precedingEvent = precedingEvent
@@ -105,13 +124,16 @@ class GameEvent():
         self.precedingEvent.antecedingEvent = self
         return self.precedingEvent
 
+    def setAntecedingEvent(self, event):
+        self.antecedingEvent = event
+
     def setPrecedingEvent(self, event):
         self.precedingEvent = event
 
 class StartEvent(GameEvent):
     def __init__(self):
         GameEvent.__init__(self)
-        self.precedingEvent = self
+        self.precedingEvent = None
 
     def undo(self):
         #overwrites GameEvent to do nothing on undo
@@ -120,6 +142,7 @@ class StartEvent(GameEvent):
 
 class Auto_HighGoalEvent(GameEvent):
     def __init__(self, hot=False):
+        self.hot = hot
         GameEvent.__init__(self)
         self.pointsValue = 15
         if hot is True:
@@ -127,34 +150,35 @@ class Auto_HighGoalEvent(GameEvent):
 
 class Auto_LowGoalEvent(GameEvent):
     def __init__(self, hot=False):
+        self.hot = hot
         GameEvent.__init__(self)
         self.pointsValue = 6
         if hot is True:
             self.pointsValue += 5
 
-class GoalEvent(GameEvent):
-    def __init__(self, auto=False, hot=False):
-        GameEvent.__init__(self)
-        self.autonomous = auto
-        if self.autonomous is False:
-            self.hot = False
-        else:
-            self.hot = hot
-            
-        self.pointsValue = 10
-        
-        if self.autonomous is True:
-            self.pointsValue += 5
-        if self.hot is True:
-            self.pointsValue += 5
+##class GoalEvent(GameEvent):
+##    def __init__(self, auto=False, hot=False):
+##        GameEvent.__init__(self)
+##        self.autonomous = auto
+##        if self.autonomous is False:
+##            self.hot = False
+##        else:
+##            self.hot = hot
+##            
+##        self.pointsValue = 10
+##        
+##        if self.autonomous is True:
+##            self.pointsValue += 5
+##        if self.hot is True:
+##            self.pointsValue += 5
 
-class HighGoalEvent(GoalEvent):
+class HighGoalEvent(GameEvent):
 
     def __init__(self):
         GameEvent.__init__(self)
         self.pointsValue = 10
 
-class LowGoalEvent(GoalEvent):
+class LowGoalEvent(GameEvent):
     def __init__(self):
         GameEvent.__init__(self)
         self.pointsValue = 1
