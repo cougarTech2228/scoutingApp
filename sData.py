@@ -84,8 +84,10 @@ class GameEventList(list):
         self.append(event)
         # Have the old event point to the added event
         # and the new event point to the preceding event
-        self.HEAD.setAntecedingEvent(event)
+        
         event.setPrecedingEvent(self.HEAD)
+        if event.precedingEvent is not None:
+            self.HEAD.setAntecedingEvent(event)
         self.eventIndexCounter += 1
         self.HEAD = self[self.eventIndexCounter]
         
@@ -107,6 +109,8 @@ class GameEventList(list):
             mainList.append(event)
             event = event.precedingEvent
 
+        return mainList
+
 
 # The Game event and all of its children are the specific event objects to be recorded
 # as the primary data type. Note: I fail to see utility in keeping the data, but better
@@ -115,8 +119,8 @@ class GameEventList(list):
 # Game event is the superclass for all other class events, for now, I may want to include
 # a Program event later, we'll se
 class GameEvent():
-    def __init__(self, precedingEvent=None):
-        self.precedingEvent = precedingEvent
+    def __init__(self):
+        self.precedingEvent = None
         self.antecedingEvent = None
         self.pointsValue = 0
 

@@ -12,7 +12,8 @@ import joy
 RED = 1
 BLUE = 2
 
-#????? why is main a class
+# Main is the overarching program, which will be a portal to other branches
+# like pit scouting, robot analysis, and match scouting
 class Main():
     def __init__(self):
         self.matchList = Competition()
@@ -31,7 +32,8 @@ class Main():
 
     def run(self):
         while 1:
-        	#this should all be part of user in the cli class (inherits from cmd)
+            #This whole section will be replaced by the command line module
+            # what is used works as a temporary means of basic user input
             myAnswer = input(">>> ")
 
             if myAnswer == "start":
@@ -45,37 +47,42 @@ class Main():
 
                     
 
-	#i suppose that this could be a main function but i would prefer it in sData (which would push some info to data)
+    # add_robots_from_file takes a file name as an argument and adds the entries,
+    # each line is a team number, to the robotlist under main, as robot objects
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
         for teamNumber in file:
             self.robotList.addRobot(Robot(teamNumber.strip()))
             
         # THIS 	should be in joy
-    def start_match(self):
-        pause = True
-        start = True
-        if start is True:
-            for evt in pygame.event.get():
-                #if evt.type == 10:
-                #!!!if [(pygame.event.set_allowed(10)
-                # (only allow button down events in the event list)]
-                # works  then line unnecessary
-                if evt.button == _undoButton:
-                    undo(evt.joy)
-                else:
-                    record(evt.joy, evt.button)
-                    '''if echoOn and not command: 
-                    print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
+        # This region is deprecated, it just was added through a
+        # merge
+##    def start_match(self):
+##        pause = True
+##        start = True
+##        if start is True:
+##            for evt in pygame.event.get():
+##                #if evt.type == 10:
+##                #!!!if [(pygame.event.set_allowed(10)
+##                # (only allow button down events in the event list)]
+##                # works  then line unnecessary
+##                if evt.button == _undoButton:
+##                    undo(evt.joy)
+##                else:
+##                    record(evt.joy, evt.button)
+##                    '''if echoOn and not command: 
+##                    print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
+##
+##
+##                if evt.type == pygame.KEYDOWN:
+##                    pass
 
 
-                if evt.type == pygame.KEYDOWN:
-                    pass
 
-
-
-	# this looks like gui stuff that should be in a gui module
+    # Initiates the match window
     def start_setup(self):
+        self.gameEventList = GameEventList()
+        
         self.screen = pygame.display.set_mode((400, 300))
         pygame.display.set_caption('CATS: CougarTech Scouting Application')
         self.clock = pygame.time.Clock()
@@ -91,26 +98,25 @@ class Main():
 
         self.points = 0
 
+        #Main event loop for the match
         while True:
-               
-          
-## elif pause is not True:
-## pass
-            
+
+        # Looks through the event buffer for an input action
             for evt in pygame.event.get():
+
+                #Quit out of window
                 if evt.type == QUIT:
+                    #The program should automatically save data before closing
                     pygame.quit()
                     break
-                
-## if evt.button == _undoButton:
-## undo(evt.joy)
-## else:
-## record(evt.joy, evt.button)
-		# is this gui or command line stuff (looks like command line (may be integrated into joy as a alternate input device)
+
+		# Keyboard input to program (for those without a joystick)
                 if evt.type == pygame.KEYDOWN:
                     if evt.key == K_SPACE:
                         self.toggle_pause()
 
+                        
+                    #Actions happen when the game isn't paused
                     if self.pause is False:
                         if evt.key == K_a:
                             self.add_auto_high()
@@ -122,9 +128,10 @@ class Main():
                         elif evt.key == K_x:
                             self.add_tele_low()
                             
-	#this is more gui stuff
+        # Redraw the screen
             self.screen.fill((0,0,0))
 
+            # Pause message
             if self.pause is True:
                 text = self.font.render("Press [space] to start", True, (255, 255, 255))
                 self.screen.blit(text, (1, 1))
@@ -136,11 +143,14 @@ class Main():
             # Update the display
             pygame.display.update()
 
+            #prevents the session from running too fast
             self.clock.tick(40)
 
     def toggle_pause(self):
         self.pause = not self.pause
 
+    #some dummy programs, do not actually represent point vaules, only for working with
+    # key presses
     def add_auto_high(self):
         self.points += 15
     def add_auto_low(self):
