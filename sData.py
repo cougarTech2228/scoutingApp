@@ -45,7 +45,9 @@ the next greatest number through a binary search
     def getRobot(self, teamNumber):
         # Get a robot specified by it's id (number)
         pass
-
+        
+        #edit this to instead mark a robot as removed so that it can easily be recreated
+        #make a reset robot match data
     def removeRobot(self, robot):
         # Try statement scheduled to be removed, will take care of error handly in Form
         try: self.remove(robot)
