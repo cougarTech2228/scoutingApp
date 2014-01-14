@@ -74,18 +74,21 @@ class Robot():
 # That is, each event can simply be added to the end of the list
 class GameEventList(list):
     def __init__(self):
-        self.eventIndexCounter = 0
-        self.add(StartEvent(self.eventIndexCounter))
+        self.eventIndexCounter = -1
+        self.HEAD = None
+        self.add(StartEvent())
         
         self.HEAD = self[-1]
 
     def add(self, event):
         self.append(event)
+        event.setPrecedingEvent(self.HEAD)
         self.eventIndexCounter += 1
         self.HEAD = self[self.eventIndexCounter]
+        
 
-    def undo(self, event):
-        self.HEAD = event.precedingEvent
+    def undo(self):
+        self.HEAD = self.HEAD.precedingEvent
 
 
 # The Game event and all of its children are the specific event objects to be recorded
@@ -93,8 +96,7 @@ class GameEventList(list):
 # it handled like git, so no data is lost, it just moves to another branch. Note: I fail
 # to see utility in keeping the data, but better to have it I suppose.
 class GameEvent():
-    def __init__(self, index, precedingEvent=None):
-        self.index = index
+    def __init__(self, precedingEvent=None):
         self.precedingEvent = precedingEvent
         self.antecedingEvent = None
         self.pointsValue = 0
@@ -103,28 +105,36 @@ class GameEvent():
         self.precedingEvent.antecedingEvent = self
         return self.precedingEvent
 
+    def setPrecedingEvent(self, event):
+        self.precedingEvent = event
+
 class StartEvent(GameEvent):
     def __init__(self):
+        GameEvent.__init__(self)
         self.precedingEvent = self
 
     def undo(self):
         #overwrites GameEvent to do nothing on undo
+        GameEvent.undo(self)
         pass
 
 class Auto_HighGoalEvent(GameEvent):
     def __init__(self, hot=False):
+        GameEvent.__init__(self)
         self.pointsValue = 15
         if hot is True:
             self.pointsValue += 5
 
 class Auto_LowGoalEvent(GameEvent):
     def __init__(self, hot=False):
+        GameEvent.__init__(self)
         self.pointsValue = 6
         if hot is True:
             self.pointsValue += 5
 
 class GoalEvent(GameEvent):
     def __init__(self, auto=False, hot=False):
+        GameEvent.__init__(self)
         self.autonomous = auto
         if self.autonomous is False:
             self.hot = False
@@ -133,7 +143,7 @@ class GoalEvent(GameEvent):
             
         self.pointsValue = 10
         
-        if self.auto is True:
+        if self.autonomous is True:
             self.pointsValue += 5
         if self.hot is True:
             self.pointsValue += 5
@@ -141,10 +151,12 @@ class GoalEvent(GameEvent):
 class HighGoalEvent(GoalEvent):
 
     def __init__(self):
+        GameEvent.__init__(self)
         self.pointsValue = 10
 
 class LowGoalEvent(GoalEvent):
     def __init__(self):
+        GameEvent.__init__(self)
         self.pointsValue = 1
 
 class TrussThrowEvent(GameEvent):
