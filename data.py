@@ -1,44 +1,91 @@
-#database module
+# Database module
 
-import main
-import user
-import joy
+from sData import *
+#from pData import * will be 
 
-class competition:
-    def __init__(numMatches, name):
-        #if numMatches = 0 then number of matches in competician is unknown
-        #name is a name given for this competitian ex) 'FLR seeding', 'FLR final', 'nationals Finals'
-        matchList[]
-        matchlist.append(0)
-    def newMatch(robots):
-        matchList[0] += 1
-        matchlist.append(match(self, matchList[0], robots))
+class compList(list):
+    def addComp(self, name):
+        self.append(Competition(name))
+        
+
+class Competition(list):
     
+    def __init__(self, name):
+        # If numMatches = 0 then number of matches in competician is unknown
+        # name is a name given for this competitian ex) 'FLR seeding', 'FLR
+        # final', 'nationals Finals'
+        self.name = name
+        self.current_match = 0 # probably un needed
+        self.last_match = 0
         
-            
-        
+    def newMatch(self, teamNumbers):
+        # New Match takes a list of robot numbers as an argument
+        self.last_match += 1
+        self.inMatches=len(self)+1
+
+        #inmatches is the # of inputed matches
+        self.append(Match(self.inMatches, robots, self.name))
+
+    def editMatch(self, matchNumber, teamNumbers):
+        self[matchNumber-1] = Match(matchNumber-1, teamNumbers)
+
+
+
 
 # an instance of a match with a number and six robot objects
-class match:
-	def __init__(comp, num, robotNums):
-		matchNum = num
-		robots = [] # 0-2 red, 3-5 blue
-		n = 0
-		for r in robotNums:
-			robots[n] = robot(self, r,n)
-			n += 1
-	
-	
-# an  instance of a robot for a specific match in a specific competitian with team number and alliance (will later have variables for collecting match data and possibly a variable for its joystick)
-class robot: 
-	def __init__(myMatch, team,roboNumber):
-		if roboNumber <3:
-			alliance = RED
-		else:
-			alliance = BLUE
-        records = roboRecords(match.comp.name,myMatch.matchNum,alliance)
-			
-class roboRecords:
-    def __init__(comp, myMatch, robot, alliance)
+class Match:
+    
+    def __init__(self, num, teamNumbers, compName):
+
+        self.events = evtList()
+
+        self.comp = compName
+        self.number = num
+        self.robots = [] # [0:2] red, [3:5] blue
+        i = 0
+        for teamNumber in teamNumbers:
+            # This will create a new robot each time it is called,
+            # We don't want that to happen for existing robots
+            self.robots[i] = RobotMatchPerformance(teamNumber, self, i)
+            i += 1
+            robots[n] = InMatchRobot(teamNumber,self, n, self.comp)
+            n += 1  # [0:2] red, [3:5] blue
+            pass
+
+        
+
+# An instance of a robot in one match in one competician, will be diffent for the same teams robot in diffent matches and competicians
+class InMatchRobot:
+    
+    def __init__(self, teamNumber, myMatch, num, compName):
+        self.comp = compName
+        self.match = myMatch
+        self.teamNumber = teamNumber
+        self.num = num
+        if allianceNumber < 3:
+            self.alliance = 'RED'
+        else:
+            self.alliance = 'BLUE'
+        # this does not belong here - self.matchHistory[matchNumber] = [matchNumber, alliance]
+        
+        self.records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance) # this should be in match robot records
+
+                        
+class InMatchRobotRecords:
+    def __init__(self, compName, myMatch, robot, ally):
+
+        self.events = evtList()        
+
+        self.comp = compName #compatician name
+        self.match = myMatch #match object
+        self.roboNum = robot
+        self.alliance = ally # string (RED or BLUE)
         # variables being recorded ex)shots missed, points scored, climberlevel reached
+
+
+class evtList(list):
+ #this class may or may not be differnt than just a regular list
+    
+
+
                 
