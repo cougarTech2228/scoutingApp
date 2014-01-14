@@ -12,6 +12,7 @@ import joy
 RED = 1
 BLUE = 2
 
+#????? why is main a class
 class Main():
     def __init__(self):
         self.matchList = Competition()
@@ -30,6 +31,7 @@ class Main():
 
     def run(self):
         while 1:
+        	#this should all be part of user in the cli class (inherits from cmd)
             myAnswer = input(">>> ")
 
             if myAnswer == "start":
@@ -43,12 +45,13 @@ class Main():
 
                     
 
-
+	#i suppose that this could be a main function but i would prefer it in sData (which would push some info to data)
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
         for teamNumber in file:
             self.robotList.addRobot(Robot(teamNumber.strip()))
-
+            
+        # THIS 	should be in joy
     def start_match(self):
         pause = True
         start = True
@@ -71,7 +74,7 @@ class Main():
 
 
 
-
+	# this looks like gui stuff that should be in a gui module
     def start_setup(self):
         self.screen = pygame.display.set_mode((400, 300))
         pygame.display.set_caption('CATS: CougarTech Scouting Application')
@@ -79,7 +82,7 @@ class Main():
 
         self.font = pygame.font.Font(None, 24)
         
-
+	# this can stay in main but it should start the run function of joy in a seperate thread
     def start_match(self):
         self.start_setup()
         
@@ -103,7 +106,7 @@ class Main():
 ## undo(evt.joy)
 ## else:
 ## record(evt.joy, evt.button)
-
+		# is this gui or command line stuff (looks like command line (may be integrated into joy as a alternate input device)
                 if evt.type == pygame.KEYDOWN:
                     if evt.key == K_SPACE:
                         self.toggle_pause()
@@ -118,7 +121,8 @@ class Main():
                             self.add_tele_high()
                         elif evt.key == K_x:
                             self.add_tele_low()
-
+                            
+	#this is more gui stuff
             self.screen.fill((0,0,0))
 
             if self.pause is True:
@@ -147,7 +151,7 @@ class Main():
         self.points += 1
 
 
-
+# again not sure why main is a class but looks to be about the right functionality
 if __name__ == "__main__":
     myGame = Main()
     myGame.set_up()
