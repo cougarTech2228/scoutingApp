@@ -35,6 +35,10 @@ class com(cmd.Cmd): #global commands
     do_q = do_quit
 
 class IMC(com): #in match commands
+    pass
 class ISP(com): #in setup commands
+    pass
 class RDC(com): #review data commands
+    pass
 class Test(com): #test commands
+    pass
