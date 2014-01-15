@@ -1,4 +1,8 @@
 
+#Stored data
+# Database module
+
+from events import * #forgive me but it was driving me crazy with the events objects in this module, probably the opposite of your feeling (this line should take care of any issues right)
 
 class RobotList(list):
 """This class inherits from the list class, it will handle all robot objects"""
