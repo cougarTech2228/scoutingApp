@@ -6,12 +6,13 @@ class RobotList(list):
     def __init__(self):
         self.current_robot_index = 0
         self.robotKeys = []
+        self.current_robot = None
 
 
     def __str__(self):
         return str([robot.teamNumber for robot in self])
 
-    def addRobot(self, robot):
+    def add(self, robot):
         """
 if the list is empty it just adds the robot, like wise if it is
 the largest member of the list. Otherwise it places the robot before
@@ -30,6 +31,9 @@ the next greatest number through a binary search
             self.insert(index, robot)
             self.robotKeys = [robot.teamNumber for robot in self]
         # Update the key List
+        self.current_robot = robot
+        self.current_robot_index = self.index(robot)
+        
         return True
 
 
@@ -49,6 +53,10 @@ the next greatest number through a binary search
         # Removes a robot based on it's number
         robotVar = self.getRobot(teamNumber)
         self.removeRobot(robotVar)
+
+    def setCurrentRobot(self, teamNumber):
+        self.current_robot = self[self.robotKeys.index(teamNumber)]
+        self.current_robot_index = self.index(robot)
 
     def _binSearchIndex(self, teamNumber):
         # After much consternation this works!, it returns the index of the lowest
@@ -73,19 +81,24 @@ class Robot():
 # Game event objecct points to the one before it, there is no need to order it.
 # That is, each event can simply be added to the end of the list
 class GameEventList(list):
-    def __init__(self):
+    # When the list is created it adds a start event, so that the first added
+    # event will have something to point to
+    def __init__(self, robot):
+        self.robot = robot
         self.eventIndexCounter = -1
         self.HEAD = None
         self.add(StartEvent())
-        
-        self.HEAD = self[-1]
 
+    
     def add(self, event):
         self.append(event)
         # Have the old event point to the added event
         # and the new event point to the preceding event
         
         event.setPrecedingEvent(self.HEAD)
+        
+        # This block is only going to be applicable to the StartEvent
+
         if event.precedingEvent is not None:
             self.HEAD.setAntecedingEvent(event)
         self.eventIndexCounter += 1
@@ -93,7 +106,7 @@ class GameEventList(list):
         
 
     def undo(self):
-        if self.HEAD.predecingEvent is not None:
+        if self.HEAD.precedingEvent is not None:
             self.HEAD = self.HEAD.precedingEvent
 
     def redo(self):
@@ -105,7 +118,7 @@ class GameEventList(list):
     def getMainList(self):
         mainList = []
         event = self.HEAD
-        while pre_event is not None:
+        while event.precedingEvent is not None:
             mainList.append(event)
             event = event.precedingEvent
 
@@ -117,16 +130,16 @@ class GameEventList(list):
 # to have it I suppose.
 
 # Game event is the superclass for all other class events, for now, I may want to include
-# a Program event later, we'll se
+# a Program event later, we'll see
 class GameEvent():
     def __init__(self):
         self.precedingEvent = None
         self.antecedingEvent = None
         self.pointsValue = 0
 
-    def undo(self):
-        self.precedingEvent.antecedingEvent = self
-        return self.precedingEvent
+##    def undo(self):
+##        self.precedingEvent.antecedingEvent = self
+##        return self.precedingEvent
 
     def setAntecedingEvent(self, event):
         self.antecedingEvent = event
@@ -134,6 +147,7 @@ class GameEvent():
     def setPrecedingEvent(self, event):
         self.precedingEvent = event
 
+# This event should only ever be used at the start of the event list, it doesn't undo
 class StartEvent(GameEvent):
     def __init__(self):
         GameEvent.__init__(self)
@@ -141,7 +155,6 @@ class StartEvent(GameEvent):
 
     def undo(self):
         #overwrites GameEvent to do nothing on undo
-        GameEvent.undo(self)
         pass
 
 class Auto_HighGoalEvent(GameEvent):
@@ -160,6 +173,7 @@ class Auto_LowGoalEvent(GameEvent):
         if hot is True:
             self.pointsValue += 5
 
+#Was going to use this class as a super for H/L Goal and Auto H/L goal, but too complex
 ##class GoalEvent(GameEvent):
 ##    def __init__(self, auto=False, hot=False):
 ##        GameEvent.__init__(self)
@@ -187,21 +201,12 @@ class LowGoalEvent(GameEvent):
         GameEvent.__init__(self)
         self.pointsValue = 1
 
+# Dummy classes for potential future event
 class TrussThrowEvent(GameEvent):
     pass
 
 class BallCatchEvent(GameEvent):
     pass
 
-
-class RobotMatchPerformacne():
-    def __init__(self, teamNumber, myMatch, num):
-        # I don't know what comp does, and it isn't used in the program
-        pass
-                        
-class RobotRecords:
-    def __init__(self, comp, myMatch, robot, alliance):
-        pass
-        # variables being recorded ex)shots missed, points scored, climberlevel reached
 
 
