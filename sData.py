@@ -1,7 +1,7 @@
 #Stored data
 # Database module
 
-from events import *
+#from events import *
 # forgive me but it was driving me crazy with the events objects in this module,
 # probably the opposite of your feeling (this line should take care of any issues right)
 
@@ -86,13 +86,24 @@ class RobotList(list):
 
     
 class Robot():
-     def __init__(self, teamNumber):
+    def __init__(self, teamNumber):
         self.teamNumber = teamNumber
-        self.matches = [] # has robo record files 
+        self.matches = []
+        self.totalPts = 0
+        # has robo record files 
         #self.__deleted = False
      
-    def addMatch(self, records) 
+    def addMatch(self, records): 
         self.matches.append(records)
+        
+    def calculateStats(self):
+        self.totalPts = 0
+        for record in self.matches:
+            for event in record:
+                self.totalPts += event.pointsValue
+        
+    def getAvgPoints(self):
+        return self.totalPts/len(self.matches)
         
 
 # The Game Event List is the log of all events that the user inputs, since each
@@ -101,8 +112,7 @@ class Robot():
 class GameEventList(list):
     # When the list is created it adds a start event, so that the first added
     # event will have something to point to
-    def __init__(self, robot):
-        self.robot = robot
+    def __init__(self):
         self.eventIndexCounter = -1
         self.HEAD = None
         self.add(StartEvent())
