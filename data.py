@@ -1,5 +1,11 @@
 # Database module
 
+from sData import *
+#from pData import * will be 
+
+class compList(list):
+    def addComp(self, name):
+        self.append(Competition(name))
 
 
 class Competition(list):
@@ -27,11 +33,11 @@ class Competition(list):
 
 
 
-
 # an instance of a match with a number and six robot objects
 class Match:
     
     def __init__(self, num, teamNumbers, compName):
+        self.events = evtList()
         self.comp = compName
         self.number = num
         self.robots = [] # [0:2] red, [3:5] blue
@@ -62,13 +68,7 @@ class InMatchRobot:
         
         self.records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance) # this should be in match robot records
 
-# this class is redundent (all it does is create a in match robot records object)
-'''
-class RobotRecords:
-    def __init__(self, comp, myMatch, robot, alliance):
-        records = InMatchRobotRecords(comp,self.match,self.teamNumber,self.alliance)
-'''
-                        
+                
 class InMatchRobotRecords:
     def __init__(self, compName, myMatch, robot, ally):
         self.comp = compName #compatician name
@@ -76,4 +76,9 @@ class InMatchRobotRecords:
         self.roboNum = robot
         self.alliance = ally # string (RED or BLUE)
         # variables being recorded ex)shots missed, points scored, climberlevel reached
-                
+
+
+class evtList(list):
+    pass
+ #this class may or may not be differnt than just a regular list
+    

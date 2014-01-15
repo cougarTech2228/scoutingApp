@@ -8,8 +8,8 @@ import string, sys
 import data
 import joy
 
-# just trying out cmd
-class CLI(cmd.Cmd):
+
+class com(cmd.Cmd): #global commands
 
     def __init__(self):
         cmd.Cmd.__init__(self)
@@ -23,7 +23,9 @@ class CLI(cmd.Cmd):
         print("-- prints a hello message")
 
     def do_quit(self, arg):
-        sys.exit(1)
+        yn = input('are you sure y/n')
+        main.quit()
+        #sys.exit(1)
 
     def help_quit(self):
         print("syntax: quit")
@@ -31,3 +33,12 @@ class CLI(cmd.Cmd):
 
     # shortcuts
     do_q = do_quit
+
+class IMC(com): #in match commands
+    pass
+class ISP(com): #in setup commands
+    pass
+class RDC(com): #review data commands
+    pass
+class Test(com): #test commands
+    pass
