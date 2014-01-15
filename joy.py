@@ -18,31 +18,31 @@ inputs= []
 class input:
  #this will have a pointer to a inMatchRobot and a pointer to a joystick(or other input device
  # will have bindings
+
     def __init__(self, myjoystick):
         myJoystick.init
         self.myJoystick = myJoystick
-        
-    def record(self, b):
+ 
+    def record(self,j, b):
         # will record event and increment data
         #global eventHistory, joyHistory
         #eventHistory.append([j,b])
         #joyHistory[j].append(b)
         main.gameEvtInput(self.robot,b) 
-        pass
 
-    def setRobot(self, records):
-        
+
+    def setRobot(self, records):        
         self.robot = records
 
     def getRobot(self):
         return self.robot
+
 		
 def joystick_init(test = False):
     # get and check number of joysticks
     import pygame
     numJoy = pygame.joystick.get_count()
 
-    #why is this here
     if test is True:
         numJoy = 6
 
@@ -56,8 +56,10 @@ def joystick_init(test = False):
 	
     for i in range(numJoy):
         if test is not True:
-            inputs[i] = input(main.pygame.joystick.Joystick(i))
-            
+            inputs[i] = input(main.pygame.joystick.Joystick(i)
+            joysticks.append (main.pygame.joystick.Joystick(i))
+            joysticks[i].init()
+
                 
     '''for i in range(numJoy): # append a array with number of buttons characters
         joystickrecords.append([])
@@ -76,7 +78,7 @@ def run(joyNum):
                     inputs[evt.joy].record(evt.button)
                     ##if echoOn and not command:
                     ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
-
+                    
                 if evt.type == pygame.KEYDOWN:
                     if evt.key == K_SPACE:
                         main.toggle_pause()

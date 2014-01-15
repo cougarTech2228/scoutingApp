@@ -4,8 +4,6 @@
 import cmd
 import string, sys
 
-
-
 #import main
 import data
 import joy
@@ -16,6 +14,13 @@ class com(cmd.Cmd): #global commands
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.prompt = '> '
+
+    def do_hello(self, arg):
+        print("hello again", arg, "!")
+
+    def help_hello(self):
+        print("syntax: hello [message]")
+        print("-- prints a hello message")
 
     def do_quit(self, arg):
         yn = input('are you sure y/n')
