@@ -1,7 +1,5 @@
 # this is a testing class for testing code 
-# run this with your testing code instead of wrighting test code in main
 
-# main module
 import sys
 
 import pygame
@@ -56,30 +54,6 @@ class Main():
         file = open(fileName).readlines()
         for teamNumber in file:
             self.robotList.addRobot(Robot(teamNumber.strip()))
-            
-        # THIS 	should be in joy
-        # This region is deprecated, it just was added through a
-        # merge
-##    def start_match(self):
-##        pause = True
-##        start = True
-##        if start is True:
-##            for evt in pygame.event.get():
-##                #if evt.type == 10:
-##                #!!!if [(pygame.event.set_allowed(10)
-##                # (only allow button down events in the event list)]
-##                # works  then line unnecessary
-##                if evt.button == _undoButton:
-##                    undo(evt.joy)
-##                else:
-##                    record(evt.joy, evt.button)
-##                    '''if echoOn and not command: 
-##                    print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
-##
-##
-##                if evt.type == pygame.KEYDOWN:
-##                    pass
-
 
 
     # Initiates the match window
@@ -92,7 +66,6 @@ class Main():
 
         self.font = pygame.font.Font(None, 24)
         
-        # this can stay in main but it should start the run function of joy in a seperate thread
     def start_match(self):
         self.start_setup()
         
@@ -164,7 +137,7 @@ class Main():
         self.points += 1
 
 
-# again not sure why main is a class but looks to be about the right functionality
+# Start the Program
 if __name__ == "__main__":
     myGame = Main()
     myGame.set_up()
