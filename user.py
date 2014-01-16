@@ -14,16 +14,14 @@ class com(cmd.Cmd): #global commands
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.prompt = '> '
-        self.state = []
+        self.state = main.State()
+        triedCommand = ""
+        
         updateState()
     
     def updateState(self):
-        self.state = main.state.getState()
-        
-    def Cmd.precmd(line):
-        updateState()
-        return line
-        
+        self.state = main.State.getState()
+
     #put global commands here
     def do_hello(self, arg):
         print("hello again", arg, "!")
@@ -44,9 +42,13 @@ class com(cmd.Cmd): #global commands
     # shortcuts
     do_q = do_quit
 
-''' these may or may not be part of com
+
 class IMC(com): #in match commands
+    def Cmd.precmd(self, line):
+        updateState()
+        if not self.state.inMatch:
+        return line
 class ISP(com): #in setup commands
 class RDC(com): #review data commands
 class Test(com): #test commands
-'''
+
