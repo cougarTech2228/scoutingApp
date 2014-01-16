@@ -1,9 +1,15 @@
 # Database module
 
 from sData import *
-#from pData import * will be 
 
-class compList(list):
+
+class Data(): #through this class all of data will be accessed This might go in main (probably)
+    def __init__(self): #reminder -this must be fixed
+        self.CompList = CompeticianList()
+        self.Robots = RobotList()
+        pass
+    
+class CompeticianList(list):
     def addComp(self, name):
         self.append(Competition(name))
 
@@ -41,6 +47,7 @@ class Match:
         self.comp = compName
         self.number = num
         self.robots = [] # [0:2] red, [3:5] blue
+        self.events = GameEventList()
         i = 0
         for teamNumber in teamNumbers:
             # This will create a new robot each time it is called,
@@ -51,7 +58,8 @@ class Match:
             n += 1  # [0:2] red, [3:5] blue
             pass
         
-
+    def addEvent(robot, event)
+        #this will need to add event to match evt list and robot records evt list
 # An instance of a robot in one match in one competician, will be diffent for the same teams robot in diffent matches and competicians
 class InMatchRobot:
     
@@ -60,6 +68,7 @@ class InMatchRobot:
         self.match = myMatch
         self.teamNumber = teamNumber
         self.num = num
+        
         if allianceNumber < 3:
             self.alliance = 'RED'
         else:
@@ -67,7 +76,10 @@ class InMatchRobot:
         # this does not belong here - self.matchHistory[matchNumber] = [matchNumber, alliance]
         
         self.records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance) # this should be in match robot records
-
+        
+    def addEvent(event):
+        add event to InMatchRobotRecords
+        
                 
 class InMatchRobotRecords:
     def __init__(self, compName, myMatch, robot, ally):
@@ -75,10 +87,9 @@ class InMatchRobotRecords:
         self.match = myMatch #match object
         self.roboNum = robot
         self.alliance = ally # string (RED or BLUE)
+        self.events = GameEventList()
         # variables being recorded ex)shots missed, points scored, climberlevel reached
 
 
-class evtList(list):
-    pass
- #this class may or may not be differnt than just a regular list
+
     
