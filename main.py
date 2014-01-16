@@ -2,11 +2,13 @@
 
 # As of this build main.py is inoperational.
 # To test the program, open test.py or run sData_test.py
+import user
 
 class Main():
     def __init__(self):
          pass
     def set_up(self):
+        user.com()
          pass
      
 class State():
@@ -20,3 +22,8 @@ class State():
         self.matchPaused = False
         self.matchStopped = False
         self.matchRunning = False
+        
+    def getState(self):
+        return self
+        
+    
