@@ -28,7 +28,7 @@ class Main():
     def set_up(self):
         pygame.init()
         pygame.event.set_allowed(10)
-        terminalInterface = user.CLI()
+##        terminalInterface = user.CLI()
         joy.joystick_init(True)
 
     def run(self):
@@ -53,7 +53,7 @@ class Main():
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
         for teamNumber in file:
-            self.robotList.addRobot(Robot(teamNumber.strip()))
+            self.robotList.add(Robot(teamNumber.strip()))
 
 
     # Initiates the match window

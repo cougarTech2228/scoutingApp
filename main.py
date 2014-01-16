@@ -1,8 +1,13 @@
-# main module
+# Main module
+
+# As of this build main.py is inoperational.
+# To test the program, open test.py or run sData_test.py
 
 class Main():
-     def __init__(self):
-     def set_up(self):
+    def __init__(self):
+         pass
+    def set_up(self):
+         pass
      
 class State():
     def __init__(self):

@@ -56,7 +56,7 @@ def joystick_init(test = False):
 	
     for i in range(numJoy):
         if test is not True:
-            inputs[i] = input(main.pygame.joystick.Joystick(i)
+            inputs[i] = input(main.pygame.joystick.Joystick(i))
             joysticks.append (main.pygame.joystick.Joystick(i))
             joysticks[i].init()
 
