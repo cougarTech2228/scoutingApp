@@ -4,35 +4,48 @@
 # To test the program, open test.py or run sData_test.py
 import user
 import joy
+import data
 
 class Main():
     def __init__(self):
         pass
+
     def set_up(self):
 	joy.joystick_init()
-	
+	self.data = Data()
         user.com()
 	self.state = State()
         pass
 	
 class Data(): 
     def __init__(self): #reminder -this must be fixed
-        self.CompList = CompeticianList()
-        self.Robots = RobotList()
-	currentMatch = self.CompList[-1][-1]
+        self.compList = data.CompeticianList()
+        self.Robots = data.RobotList()
+	currentComp = self.complist[-1]
+	currentMatch = self.compList[-1][-1]
 	currentRobots = currentMatch.robots #in match robots
-	self.inputs  = []
-		
+	self.temp_records  = []
+	self.matchEvtList = #evt list
         pass
 
-    def setRobots(joy, robot): #robot is a string 
-        for i in currentRobots:# will this work
-            if i.name = robot 
-		inputs[i] = robot
+    def setRobots(self, joy, robot): #set robots for match with inputs
+        self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
                 
 
-    def gameEvtRecord(joy, evt):
+    def gameEvtRecord(self, joy, evt):
 	# record correct bot and evt
+	self.temp_records[joy].addEvt(evt)
+	self.matchEvtList.#add evt
+
+    def commitMatch(self):
+        for i in temp_records:
+            i.tally:
+            for r in currentRobots:
+		if r.name == i.name:
+                    r.records = i
+	currentMatch.events = matchEvtList
+	
+	#this will now need to find the correct robot objects and append a inmatch robot records to its match list
 
 class State():
     def __init__(self):

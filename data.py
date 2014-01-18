@@ -4,6 +4,9 @@ from sData import *
 
     
 class CompeticianList(list):
+    def __init__():
+        pass
+
     def addComp(self, name):
         self.append(Competition(name))
 
@@ -42,19 +45,15 @@ class Match:
         self.number = num
         self.robots = [] # [0:2] red, [3:5] blue
         self.events = GameEventList()
-        i = 0
+        n = 0
         for teamNumber in teamNumbers:
-            # This will create a new robot each time it is called,
-            # We don't want that to happen for existing robots
-            self.robots[i] = RobotMatchPerformance(teamNumber, self, i)
-            i += 1
+            # This will create a new robot each time it is called
+
             robots[n] = InMatchRobot(teamNumber,self, n, self.comp)
             n += 1  # [0:2] red, [3:5] blue
             pass
         
-    def addEvent(robot, event)
-        #this will need to add event to match evt list and robot records evt list
-        # An instance of a robot in one match in one competician, will be diffent for the same teams robot in diffent matches and competicians
+ 
 class InMatchRobot:
     
     def __init__(self, teamNumber, myMatch, num, compName):
@@ -69,21 +68,21 @@ class InMatchRobot:
             self.alliance = 'BLUE'
         # this does not belong here - self.matchHistory[matchNumber] = [matchNumber, alliance]
         
-        self.records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance) # this should be in match robot records
-        
-    def addEvent(event):
-        #add event to InMatchRobotRecords
+    
         
                 
 class InMatchRobotRecords:
     def __init__(self, compName, myMatch, robot, ally):
         self.comp = compName #compatician name
         self.match = myMatch #match object
-        self.roboNum = robot
+        self.roboNum = robot #robot number
         self.alliance = ally # string (RED or BLUE)
-        self.events = GameEventList()
+        self.events = GameEventList() #is this right, this class could possibly extend game evt list
+        self.comments = []
         # variables being recorded ex)shots missed, points scored, climberlevel reached
 
-
-
-    
+    def addEvt(event):
+        #add event to event list
+	
+    def tally():
+	#tally up evt list
