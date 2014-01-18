@@ -70,12 +70,17 @@ class Main():
         self.start_setup()
         
         self.pause = True
-        start = True
+        self.end = False
 
         self.points = 0
 
         #Main event loop for the match
         while True:
+            self.points = 0
+            self.mainList = self.gameEventList.getMainList()
+
+            for event in self.mainList:
+                self.points += event.pointsValue
 
         # Looks through the event buffer for an input action
             for evt in pygame.event.get():
@@ -103,6 +108,12 @@ class Main():
                             self.add_tele_high()
                         elif evt.key == K_x:
                             self.add_tele_low()
+
+                        elif evt.key == K_u:
+                            self.undo()
+                        elif evt.key == K_ESCAPE:
+                            self.toggle_pause()
+                            self.toggle_end()
                             
         # Redraw the screen
             self.screen.fill((0,0,0))
@@ -125,16 +136,22 @@ class Main():
     def toggle_pause(self):
         self.pause = not self.pause
 
+    def toggle_end(self):
+        self.end = not self.end
+
     #some dummy programs, do not actually represent point vaules, only for working with
     # key presses
     def add_auto_high(self):
-        self.points += 15
+        self.gameEventList.add(Auto_HighGoalEvent())
     def add_auto_low(self):
-        self.points += 15
+        self.gameEventList.add(Auto_LowGoalEvent())
     def add_tele_high(self):
-        self.points += 5
+        self.gameEventList.add(HighGoalEvent())
     def add_tele_low(self):
-        self.points += 1
+        self.gameEventList.add(LowGoalEvent())
+
+    def undo(self):
+        self.gameEventList.undo()
 
 
 # Start the Program

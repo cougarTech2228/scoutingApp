@@ -30,3 +30,5 @@ coolBot.addMatch(events)
 coolBot.calculateStats()
 print(coolBot.getAvgPoints())
 
+input()
+

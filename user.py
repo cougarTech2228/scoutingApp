@@ -22,6 +22,16 @@ class com(cmd.Cmd): #global commands
     def updateState(self):
         self.state = main.State.getState()
 
+        
+    def preCmd(self, line):
+        self.updateState()
+        return line
+        
+    #put global commands here
+    def do_hello(self, arg):
+        print("hello again", arg, "!")
+>>>>>>> origin/master
+
     def failed_message(self):
 	print("sorry, " triedCommand " is not a valid command")
 	print(please refer to help for command information
