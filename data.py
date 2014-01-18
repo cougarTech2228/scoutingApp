@@ -2,12 +2,6 @@
 
 from sData import *
 
-
-class Data(): #through this class all of data will be accessed This might go in main (probably)
-    def __init__(self): #reminder -this must be fixed
-        self.CompList = CompeticianList()
-        self.Robots = RobotList()
-        pass
     
 class CompeticianList(list):
     def addComp(self, name):
@@ -31,7 +25,7 @@ class Competition(list):
         self.append(Match(self.last_match, teamNumbers))
         self.last_match += 1
         self.inMatches=len(self)+1
-        #inmatches is the #of inputed matches
+        #inmatches is the # of inputed matches
         self.append(Match(self.inMatches, robots, self.name))
 
     def editMatch(self, matchNumber, teamNumbers):
@@ -60,7 +54,7 @@ class Match:
         
     def addEvent(robot, event)
         #this will need to add event to match evt list and robot records evt list
-# An instance of a robot in one match in one competician, will be diffent for the same teams robot in diffent matches and competicians
+        # An instance of a robot in one match in one competician, will be diffent for the same teams robot in diffent matches and competicians
 class InMatchRobot:
     
     def __init__(self, teamNumber, myMatch, num, compName):
@@ -78,7 +72,7 @@ class InMatchRobot:
         self.records = RobotRecords(Match.comp.name,myMatch.matchNum,alliance) # this should be in match robot records
         
     def addEvent(event):
-        add event to InMatchRobotRecords
+        #add event to InMatchRobotRecords
         
                 
 class InMatchRobotRecords:
