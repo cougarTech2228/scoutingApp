@@ -20,8 +20,8 @@ class com(cmd.Cmd): #global commands
     def updateState(self):
         self.state = main.state.getState()
         
-    def Cmd.precmd(line):
-        updateState()
+    def preCmd(self, line):
+        self.updateState()
         return line
         
     #put global commands here
