@@ -30,7 +30,6 @@ class com(cmd.Cmd): #global commands
     #put global commands here
     def do_hello(self, arg):
         print("hello again", arg, "!")
->>>>>>> origin/master
 
     def failed_message(self):
 	print("sorry, " triedCommand " is not a valid command")
