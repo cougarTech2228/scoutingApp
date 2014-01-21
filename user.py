@@ -33,7 +33,7 @@ class com(cmd.Cmd): #global commands
 
     def failed_message(self):
 	print("sorry, " triedCommand " is not a valid command")
-	print(please refer to help for command information
+	print("please refer to help for command information")
 
 
     #put global commands here

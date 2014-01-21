@@ -3,7 +3,7 @@
 from sData import *
 
     
-class CompeticianList(list):
+class CompetitianList(list):
     def __init__():
         pass
 
@@ -18,19 +18,20 @@ class Competition(list):
         # name is a name given for this competitian ex) 'FLR seeding', 'FLR
         # final', 'nationals Finals'
         self.name = name
-        self.current_match = 0
-        self.last_match = 0
+        #self.current_match = 0
+        #self.last_match = 0
         self.numMatches = numberOfMatches
         
-    def newMatch(self, teamNumbers):
+    def newMatch(self, teamNumbers, place = None):
         # New Match takes a list of robot numbers as an argument
         ##self[0] += 1
-        self.append(Match(self.last_match, teamNumbers))
-        self.last_match += 1
+        #self.last_match += 1
         self.inMatches=len(self)+1
         #inmatches is the # of inputed matches
-        self.append(Match(self.inMatches, robots, self.name))
-
+        if place = None:
+            self.append(Match(self.inMatches, robots, self.name))
+        else:
+            self.insert(place, Match(self.inMatches, robots, self.name))
     def editMatch(self, matchNumber, teamNumbers):
         self[matchNumber-1] = Match(self.last_match, teamNumbers)
 
