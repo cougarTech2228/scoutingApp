@@ -1,36 +1,18 @@
 scoutingApp
 ===========
-CATS v0.2.1
+CATS v0.3.0
 Produced by FIRST Team 2228 CougarTech
-                            
-                          _______________________________________________________
-                          |                                                      |  
-                          |    You are reading the README                        |  
-                          |    and that makes the README very happy              |
-                          |                                                      |
-                          |    because that is its only purpose in life          |
-                          |                                                      |
-                          |    it wallows in misery and desperation when their   |
-                          |            is no-one there to read it                |
-                          |                                                      |
-                          |    but at least you made it happy for a while        |
-                          |                                                      |
-                          |    that probably counts for something                |
-                          |                                                      |
-                          |                                                      |
-                          |    -the sign painter                                 |
-                          |                                                      |
-                          |______________________________________________________|
 
-This is an in progress application for recording FRC match information and streaming it to a database, for the purpose of statagy.
+This is a work in progress application for collecting and recording FRC match information, and interpreting
+the collected data to give meaningful statistics on the performance of given robots.
 
-The application will be terminal based and use 6 joysticks (other input devices MAY be implemented)
+The application's name, "CATS", is a scrambled acronym for "CougarTech Scouting Application"
 
-The current name is "CATS" a scrambled acronym for "CougarTech Scouting Application"
+The application will feature both a CLI and GUI and use 6 joysticks for primary input during match data collection
+keyboard input will be used otherwise
 
-The goal is to have a simple and effective means of FRC scouting, which can easily be modified for next years game
-
-Pit scouting is expected to be implemented as well
+The goal is to have a simple and effective means to scout FRC Competitions
+which can easily be modified to be usable for the 2014 FRC Challenge Aerial Assist
 
 This program should be coded according to the guidelines outlined in PEP8, (This means spaces, no tabs)
 						 

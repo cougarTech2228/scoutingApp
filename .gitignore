@@ -7,5 +7,5 @@
 *.dat
 
 # Test files for debugging purposes #
-*_test.py
-*_test.txt
+#*_test.py
+#*_test.txt
