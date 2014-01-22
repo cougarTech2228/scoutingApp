@@ -7,9 +7,10 @@ LG = Low Goal
 [] = not completed
 [x] = completed
 [#] = # of sub-items completed (?)
+[~] = in progress
 
 Important:
-- Joystick communication						[]
+- Joystick communication						[~]
 - Identifying Trackable Actions:					[7]
     - Throw over truss
     - Catch after thrown
@@ -19,16 +20,17 @@ Important:
     - Block LG
     - (Successful) Pass to other robot
 
-- Create Standard formatting guide (tabs or spaces, variable naming	[] 
+- Create Standard formatting guide (tabs or spaces, variable naming	[PEP8] 
 	conventions, etc)
 
 - Standard save/load files						[]
 
+- Backend, data structure, integration etc.				[~~]
 
 Less Important:
 - Algorithm for ranking robots						[]
-- Integrate pit scouting with main					[]
+- Integrate pit scouting with main					[~]
 
 
 Not Really Important:
-- Create GUI for master user						[]
+- Create GUI for master user and scouters				[~]
