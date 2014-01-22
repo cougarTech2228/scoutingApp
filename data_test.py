@@ -1,6 +1,6 @@
 # sData testing playground
 
-from sData import *
+from data import *
 
 robots = RobotList()
 newRobot = Robot(2228)
@@ -26,7 +26,7 @@ events.add(newEvent_4)
 print(events.getMainList())
 
 coolBot = robots.current_robot
-coolBot.addMatch(events)
+coolBot.addMatch(events.getMainList())
 coolBot.calculateStats()
 print(coolBot.getAvgPoints())
 
