@@ -36,49 +36,53 @@ class joyBindings:
         
     def evtCheck(button):
 	if button == 0:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 1:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 2:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 3:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 4:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 5:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 6:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 7:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 8:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 9: 
-            evt = #init a game event and return it
-	    return evt       
-    elif button == 10:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 11:
-            evt = #init a game event and return it
-	    return evt
-    elif button == 12:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 1:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 2:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 3:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 4:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 5:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 6:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 7:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 8:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 9: 
+           evt = #init a game event and return it
+	   return evt       
+        elif button == 10:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 11:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 12:
+           evt = #init a game event and return it
+	   return evt
+        elif button == 13:
            evt = #init a game event and return it
 	    return evt
     elif button == _undoButton:
             #undo some how
 	   return #something
 	else:
-	    printf(mindblownyoloswaglol101chickenonaraft)
+
+#	    printf(mindblownyoloswaglol101chickenonaraft)
             sys.exit(1)#if this happens at least we will know the problem
 
 		
