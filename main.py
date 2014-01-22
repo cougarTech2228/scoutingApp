@@ -9,33 +9,34 @@ import threading
 
 class Main():
     def __init__(self):
-        pass
-
-    def set_up(self):
-		joy.joystick_init()
-		self.data = Data()
-        user.com()
+        self.inputs = joy.joystick_init()
+		self.data = Data(len(inputs))
+        user.init()
 		self.state = State()
         pass
+	   
 	def enterMatchMode:
+        self.state.inMatch = True
+        self.state.matchReadyStart = True
+        self.state.inMatch = True
+        self.state.inMatch = True
         joy.pause = True
         joy.end = False
         t = threading.thread(target = joy.run)
         t.start()
         
 class Data(): 
-    def __init__(self): #reminder -this must be fixed
+    def __init__(self, numInputs): #reminder -this must be fixed
         self.compList = data.CompetitianList()
         self.Robots = data.RobotList()
-		self.currentComp = self.compList[-1]
-		self.currentMatch = self.compList[-1][-1]
+		self.state.currentComp = self.compList[-1]
+		self.state.currentMatch = self.compList[-1][-1]
 		self.temp_records  = []
 		self.matchEvtList = #evt list
+        for i in range(numInputs):
+            self.temp_records.append(None) #can this be done
         pass
 
-    def setRobots(self, joy, robot): #set robots for match with inputs
-        self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
-        
 	def matchCreate(robots, placement=None):
         if placement=None:
             self.currentComp.newMatch(robots):
@@ -43,11 +44,13 @@ class Data():
         else:
             self.currentComp.newMatch(robots, placement)
             
+    def setRobots(self, joy, robot): #set robots for match with inputs
+        self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
 
     def gameEvtRecord(self, joy, evt):
 	# record correct bot and evt
 		self.temp_records[joy].addEvt(evt)
-		self.matchEvtList.#add evt
+		self.matchEvtList.add(evt) #add evt
 
     def commitMatch(self):
         for i in temp_records:
@@ -79,6 +82,9 @@ class State():
         self.matchPaused = False
         self.matchStopped = False
         self.matchRunning = False
+        self.currentComp = None
+        self.currentMatch = None
+
 	
 
 
