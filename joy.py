@@ -35,46 +35,46 @@ class joyBindings:
         pass
         
     def evtCheck(button):
-	if button = 0:
+	if button == 0:
             evt = #init a game event and return it
 	    return evt
-    elif button = 1:
+    elif button == 1:
             evt = #init a game event and return it
 	    return evt
-    elif button = 2:
+    elif button == 2:
             evt = #init a game event and return it
 	    return evt
-    elif button = 3:
+    elif button == 3:
             evt = #init a game event and return it
 	    return evt
-    elif button = 4:
+    elif button == 4:
             evt = #init a game event and return it
 	    return evt
-    elif button = 5:
+    elif button == 5:
             evt = #init a game event and return it
 	    return evt
-    elif button = 6:
+    elif button == 6:
             evt = #init a game event and return it
 	    return evt
-    elif button = 7:
+    elif button == 7:
             evt = #init a game event and return it
 	    return evt
-    elif button = 8:
+    elif button == 8:
             evt = #init a game event and return it
 	    return evt
-    elif button = 9: 
+    elif button == 9: 
             evt = #init a game event and return it
 	    return evt       
-    elif button = 10:
+    elif button == 10:
             evt = #init a game event and return it
 	    return evt
-    elif button = 11:
+    elif button == 11:
             evt = #init a game event and return it
 	    return evt
-    elif button = 12:
+    elif button == 12:
            evt = #init a game event and return it
 	    return evt
-    elif button = _undoButton:
+    elif button == _undoButton:
             #undo some how
 	   return #something
 	else:
