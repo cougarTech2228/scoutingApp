@@ -1,6 +1,6 @@
 # catapult simulation
-# for FRC 2014 Aerial Ascent
-# Uses Python, Numpy, matplotlib
+# for FRC 2014 Aerial Assist
+# Uses Python, numpy, matplotlib
 
 BALL_KG = 1.25 # kg the mass of a ball
 NUM_MOTORS = 2 
@@ -14,7 +14,7 @@ CIM_R = 0.09/NUM_MOTORS # volts per amp (ohms) (two motors just cuts this in hal
 # we lose some torque to accelerating the motor.
 # How much? well, FIRST does not publish the motor's moment of inertia.
 # we can guess however. Mechanical time constant of the motor is about 20 milliseconds
-CIM_J = 0.0001 # kg-m**2 of motor
+CIM_J = 0.0001 # kg-m**2 of motor Gives 20 msec-ish halfway point with no load.
 
 CIM_KT = (343.4 / 133) # oz-in per amp
 CIM_KT /= oz_in_per_foot_lb # foot-lb per amp
@@ -31,7 +31,8 @@ class CatSim :
         self.reduction = reduction # reduction gearing from motor to load.
         self.arm_radius = arm_radius
         self.load_moment = BALL_KG * self.arm_radius**2 # kg*m**2 point load model
-        self.load_moment += 0.115 # moment of inertia of ball itself.
+        self.load_moment += 0.0775 # moment of inertia of ball itself. I = 2/3*m*R**2
+        
         self.reflected_moment = self.load_moment / self.reduction**2
         self.v = []
         self.t = []
@@ -59,13 +60,15 @@ from numpy import array
 from pylab import plot, show, ylabel, xlabel
 catsims = []
 
-reductions = [9, 12, 13.5, 16, 20, 27, 36, 48, 64] # a range of planetary gearbox reductions
-reductions = [13.5] # <<< prototyping this
+reductions = [14.8] # <<< prototyping this
+reductions = [9, 12, 14.8, 16, 20, 27, 36, 48, 64] # a range of planetary gearbox reductions
 arm_radii = [0.5, 0.6, 0.7] 
 arm_radii = [0.53] # <<< design for this radius (21 inches)
 drive_voltages = [9, 10, 11, 12]
+drive_voltages = [10]
 
 plotvel = True
+
 for reduction in reductions :
   for arm_radius in arm_radii:
    for drive in drive_voltages :
@@ -90,9 +93,8 @@ else :
     ylabel("ball meters")   
 show()
 
-# load moment of 1.2 kg point load at 0.58 meters = 0.403 kg*m**2
-# moment of a 1.2 kg thin spherical shell = 0.115 kg-m**2
-# total load moment = 0.403 + 0.115 = 
-# 22 percent of the total inertial load is rotating the sphere
-# while we are tossing it.
+# load moment of 1.25 kg point load at 0.58 meters = 0.429 kg*m**2
+# moment of a 1.22 kg thin spherical shell, radius of 12 inches = 0.0775 kg-m**2
+# total load moment = 0.428 + 0.0775 = 0.506
+# ball inertia = 15 percent of the total inertia. measurable but not huge.
 
