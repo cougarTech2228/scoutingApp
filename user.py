@@ -14,23 +14,29 @@ class com(cmd.Cmd): #global commands
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.prompt = '> '
-        self.state = []
+        self.state = main.State()
+        triedCommand = ""
+        
         updateState()
     
     def updateState(self):
-        self.state = main.state.getState()
+        self.state = main.State.getState()
+
         
-    def Cmd.precmd(line):
-        updateState()
+    def preCmd(self, line):
+        self.updateState()
         return line
         
     #put global commands here
     def do_hello(self, arg):
         print("hello again", arg, "!")
 
-    def help_hello(self):
-        print("syntax: hello [message]")
-        print("-- prints a hello message")
+    def failed_message(self):
+	print("sorry, " triedCommand " is not a valid command")
+	print(please refer to help for command information
+
+
+    #put global commands here
 
     def do_quit(self, arg):
         yn = input('are you sure y/n')
@@ -41,12 +47,45 @@ class com(cmd.Cmd): #global commands
         print("syntax: quit")
         print("-- terminates the application")
 
+
+
     # shortcuts
     do_q = do_quit
 
-''' these may or may not be part of com
+
 class IMC(com): #in match commands
-class ISP(com): #in setup commands
+    def Cmd.precmd(self, line):
+        updateState()
+        if self.state.inMatch:
+            return line
+	else:
+	    triedCommand = line
+	    return "failed_message"
+
+class ISC(com): #in setup commands
+    def Cmd.precmd(self, line):
+        updateState()
+        if self.state.inSetup:
+            return line
+	else:
+	    triedCommand = line
+	    return "failed_message"
+
 class RDC(com): #review data commands
+    def Cmd.precmd(self, line):
+        updateState()
+        if self.state.inReview:
+            return line
+	else:
+	    triedCommand = line
+	    return "failed_message"
+
 class Test(com): #test commands
-'''
+    def Cmd.precmd(self, line):
+        updateState()
+        if self.state.inTest:
+            return line
+	else:
+	    triedCommand = line
+	    return "failed_message"
+
