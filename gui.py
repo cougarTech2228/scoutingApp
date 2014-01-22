@@ -43,7 +43,8 @@ class Label():
         self.parent_surface.blit( text, position)
 
 class List():
-    pass
+    def __init__(self):
+        self.entries = []
 
 class Tab():
     pass
