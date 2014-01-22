@@ -11,19 +11,19 @@ _undoButton=10 # placeholder
 inputs= []
 
 class input:
- #this will have a pointer to a inMatchRobot and a pointer to a joystick(or other input device
+ # a pointer to a joystick or other input device
  # will have bindings
 
     def __init__(self,N, myjoystick):
         myJoystick.init
         self.myJoystick = myJoystick
-	self.bind = joyBindings()
-	self.num = N
+        self.bind = joyBindings()
+        self.num = N
  
     def record(self,j, b):
         # will record event
 
-	evt = self.bind.evtCheck(b)
+        evt = self.bind.evtCheck(b)
         main.gameEvtInput(self.num, evt) 
 
     def getRobot(self):
@@ -32,53 +32,54 @@ class input:
         
 class joyBindings:
     def __init__(self):
-	pass
+        pass
+        
     def evtCheck(button):
 	if button = 0:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 1:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 2:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 3:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 4:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 5:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 6:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 7:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 8:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 9: 
+            evt = #init a game event and return it
+	    return evt       
+    elif button = 10:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 11:
+            evt = #init a game event and return it
+	    return evt
+    elif button = 12:
            evt = #init a game event and return it
-	   return evt
-        elif button = 1:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 2:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 3:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 4:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 5:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 6:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 7:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 8:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 9: 
-           evt = #init a game event and return it
-	   return evt       
-        elif button = 10:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 11:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 12:
-           evt = #init a game event and return it
-	   return evt
-        elif button = 13:
-           evt = #init a game event and return it
-	   return evt
+	    return evt
+    elif button = _undoButton:
+            #undo some how
+	   return #something
 	else:
 	    printf(mindblownyoloswaglol101chickenonaraft)
-            sys.exit(1)
+            sys.exit(1)#if this happens at least we will know the problem
 
 		
 def joystick_init(test = False):
@@ -100,6 +101,8 @@ def joystick_init(test = False):
     for i in range(numJoy):
         if test is not True:
             inputs[i] = input(i, main.pygame.joystick.Joystick(i))
+            
+    return inputs
 
                         
  
@@ -109,11 +112,11 @@ def run():
     while not end:
          for evt in main.pygame.event.get():
              if not pause:
-                 if evt.type == 10:#!!!if [(pygame.event.set_allowed(10)(only allow button down events in the event list)] works  then line unnecessary
-                     inputs[evt.joy].record(evt.button)
-                     ##if echoOn and not command:
-                     ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
-                    
+                 if evt.type == 10:
+                    inputs[evt.joy].record(evt.button)
+                    ##if echoOn and not command:
+                    ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
+                     
              if evt.type == pygame.KEYDOWN:
                  if evt.key == K_SPACE:
                      main.toggle_pause()
