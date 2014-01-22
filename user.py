@@ -96,7 +96,7 @@ class ISC(com): #in setup commands
         self.glob = False
         
 
-    def Cmd.precmd(self, line):
+    def precmd(self, line):
         updateState()
         if self.state.inSetup:
             return line
@@ -108,7 +108,7 @@ class RDC(com): #review data commands
     def __init__(self):
         self.glob = False
         
-    def Cmd.precmd(self, line):
+    def precmd(self, line):
         updateState()
         if self.state.inReview:
             return line
@@ -120,7 +120,7 @@ class Test(com): #test commands
     def __init__(self):
         self.glob = False
         
-    def Cmd.precmd(self, line):
+    def precmd(self, line):
         updateState()
         if self.state.inTest:
             return line
