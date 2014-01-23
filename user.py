@@ -4,13 +4,12 @@
 import cmd
 import string, sys
 import time
-
 import main
 import data
 import joy
 
 
-class com(cmd.Cmd): #global commands
+class Com(cmd.Cmd): #global commands
 
     def __init__(self):
         cmd.Cmd.__init__(self)
@@ -18,12 +17,12 @@ class com(cmd.Cmd): #global commands
         self.state = main.State()
         self.triedCommand = []
         self.glob = True #is this the top level command interpreter short for  global
-        self.allFailed
+        self.allFailed = None
         
-        updateState()
+        self.updateState()
     
     def updateState(self):
-        self.state = main.State.getState()
+        self.state.getState()
 
     def preCmd(self, line):
         self.updateState()
@@ -70,7 +69,7 @@ class com(cmd.Cmd): #global commands
     do_q = do_quit
 
 
-class IMC(com): #in match commands
+class IMC(Com): #in match commands
     def __init__(self):
         self.glob = False
         
@@ -91,12 +90,12 @@ class IMC(com): #in match commands
     def do_restart(self):
         pass
         
-class ISC(com): #in setup commands
+class ISC(Com): #in setup commands
     def __init__(self):
         self.glob = False
         
 
-    def Cmd.precmd(self, line):
+    def precmd(self, line):
         updateState()
         if self.state.inSetup:
             return line
@@ -104,11 +103,11 @@ class ISC(com): #in setup commands
             triedCommand.append(line)
             return "failed_message"
 
-class RDC(com): #review data commands
+class RDC(Com): #review data commands
     def __init__(self):
         self.glob = False
         
-    def Cmd.precmd(self, line):
+    def precmd(self, line):
         updateState()
         if self.state.inReview:
             return line
@@ -116,11 +115,11 @@ class RDC(com): #review data commands
             triedCommand.append(line)
             return "failed_message"
 
-class Test(com): #test commands
+class Test(Com): #test commands
     def __init__(self):
         self.glob = False
         
-    def Cmd.precmd(self, line):
+    def precmd(self, line):
         updateState()
         if self.state.inTest:
             return line

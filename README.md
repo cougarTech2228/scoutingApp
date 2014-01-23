@@ -1,6 +1,6 @@
 scoutingApp
 ===========
-CATS v0.3.1
+CATS v0.4.1
 Produced by FIRST Team 2228 CougarTech
 
 This is a work in progress application for collecting and recording FRC match information, and interpreting

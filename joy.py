@@ -29,66 +29,73 @@ class input:
     def getRobot(self):
         return self.robot
 
-        
+#This should be done with pygame, they have an elegent method of handling it.        
 class joyBindings:
     def __init__(self):
         pass
         
     def evtCheck(button):
-	if button = 0:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 1:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 2:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 3:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 4:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 5:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 6:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 7:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 8:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 9: 
-            evt = #init a game event and return it
-	    return evt       
-    elif button = 10:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 11:
-            evt = #init a game event and return it
-	    return evt
-    elif button = 12:
-           evt = #init a game event and return it
-	    return evt
-    elif button = _undoButton:
-            #undo some how
-	   return #something
-	else:
-	    printf(mindblownyoloswaglol101chickenonaraft)
+        if button == 0:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 1:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 2:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 3:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 4:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 5:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 6:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 7:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 8:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 9: 
+            evt = None#init a game event and return it
+            return evt       
+        elif button == 10:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 11:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 12:
+            evt = None#init a game event and return it
+            return evt
+        elif button == 13:
+            evt = None#init a game event and return it
+            return evt
+        elif button == _undoButton:
+                #undo some how
+           return None#something
+        else:
+
+#       printf(mindblownyoloswaglol101chickenonaraft)
             sys.exit(1)#if this happens at least we will know the problem
 
-		
+        
 def joystick_init(test = False):
     # get and check number of joysticks
     import pygame
-    numJoy = pygame.joystick.get_count()
+    
 
     if test is True:
         numJoy = 6
+
+    else:
+        numJoy = pygame.joystick.get_count()
 
     if numJoy == 6:
         print ("system detected 6 joysticks")
@@ -97,16 +104,19 @@ def joystick_init(test = False):
     elif numJoy > 6:
         print ("system detected %s joysticks \n this application needs only 6 joysticks to operate \n please note that one joystick will not be in use" % (numJoy))
 
-	
+    
     for i in range(numJoy):
         if test is not True:
             inputs[i] = input(i, main.pygame.joystick.Joystick(i))
-            
+
+    if test is True:    
+        return []
+    
     return inputs
 
                         
  
-	 
+     
 def run():
     global pause, end ###is this needed (global)
     while not end:
@@ -121,4 +131,4 @@ def run():
                  if evt.key == K_SPACE:
                      main.toggle_pause()
 
-	
+    

@@ -1,7 +1,5 @@
-# Main module
+# Test run for the Main module5
 
-# As of this build main.py is inoperational.
-# To test the program, open test.py or run sData_test.py
 import user
 import joy
 import data
@@ -9,10 +7,13 @@ import threading
 
 class Main():
     def __init__(self):
-        self.inputs = joy.joystick_init()
-        self.data = Data(len(inputs))
-        user.init()
+        self.inputs = joy.joystick_init(True)
+        self.data = Data(self.inputs)
+        user.do_init()
         self.state = State()
+
+    def set_up(self):
+        pass
        
     def enterMatchMode(self):
         self.state.inMatch = True
@@ -25,16 +26,15 @@ class Main():
         t.start()
         
 class Data(): 
-    def __init__(self, numInputs): #reminder -this must be fixed
-        self.compList = data.CompetitianList()
+    def __init__(self, inputs): #reminder -this must be fixed
+        self.compList = data.CompetitionList(test = True)
         self.Robots = data.RobotList()
-        self.state.currentComp = self.compList[-1]
-        self.state.currentMatch = self.compList[-1][-1]
+        self.currentComp = self.compList[-1]
+#        self.currentMatch = self.compList[-1][-1] #When you start the program you havent entered matches
         self.temp_records  = []
         self.matchEvtList = None #evt list
-        for i in range(numInputs):
-            self.temp_records.append(None) #can this be done
-        pass
+        for i in inputs:
+            self.temp_records.append(i) #can this be done
 
     def matchCreate(robots, placement=None):
         if placement is None:
@@ -67,7 +67,8 @@ class Data():
 class State():
     def __init__(self):
         self.reset()
-        
+
+    # This function is less than pointless, it has some sort of weird inverted point
     def getState(self):
         return self
 
