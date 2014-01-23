@@ -66,7 +66,7 @@ class Data():
 
 class State():
     def __init__(self):
-        reset()
+        self.reset()
         
     def getState(self):
         return self

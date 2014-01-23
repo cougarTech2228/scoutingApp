@@ -89,10 +89,13 @@ class joyBindings:
 def joystick_init(test = False):
     # get and check number of joysticks
     import pygame
-    numJoy = pygame.joystick.get_count()
+    
 
     if test is True:
         numJoy = 6
+
+    else:
+        numJoy = pygame.joystick.get_count()
 
     if numJoy == 6:
         print ("system detected 6 joysticks")
@@ -105,7 +108,10 @@ def joystick_init(test = False):
     for i in range(numJoy):
         if test is not True:
             inputs[i] = input(i, main.pygame.joystick.Joystick(i))
-            
+
+    if test is True:    
+        return []
+    
     return inputs
 
                         
