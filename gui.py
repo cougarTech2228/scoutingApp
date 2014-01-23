@@ -24,19 +24,22 @@ class Screen():
     pass
 
 class Label():
-    def __init__(self, message, size, surface):
+    def __init__(self, message, surface):
         self.font = pygame.font.Font(None,24)
         
-        self.X = size[0]
-        self.Y = size[1]
+        #self.X = size[0]
+        #self.Y = size[1]
         self.message = message
         self.value = 0
         self.color = (255, 255, 255) #white
 
         self.parent_surface = surface
 
-    def setValue(value):
+    def setValue(self, value):
         self.value = value
+        
+    def upValue(self):
+        self.value += 1
 
     def draw(self, position):
         text = self.font.render(self.message + str(self.value), True, self.color)

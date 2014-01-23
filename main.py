@@ -88,9 +88,9 @@ class State():
     
 
 
-    
-main = Main()
-main.set_up()
+if __name__ == "__main__": #This part is so that when it is imported, the following code doesn't run   
+    main = Main()
+    main.set_up()
 
 
 

@@ -29,7 +29,7 @@ class input:
     def getRobot(self):
         return self.robot
 
-        
+#This should be done with pygame, they have an elegent method of handling it.        
 class joyBindings:
     def __init__(self):
         pass
