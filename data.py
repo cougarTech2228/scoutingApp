@@ -1,8 +1,10 @@
 # Database module #merged some modules
 
-class CompetitianList(list):
-    def __init__():
-        pass
+class CompetitionList(list):
+    def __init__(self, test=False):
+        self.test = test
+        if self.test is True:
+            self.addComp("Test")
 
     def addComp(self, name):
         self.append(Competition(name))
@@ -10,7 +12,7 @@ class CompetitianList(list):
 
 class Competition(list):
 
-    def __init__(self, numberOfMatches=0, name="Test"):
+    def __init__(self, name, numberOfMatches=0):
         # If numMatches = 0 then number of matches in competician is unknown
         # name is a name given for this competitian ex) 'FLR seeding', 'FLR
         # final', 'nationals Finals'
