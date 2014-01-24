@@ -57,10 +57,12 @@ class Data():
                     r.records = i
         self.state.currentMatch.events = self.matchEvtList
         
+'''
     def setMatch(self, match, comp = None):
-        if comp != self.state.currentComp.name:
+        if comp:
+            #must searth for comp
             pass
-            
+'''           
     
 
 class State():
@@ -85,7 +87,7 @@ class State():
         self.currentComp = None
         self.currentMatch = None
         
-        self.matchIsSetup = False
+        #self.matchIsSetup = False
         
         
     def enterMatchMode(self):

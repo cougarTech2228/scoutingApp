@@ -84,11 +84,12 @@ class IMC(Com): #in match commands
         self.state.endMatch()
         pass
         
-        
     def do_restart(self):
         self.state.resetMatch(self)
         pass
         
+    do_p = do_pause
+
 class ISC(Com): #in setup commands
     def __init__(self):
         self.glob = False
