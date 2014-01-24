@@ -21,13 +21,7 @@ class Com(cmd.Cmd): #global commands
         
         self.updateState()
     
-    def updateState(self):
-        self.state.getState()
-
-    def preCmd(self, line):
-        self.updateState()
-        return line
-        
+    '''
     def do_failed_message(self):
         time.sleep(.5)
         if self.glob:
@@ -39,7 +33,7 @@ class Com(cmd.Cmd): #global commands
 
         else:
             pass
-            
+    '''
             
     #put global commands here
     
@@ -49,10 +43,9 @@ class Com(cmd.Cmd): #global commands
         if self.glob: # only want to do this once
             #command
     ''' 
-
-
-
-    #put global commands here
+    def do_matchMode(self):
+        if self.glob: # only want to do this once
+            self.state.enterMatchMode()
 
     def do_quit(self, arg):
         yn = input('are you sure y/n')
@@ -74,7 +67,6 @@ class IMC(Com): #in match commands
         self.glob = False
         
     def preCmd(self, line):
-        updateState()
         if self.state.inMatch:
             return line
         else:
@@ -82,12 +74,19 @@ class IMC(Com): #in match commands
             return "failed_message"
             
     def do_pause(self):
-        pass
+        self.state.togglePause()
+            
     def do_start(self):
+        self.state.startMatch()
         pass
+        
     def do_end(self):
+        self.state.endMatch()
         pass
+        
+        
     def do_restart(self):
+        self.state.resetMatch(self)
         pass
         
 class ISC(Com): #in setup commands
@@ -96,7 +95,6 @@ class ISC(Com): #in setup commands
         
 
     def precmd(self, line):
-        updateState()
         if self.state.inSetup:
             return line
         else:
@@ -108,7 +106,6 @@ class RDC(Com): #review data commands
         self.glob = False
         
     def precmd(self, line):
-        updateState()
         if self.state.inReview:
             return line
         else:
@@ -120,7 +117,6 @@ class Test(Com): #test commands
         self.glob = False
         
     def precmd(self, line):
-        updateState()
         if self.state.inTest:
             return line
         else:
