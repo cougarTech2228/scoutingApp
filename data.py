@@ -1,5 +1,6 @@
 # Database module #merged some modules
 
+"""
 class CompetitionList(list):
     def __init__(self, test=False):
         self.test = test
@@ -8,7 +9,7 @@ class CompetitionList(list):
 
     def addComp(self, name):
         self.append(Competition(name))
-
+"""
 
 class Competition(list):
 
@@ -21,16 +22,15 @@ class Competition(list):
         #self.last_match = 0
         self.numMatches = numberOfMatches
 
-    def newMatch(self, teamNumbers, place = None):
+    def newMatch(self, teamNumbers, place=None):
         # New Match takes a list of robot numbers as an argument
-        ##self[0] += 1
-        #self.last_match += 1
-        self.inMatches=len(self)+1
-        #inmatches is the # of inputed matches
+
+        self.inMatch = len(self)+1
+        #inmatch is the # of inputed matches
         if place is None:
-            self.append(Match(self.inMatches, robots, self.name))
+            self.append(Match(self.inMatch, teamNumbers))
         else:
-            self.insert(place, Match(self.inMatches, robots, self.name))
+            self.insert(place, Match(self.inMatch, teamNumbers))
     def editMatch(self, matchNumber, teamNumbers):
         self[matchNumber-1] = Match(self.last_match, teamNumbers)
 
@@ -39,30 +39,31 @@ class Competition(list):
 # an instance of a match with a number and six robot objects
 class Match:
 
-    def __init__(self, num, teamNumbers, compName):
-        self.events = evtList()
-        self.comp = compName
-        self.number = num
-        self.robots = [] # [0:2] red, [3:5] blue
+    def __init__(self, matchNum, teamNumbers):
+        self.number = matchNum
+#        self.robots = [None, None, None, None, None] # [0:2] red, [3:5] blue
         self.events = GameEventList()
+        self.robots = [ InMatchRobot(teamNumbers[n], n) for n in range(6) ] #Python Magic
+        
+        """
         n = 0
         for teamNumber in teamNumbers:
             # This will create a new robot each time it is called
 
-            robots[n] = InMatchRobot(teamNumber,self, n, self.comp)
+            self.robots[n] = InMatchRobot(teamNumber, n)
             n += 1  # [0:2] red, [3:5] blue
-            pass
+        """
 
 
 class InMatchRobot:
 
-    def __init__(self, teamNumber, myMatch, num, compName):
-        self.comp = compName
-        self.match = myMatch
+    def __init__(self, teamNumber, num):
+#        self.comp = compName
+#        self.match = myMatch
         self.teamNumber = teamNumber
-        self.num = num
+        self.allianceNumber = num
 
-        if allianceNumber < 3:
+        if self.allianceNumber < 3:
             self.alliance = 'RED'
         else:
             self.alliance = 'BLUE'
@@ -115,7 +116,7 @@ class RobotList(list):
     def add(self, robot):
         """
     if the list is empty it just adds the robot, like wise if it is
-    the largest member of the list. Otherwise it places the robot before
+    the largest member of the list. Othderwise it places the robot before
     the next greatest number through a binary search
     """
         #at this point if two different robots share the same number,

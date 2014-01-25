@@ -1,7 +1,7 @@
 # Main module
 
 # As of this build main.py is inoperational.
-# To test the program, open test.py or run sData_test.py
+# To test the program, open test.py or run main_test.py
 import user
 import joy
 import data
@@ -12,27 +12,22 @@ class Main():
         self.state = State()
         self.inputs = joy.joystick_init()
         self.data = Data(self, len(inputs))
-        user.init()
-        
-       
-
-        
+        user.init()      
         
 class Data(): 
-    def __init__(self,main, numInputs): #reminder -this must be fixed
-        self.compList = data.CompetitianList()
+    def __init__(self, main): #reminder -this must be fixed
+        self.competition = data.Competition()
         self.Robots = data.RobotList()
         
         self.state = main.state
-        self.state.currentComp = self.compList[-1]
-        self.state.currentMatch = self.compList[-1][-1]
+#        self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
+#        self.state.currentMatch = self.compList[-1][-1]
         
         self.temp_records  = []
         self.matchEvtList = None #evt list
         
-        for i in range(numInputs):
-            self.temp_records.append(None) #can this be done
-        pass
+        for i in main.inputs:
+            self.temp_records.append(i) #can this be done
 
     def matchCreate(robots, placement=None):
         if placement is None:
@@ -40,10 +35,54 @@ class Data():
             
         else:
             self.state.currentComp.newMatch(robots, placement)
+           
+    def add_matches_from_file(self, fileName="matches.txt"):
+        file = open(fileName, "r")
+        for line in file:
+
+            eol = False #end of line
+            firstWord = True
+            matchNum = 0
+            robotNums = []
             
+            if line[0] == "#":
+                ##print("pass")
+                eol = True    
+            
+            while not eol:
+                word = ""
+                for letter in line:
+                    
+                    if letter == " " or letter == "\t": #a space or tab
+                        if firstWord is True:
+                            matchNum = int(word)
+                            ##print("Match Number: " + word)
+                            firstWord = False
+                            word = ""
+                        else:
+                            robotNums.append(int(word))
+                            ##print("Robot Number: " + word)
+                            word = ""
+                            
+                    elif letter == "\n" or letter == "\r":
+                        eol = True
+                        
+                    else:
+                        word += letter
+                        
+            if matchNum != 0:
+                self.competition.newMatch(robotNums, matchNum)
+        
+        
+           
     def setRobots(self, joy, robot): #set robots for match with inputs
         self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
 
+    def add_robots_from_file(self, fileName="robots_test.txt"):
+        file = open(fileName).readlines()
+        for teamNumber in file:
+            self.robotList.addRobot(Robot(teamNumber.strip()))
+            
     def gameEvtRecord(self, joy, evt):
     # record correct bot and evt
         self.temp_records[joy].addEvt(evt)

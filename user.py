@@ -4,6 +4,7 @@
 import cmd
 import string, sys
 import time
+
 import main
 import data
 import joy
@@ -56,7 +57,8 @@ class Com(cmd.Cmd): #global commands
         print("syntax: quit")
         print("-- terminates the application")
 
-
+    def updateState(self):
+        pass
 
     # shortcuts
     do_q = do_quit
