@@ -4,6 +4,7 @@
 import cmd
 import string, sys
 import time
+
 import main
 import data
 import joy
@@ -16,7 +17,7 @@ class Com(cmd.Cmd): #global commands
         self.prompt = '> '
         self.state = main.State()
         self.triedCommand = []
-        self.glob = True #is this the top level command interpreter short for  global
+        self.glob = True #is this the top level command interpreter short for  global now unneeded
         self.allFailed = None
         
         self.updateState()
@@ -43,9 +44,11 @@ class Com(cmd.Cmd): #global commands
         if self.glob: # only want to do this once
             #command
     ''' 
+    def do_setup(self):
+        self.state.enterSetupMode()
+
     def do_matchMode(self):
-        if self.glob: # only want to do this once
-            self.state.enterMatchMode()
+        self.state.enterMatchMode()
 
     def do_quit(self, arg):
         yn = input('are you sure y/n')
@@ -56,26 +59,28 @@ class Com(cmd.Cmd): #global commands
         print("syntax: quit")
         print("-- terminates the application")
 
-
+    def updateState(self):
+        pass
 
     # shortcuts
     do_q = do_quit
 
 
-class IMC(Com): #in match commands
+class IMC(cmd.Cmd): #in match commands
     def __init__(self):
-        self.glob = False
-        
+        pass
     def preCmd(self, line):
         if self.state.inMatch:
             return line
         else:
-            triedCommand.append(line)
-            return "failed_message"
+            return ""
             
-    def do_pause(self):
+    def do_p(self):
         self.state.togglePause()
             
+    def do_pause(self):
+        self.state.pauseSet(True)
+        
     def do_start(self):
         self.state.startMatch()
         pass
@@ -88,41 +93,36 @@ class IMC(Com): #in match commands
         self.state.resetMatch(self)
         pass
         
-    do_p = do_pause
 
 class ISC(Com): #in setup commands
     def __init__(self):
-        self.glob = False
-        
+        pass
 
     def precmd(self, line):
         if self.state.inSetup:
             return line
         else:
-            triedCommand.append(line)
-            return "failed_message"
+            return ""
 
 class RDC(Com): #review data commands
     def __init__(self):
-        self.glob = False
+
         
     def precmd(self, line):
         if self.state.inReview:
             return line
         else:
-            triedCommand.append(line)
-            return "failed_message"
+
+            return ""
 
 class Test(Com): #test commands
     def __init__(self):
-        self.glob = False
         
     def precmd(self, line):
         if self.state.inTest:
             return line
         else:
-            triedCommand.append(line)
-            return "failed_message"
+            return ""
 
 def do_init():
     Com()

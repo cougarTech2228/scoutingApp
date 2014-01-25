@@ -1,7 +1,7 @@
 # Main module
 
 # As of this build main.py is inoperational.
-# To test the program, open test.py or run sData_test.py
+# To test the program, open test.py or run main_test.py
 import user
 import joy
 import data
@@ -12,27 +12,22 @@ class Main():
         self.state = State()
         self.inputs = joy.joystick_init()
         self.data = Data(self, len(inputs))
-        user.init()
-        
-       
-
-        
+        user.init()      
         
 class Data(): 
-    def __init__(self,main, numInputs): #reminder -this must be fixed
-        self.compList = data.CompetitianList()
+    def __init__(self, main): #reminder -this must be fixed
+        self.competition = data.Competition()
         self.Robots = data.RobotList()
         
         self.state = main.state
-        self.state.currentComp = self.compList[-1]
-        self.state.currentMatch = self.compList[-1][-1]
+#        self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
+#        self.state.currentMatch = self.compList[-1][-1]
         
         self.temp_records  = []
         self.matchEvtList = None #evt list
         
-        for i in range(numInputs):
-            self.temp_records.append(None) #can this be done
-        pass
+        for i in main.inputs:
+            self.temp_records.append(i) #can this be done
 
     def matchCreate(robots, placement=None):
         if placement is None:
@@ -40,10 +35,54 @@ class Data():
             
         else:
             self.state.currentComp.newMatch(robots, placement)
+           
+    def add_matches_from_file(self, fileName="matches.txt"):
+        file = open(fileName, "r")
+        for line in file:
+
+            eol = False #end of line
+            firstWord = True
+            matchNum = 0
+            robotNums = []
             
+            if line[0] == "#":
+                ##print("pass")
+                eol = True    
+            
+            while not eol:
+                word = ""
+                for letter in line:
+                    
+                    if letter == " " or letter == "\t": #a space or tab
+                        if firstWord is True:
+                            matchNum = int(word)
+                            ##print("Match Number: " + word)
+                            firstWord = False
+                            word = ""
+                        else:
+                            robotNums.append(int(word))
+                            ##print("Robot Number: " + word)
+                            word = ""
+                            
+                    elif letter == "\n" or letter == "\r":
+                        eol = True
+                        
+                    else:
+                        word += letter
+                        
+            if matchNum != 0:
+                self.competition.newMatch(robotNums, matchNum)
+        
+        
+           
     def setRobots(self, joy, robot): #set robots for match with inputs
         self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
 
+    def add_robots_from_file(self, fileName="robots_test.txt"):
+        file = open(fileName).readlines()
+        for teamNumber in file:
+            self.robotList.addRobot(Robot(teamNumber.strip()))
+            
     def gameEvtRecord(self, joy, evt):
     # record correct bot and evt
         self.temp_records[joy].addEvt(evt)
@@ -57,6 +96,8 @@ class Data():
                     r.records = i
         self.state.currentMatch.events = self.matchEvtList
         
+    def matchReset(self):
+        pass
 '''
     def setMatch(self, match, comp = None):
         if comp:
@@ -66,7 +107,8 @@ class Data():
     
 
 class State():
-    def __init__(self, ):
+    def __init__(self, myMain):
+        self.main = myMain
         self.reset()
         
     def getState(self):
@@ -81,7 +123,7 @@ class State():
         self.matchReadyStart = False
         self.matchReadyCommit = False
         self.matchPaused = False
-        self.matchStopped = False
+        self.matchEnded = False
         self.matchRunning = False
         
         self.currentComp = None
@@ -94,24 +136,42 @@ class State():
         self.inMatch = True
         self.matchReadyStart = True
         
-        joy.pause = True
+        self.matchPaused = True
         joy.end = False
-        self.t = threading.thread(target = joy.run)
+        self.t = threading.thread(target = joy.run(self.matchPaused, self.matchEnded))
         self.t.start()
         
     def togglePause(self):
-        if joy.pause == True:
-            joy.pause = False
+        if self.matchPaused == True:
+            self.matchPaused = False
         else:
-            joy.pause = True
+            self.matchPaused = True
             
+    def pauseSet(set):
+        self.matchPaused = set
+        
     def startMatch(self):
-        pass
+        self.matchPaused == False
+        self.matchReadyStart = False
+        self.matchRunning = True
+        self.matchEnded = False
+        self.matchReadyCommit = False
         
     def endMatch(self):
+        self.matchReadyStart = False
+        self.matchReadyCommit = True
+        self.matchPaused = False
+        self.matchEnded = True
+        self.matchRunning = False
         pass
         
     def resetMatch(self):
+        data.resetMatch():
+        self.matchReadyStart = True
+        self.matchReadyCommit = False
+        self.matchPaused = True
+        self.matchEnded = False
+        self.matchRunning = False
         pass
         
     def exitMatchMode(self):
@@ -120,19 +180,21 @@ class State():
         self.matchReadyStart = False
         self.matchReadyCommit = False
         self.matchPaused = False
-        self.matchStopped = False
+        self.matchEnded = False
         self.matchRunning = False
         
-        joy.pause = False
-        joy.end = True
+        self.currentMatch = None
         
-    
+    def enterMatchMode(self):
+        self.inSetup = True
+
         
-        ''' get data from automatically gather able sources such as joy.pause and joy.end
-    def refresh(self):
-        self.matchPaused 
-        self.matchStopped
-        '''
+    def setMatch(self, match, comp = None):
+        if comp:
+            self.currentComp = self.main.dataMain.compList.getComp(comp)
+            pass
+        self.currentMatch = currentComp[match-1]
+        
         
 if __name__ == "__main__": #This part is so that when it is imported, the following code doesn't run   
     main = Main()

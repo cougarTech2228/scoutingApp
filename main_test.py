@@ -6,12 +6,13 @@ import data
 import threading
 
 class Main():
-    def __init__(self):
+    def __init__(self)
+        self.state = State()
         self.inputs = joy.joystick_init(True)
         self.data = Data(self.inputs)
         user.do_init()
-        self.state = State()
-
+        
+"""
     def set_up(self):
         pass
        
@@ -24,11 +25,14 @@ class Main():
         joy.end = False
         t = threading.thread(target = joy.run)
         t.start()
-        
+"""
+
 class Data(): 
     def __init__(self, inputs): #reminder -this must be fixed
-        self.compList = data.CompetitionList(test = True)
-        self.Robots = data.RobotList()
+        self.theCompetition = data.Competition()
+        self.robotList = data.RobotList()
+        self.add_robots_from_file()
+        
         self.currentComp = self.compList[-1]
 #        self.currentMatch = self.compList[-1][-1] #When you start the program you havent entered matches
         self.temp_records  = []
@@ -45,6 +49,11 @@ class Data():
             
     def setRobots(self, joy, robot): #set robots for match with inputs
         self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
+
+    def add_robots_from_file(self, fileName="robots_test.txt"):
+        file = open(fileName).readlines()
+        for teamNumber in file:
+            self.robotList.addRobot(Robot(teamNumber.strip()))
 
     def gameEvtRecord(self, joy, evt):
     # record correct bot and evt

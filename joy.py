@@ -117,8 +117,8 @@ def joystick_init(test = False):
                         
  
      
-def run():
-    global pause, end ###is this needed (global)
+def run(pause, end):
+
     while not end:
          for evt in main.pygame.event.get():
              if not pause:
