@@ -92,6 +92,21 @@ class Data():
                 if r.name == i.name:
                     r.records = i
         self.state.currentMatch.events = self.matchEvtList
+
+    def save(self):
+        import pickle
+        save_file = open(self.theCompetition.name + ".dat", "wb")
+        save_data = [self.theCompetition,
+                     self.robotList ]
+        
+        pickle.dump( save_data, save_file )
+        save_file.close()
+
+    def load(self, fileName):
+        import pickle
+        load_data = pickle.load( open(fileName, "rb") )
+        self.theCompetition = load_data[0]
+        self.robotList = load_data[1]
         
     def matchReset(self):
         pass
