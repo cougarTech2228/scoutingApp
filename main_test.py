@@ -11,7 +11,9 @@ class Main():
         self.inputs = joy.joystick_init(True)
         self.data = Data(self)
         user.do_init()
-        
+
+    def run(self):
+        self.data.load("Test.dat")
 """
     def set_up(self):
         pass
@@ -31,7 +33,6 @@ class Data():
     def __init__(self, main):
         self.theCompetition = data.Competition("Test")
         self.robotList = data.RobotList()
-        self.add_robots_from_file()
 
         self.main = main
         self.temp_records  = [i for i in main.inputs]
@@ -79,7 +80,7 @@ class Data():
                         word += letter
                         
             if matchNum != 0:
-                self.competition.newMatch(robotNums, matchNum)
+                self.theCompetition.newMatch(robotNums, matchNum)
             
     def setRobots(self, joy, robot): #set robots for match with inputs
         self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name,
@@ -104,6 +105,24 @@ class Data():
         if r.name == i.name:
                     r.records = i
         self.currentMatch.events = self.matchEvtList
+
+
+    def save(self):
+        import pickle
+        save_file = open(self.theCompetition.name + ".dat", "wb")
+        save_data = [self.theCompetition,
+                     self.robotList ]
+        
+        pickle.dump( save_data, save_file )
+        save_file.close()
+
+    def load(self, fileName):
+        import pickle
+        load_data = pickle.load( open(fileName, "rb") )
+        self.theCompetition = load_data[0]
+        self.robotList = load_data[1]
+
+        
 
     def matchReset(self):
         pass
@@ -203,5 +222,6 @@ class State():
 
 if __name__ == "__main__": #This part is so that when it is imported, the following code doesn't run   
     main = Main()
+    main.run()
 
 
