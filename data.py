@@ -1,4 +1,4 @@
-# Database module #merged some modules
+# Database module
 
 """
 class CompetitionList(list):
@@ -15,8 +15,7 @@ class Competition(list):
 
     def __init__(self, name, numberOfMatches=0):
         # If numMatches = 0 then number of matches in competician is unknown
-        # name is a name given for this competitian ex) 'FLR seeding', 'FLR
-        # final', 'nationals Finals'
+        # name is a name given for this competitian ex) 'FLR seeding'
         self.name = name
         #self.current_match = 0
         #self.last_match = 0

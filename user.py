@@ -15,7 +15,8 @@ class Com(cmd.Cmd): #global commands
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.prompt = '> '
-        self.state = main.State()
+        self.state = main.State() #This will create another instance of the main.State object.
+                                  #I'm guessing that that isn't what you want
         self.triedCommand = []
         self.glob = True #is this the top level command interpreter short for  global now unneeded
         self.allFailed = None
@@ -106,7 +107,7 @@ class ISC(Com): #in setup commands
 
 class RDC(Com): #review data commands
     def __init__(self):
-
+        pass
         
     def precmd(self, line):
         if self.state.inReview:
@@ -117,6 +118,7 @@ class RDC(Com): #review data commands
 
 class Test(Com): #test commands
     def __init__(self):
+        pass
         
     def precmd(self, line):
         if self.state.inTest:
