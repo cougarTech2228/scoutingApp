@@ -104,7 +104,27 @@ class ISC(Com): #in setup commands
             return line
         else:
             return ""
-
+    
+    def do_stm():
+        if self.state.currentMatch:
+            match = self.state.currentMatch.number + 1
+        elif self.state.lastMatch:
+            match = self.state.lastMatch + 1
+        else: 
+            match = 0
+        print("set-up next match: #", match, " ? ")
+        i = strcIn(allowed = ["n","y"], message = "--y/n-->>")
+        if i == "n"
+            print ("what match to set-up: (number)", match)
+            num = strcIn(typeInt = True, message = "match number>>")
+            match = num
+        
+        
+        
+            
+        
+                
+            
 class RDC(Com): #review data commands
     def __init__(self):
         pass
@@ -132,4 +152,26 @@ def do_init():
     ISC()
     RDC()
     Test()
+   
+def strcIn(allowed = none, message = "", typeInt = False, check = False)
+    w = True:
+    while w:
+        re = input(message):
+        w = False
+        if allowed:
+                if re not in allowed:
+                    print("that is not a valid answer")
+                    w = True
+        if typeInt:
+            try:
+                v = int(re)
+                re = v
+            except (ValueError):
+                print("that is not a valid answer")
+                W = True
+        if check = True
+            pass
+            # can I call this function within this function
+        return re
     
+            
