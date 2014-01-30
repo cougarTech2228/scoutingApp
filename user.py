@@ -106,6 +106,7 @@ class ISC(Com): #in setup commands
             return ""
     
     def do_stm():
+        
         if self.state.currentMatch:
             match = self.state.currentMatch.number + 1
         elif self.state.lastMatch:
@@ -114,13 +115,39 @@ class ISC(Com): #in setup commands
             match = 0
         print("set-up next match: #", match, " ? ")
         i = strcIn(allowed = ["n","y"], message = "--y/n-->>")
-        if i == "n"
+        if i == "n":
             print ("what match to set-up: (number)", match)
             num = strcIn(typeInt = True, message = "match number>>")
             match = num
         
+        def getRobots():# can this be done
+            robots = []
+            #enter red alliance
+            robots.append(strcIn(typeInt = True, message ="Red alliance robot 1->>"))
+            robots.append(strcIn(typeInt = True, message ="Red alliance robot 2->>"))
+            robots.append(strcIn(typeInt = True, message ="Red alliance robot 3->>"))
+            #enter blue alliance
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 4->>"))
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 5->>"))
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 6->>"))
+            return robots
+            
+        c = False   
+        while not c:
+            r=[]
+            r = getRobots()
+            c = confirm()
         
-        
+        c = False
+        while not c:
+            c = True
+            r = strcIn(message = ">>>>")
+            if r == "commit":
+                pass #do new match stuff
+            if r == "escape" or r == "E":
+                pass#leave function
+            else:
+                c = False
             
         
                 
@@ -146,17 +173,17 @@ class Test(Com): #test commands
         else:
             return ""
 
-def do_init():
+def init():
     Com()
     IMC()
     ISC()
     RDC()
     Test()
    
-def strcIn(allowed = none, message = "", typeInt = False, check = False)
-    w = True:
+def strcIn(allowed = None, message = "", typeInt = False, check = False):
+    w = True
     while w:
-        re = input(message):
+        re = input(message)
         w = False
         if allowed:
                 if re not in allowed:
@@ -169,9 +196,15 @@ def strcIn(allowed = none, message = "", typeInt = False, check = False)
             except (ValueError):
                 print("that is not a valid answer")
                 W = True
-        if check = True
+        if check == True:
             pass
             # can I call this function within this function
         return re
-    
-            
+
+def confirm(m = "is this okay - y/n"):
+    print (m)
+    a = strcIn(allowed = ["n","y"], message = "y/n-->>")
+    if a == "y":
+        return True
+    else:
+        return False
