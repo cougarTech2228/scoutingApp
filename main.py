@@ -23,7 +23,7 @@ class Data():
 #        self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
 #        self.state.currentMatch = self.compList[-1][-1]
         
-        self.temp_records  = [ i for i in main.inputs]
+        self.temp_records  = [ i for i in len(main.inputs)]
         self.matchEvtList = None #evt list
 
     def matchCreate(robots, placement=None):
@@ -140,7 +140,7 @@ class State():
         
         self.currentComp = None
         self.currentMatch = None
-        
+        self.lastMatch = None
         #self.matchIsSetup = False
         
         
@@ -188,16 +188,16 @@ class State():
         
     def exitMatchMode(self):
         self.inMatch = False
-        
         self.matchReadyStart = False
         self.matchReadyCommit = False
         self.matchPaused = False
         self.matchEnded = False
         self.matchRunning = False
-        
+        self.lastMatch = self.currentMatch
         self.currentMatch = None
         
-    def enterMatchMode(self):
+        
+    def enterSetup(self):
         self.inSetup = True
 
         

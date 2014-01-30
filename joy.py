@@ -14,15 +14,15 @@ class input:
  # a pointer to a joystick or other input device
  # will have bindings
 
-    def __init__(self,N, myjoystick):
+    def __init__(self,N, myJoystick):
         myJoystick.init
         self.myJoystick = myJoystick
         self.bind = joyBindings()
         self.num = N
- 
+        self.type = "joystick" #FOR NOW
+        
     def record(self,j, b):
         # will record event
-
         evt = self.bind.evtCheck(b)
         main.gameEvtInput(self.num, evt) 
 

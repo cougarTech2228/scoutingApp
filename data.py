@@ -42,7 +42,7 @@ class Match:
         self.number = matchNum
 #        self.robots = [None, None, None, None, None] # [0:2] red, [3:5] blue
         self.events = GameEventList()
-        self.robots = [ InMatchRobot(teamNumbers[n], n) for n in range(6) ] #Python Magic
+        self.robots = [ InMatchRobot(teamNumbers[n], n) for n in range(6) ] #Python Magic (whatever would us developers do without magic)
         
         """
         n = 0
