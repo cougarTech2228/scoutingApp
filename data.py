@@ -24,26 +24,27 @@ class Competition(list):
     def newMatch(self, teamNumbers, place=None):
         # New Match takes a list of robot numbers as an argument
 
-        self.inMatch = len(self)+1
+        self.inMatch = len(self)
         #inmatch is the # of inputed matches
         if place is None:
-            self.append(Match(self.inMatch, teamNumbers))
+            self.append(Match(self.inMatch, teamNumbers, self))
         else:
-            self.insert(place, Match(self.inMatch, teamNumbers))
+            self.insert(place, Match(self.inMatch, teamNumbers, self))#this will make a mess of lower objects
+            
     def editMatch(self, matchNumber, teamNumbers):
-        self[matchNumber-1] = Match(self.last_match, teamNumbers)
+        self[matchNumber-1] = Match(matchNumber-1, teamNumbers, self)
 
 
 
 # an instance of a match with a number and six robot objects
 class Match:
 
-    def __init__(self, matchNum, teamNumbers):
+    def __init__(self, matchNum, teamNumbers, comp):
+        self.comp = comp
         self.number = matchNum
 #        self.robots = [None, None, None, None, None] # [0:2] red, [3:5] blue
         self.events = GameEventList()
-        self.robots = [ InMatchRobot(teamNumbers[n], n) for n in range(6) ] #Python Magic (whatever would us developers do without magic)
-        
+        self.robots = [ InMatchRobot(teamNumbers[n], n, self) for n in range(6) ] #Python Magic 
         """
         n = 0
         for teamNumber in teamNumbers:
@@ -56,9 +57,8 @@ class Match:
 
 class InMatchRobot:
 
-    def __init__(self, teamNumber, num):
-#        self.comp = compName
-#        self.match = myMatch
+    def __init__(self, teamNumber, num, match):
+        self.match = match
         self.teamNumber = teamNumber
         self.allianceNumber = num
 
@@ -77,16 +77,21 @@ class InMatchRobotRecords:
         self.match = myMatch #match object
         self.roboNum = robot #robot number
         self.alliance = ally # string (RED or BLUE)
-        self.events = GameEventList() #is this right, this class could possibly extend game evt list
-        self.comments = []
+        self.events = GameEventList() 
+        self.comments = Comments()
         # variables being recorded ex)shots missed, points scored, climberlevel reached
-
+        #elf.passes = 0
+        #elf.recivals = 0
+        #elf.pointScored = 0
+        #elf.
     def addEvt(event):
+        self.events.add(event)
         pass
         #add event to event list
 
     def tally():
-    #tally up evt list
+        for evt in GameEventList
+            pass#tally up evt list
         pass
 
 
@@ -183,7 +188,7 @@ class RobotList(list):
 class Robot():
     def __init__(self, teamNumber):
         self.teamNumber = teamNumber
-        self.matches = []
+        self.matches = []:#this points to  "inMatchRobotRecords" object
         self.totalPts = 0
         # has robo record files
         #self.__deleted = False
@@ -194,7 +199,7 @@ class Robot():
     def calculateStats(self):
         self.totalPts = 0
         for record in self.matches:
-            for event in record:
+            for event in record.events:
                 self.totalPts += event.pointsValue
 
     def getAvgPoints(self):
@@ -334,3 +339,11 @@ class TrussThrowEvent(GameEvent):
 
 class BallCatchEvent(GameEvent):
     pass
+
+
+class Comments(list):
+    def __init__():
+        pass
+    def add(c):
+        pass
+    
