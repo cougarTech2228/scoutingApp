@@ -6,13 +6,14 @@ import user
 import joy
 import data
 import threading
-
+import pygame
 class Main():
     def __init__(self):
+        pygame.init()
         self.state = State()
-        self.inputs = joy.joystick_init()
+        self.inputs = joy.joystick_init(test = True)
         self.data = Data(self)
-        user.init()      
+        user.init()
         
 class Data(): 
     def __init__(self, main): #reminder -this must be fixed
@@ -23,7 +24,7 @@ class Data():
 #        self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
 #        self.state.currentMatch = self.compList[-1][-1]
         
-        self.temp_records  = [ i for i in len(main.inputs)]
+        self.temp_records  = [ i for i in range(len(main.inputs))]
         self.matchEvtList = None #evt list
 
     def matchCreate(robots, placement=None):
@@ -210,7 +211,7 @@ class State():
         
 if __name__ == "__main__": #This part is so that when it is imported, the following code doesn't run   
     main = Main()
-    main.set_up()
+
 
 
 

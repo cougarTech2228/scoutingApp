@@ -13,7 +13,7 @@ class CompetitionList(list):
 
 class Competition(list):
 
-    def __init__(self, name, numberOfMatches=0):
+    def __init__(self, name = "test", numberOfMatches=0):
         # If numMatches = 0 then number of matches in competician is unknown
         # name is a name given for this competitian ex) 'FLR seeding'
         self.name = name

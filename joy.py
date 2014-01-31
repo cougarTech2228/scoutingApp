@@ -88,9 +88,8 @@ class joyBindings:
         
 def joystick_init(test = False):
     # get and check number of joysticks
-    import pygame
+    from main import pygame
     
-
     if test is True:
         numJoy = 6
 
