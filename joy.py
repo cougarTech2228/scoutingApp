@@ -1,6 +1,5 @@
 #joystick interface module
 
-import string, sys
 
 import main
 
@@ -81,10 +80,7 @@ class joyBindings:
                 #undo some how
            return None#something
         else:
-
-#       printf(mindblownyoloswaglol101chickenonaraft)
-            sys.exit(1)#if this happens at least we will know the problem
-
+           pass
         
 def joystick_init(test = False):
     # get and check number of joysticks
@@ -106,9 +102,9 @@ def joystick_init(test = False):
     
     for i in range(numJoy):
         if test is not True:
-            inputs[i] = input(i, main.pygame.joystick.Joystick(i))
+            inputs[i] = input(i, pygame.joystick.Joystick(i))
 
-    if test is True:    
+    if test is True:
         return []
     
     return inputs
@@ -117,7 +113,8 @@ def joystick_init(test = False):
  
      
 def run(pause, end):
-
+    from main import pygame
+    
     while not end:
          for evt in main.pygame.event.get():
              if not pause:
@@ -127,7 +124,7 @@ def run(pause, end):
                     ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
                      
              if evt.type == pygame.KEYDOWN:
-                 if evt.key == K_SPACE:
+                 if evt.key == pygame.K_SPACE:
                      main.toggle_pause()
 
     
