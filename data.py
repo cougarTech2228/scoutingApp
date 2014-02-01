@@ -84,13 +84,13 @@ class InMatchRobotRecords:
         #elf.recivals = 0
         #elf.pointScored = 0
         #elf.
-    def addEvt(event):
+    def addEvt(self, event):
         self.events.add(event)
         pass
         #add event to event list
 
     def tally():
-        for evt in GameEventList
+        for evt in GameEventList:
             pass#tally up evt list
         pass
 
@@ -165,8 +165,7 @@ class RobotList(list):
 
     def setCurrentRobot(self, teamNumber):
         self.current_robot = self[self.robotKeys.index(teamNumber)]
-        self.current_robot_index = self.index(robot)
-
+        self.current_robot_index = self.index(self.robot)
 
     def _binSearchIndex(self, teamNumber):
         # After much consternation this works!, it returns the index of the lowest
@@ -188,8 +187,9 @@ class RobotList(list):
 class Robot():
     def __init__(self, teamNumber):
         self.teamNumber = teamNumber
-        self.matches = []:#this points to  "inMatchRobotRecords" object
+        self.matches = []#this points to  "inMatchRobotRecords" object
         self.totalPts = 0
+        self.specifications = pitScout()
         # has robo record files
         #self.__deleted = False
 
@@ -204,6 +204,7 @@ class Robot():
 
     def getAvgPoints(self):
         return self.totalPts/len(self.matches)
+
 
 
 
@@ -345,5 +346,9 @@ class Comments(list):
     def __init__():
         pass
     def add(c):
+        pass
+    
+class pitScout():
+    def __init__():
         pass
     

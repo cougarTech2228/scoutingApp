@@ -7,13 +7,20 @@ import joy
 import data
 import threading
 import pygame
+import time
+
+state = None
+
 class Main():
     def __init__(self):
         pygame.init()
-        self.state = State()
+        global state 
+        state = State()
         self.inputs = joy.joystick_init(test = True)
         self.data = Data(self)
         user.init()
+
+            
         
 class Data(): 
     def __init__(self, main): #reminder -this must be fixed
@@ -27,7 +34,7 @@ class Data():
         self.temp_records  = [ i for i in range(len(main.inputs))]
         self.matchEvtList = None #evt list
 
-    def matchCreate(robots, placement=None):
+    def matchCreate(self, robots, placement=None):
         if placement is None:
             self.state.currentComp.newMatch(robots)
             
@@ -79,7 +86,7 @@ class Data():
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
         for teamNumber in file:
-            self.robotList.addRobot(Robot(teamNumber.strip()))
+            self.robotList.addRobot(data.Robot(teamNumber.strip()))
             
     def gameEvtRecord(self, joy, evt):
     # record correct bot and evt
@@ -87,7 +94,7 @@ class Data():
         self.matchEvtList.add(evt) #add evt
 
     def commitMatch(self):
-        for i in temp_records:
+        for i in self.temp_records:
             i.tally
             for r in self.state.currentMatch.robots:
                 if r.name == i.name:
@@ -160,7 +167,7 @@ class State():
         else:
             self.matchPaused = True
             
-    def pauseSet(set):
+    def pauseSet(self, set):
         self.matchPaused = set
         
     def startMatch(self):
@@ -206,7 +213,7 @@ class State():
         if comp:
             self.currentComp = self.main.dataMain.compList.getComp(comp)
             pass
-        self.currentMatch = currentComp[match-1]
+        self.currentMatch = self.currentComp[match-1]
         
         
 if __name__ == "__main__": #This part is so that when it is imported, the following code doesn't run   
