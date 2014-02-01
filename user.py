@@ -2,12 +2,9 @@
 
 
 import cmd
-import string, sys
-import time
 
 import main
-import data
-import joy
+
 
 
 class Com(cmd.Cmd): #global commands
@@ -18,10 +15,7 @@ class Com(cmd.Cmd): #global commands
         self.state = main.State() #This will create another instance of the main.State object.
                                   #I'm guessing that that isn't what you want
         self.triedCommand = []
-        self.glob = True #is this the top level command interpreter short for  global now unneeded
-        self.allFailed = None
-        
-        self.updateState()
+
     
     '''
     def do_failed_message(self):
@@ -52,30 +46,23 @@ class Com(cmd.Cmd): #global commands
         self.state.enterMatchMode()
 
     def do_quit(self, arg):
-        yn = input('are you sure y/n')
-        main.quit()
+        
+        if confirm(m = "quit (y/n)"):   
+            main.quit()
+        else:
+                pass
         #sys.exit(1)
 
     def help_quit(self):
         print("syntax: quit")
         print("-- terminates the application")
 
-    def updateState(self):
-        pass
+
+    #match commands----------------------------------------------------------
 
     # shortcuts
     do_q = do_quit
-
-
-class IMC(cmd.Cmd): #in match commands
-    def __init__(self):
-        pass
-    def preCmd(self, line):
-        if self.state.inMatch:
-            return line
-        else:
-            return ""
-            
+     
     def do_p(self):
         self.state.togglePause()
             
@@ -93,24 +80,69 @@ class IMC(cmd.Cmd): #in match commands
     def do_restart(self):
         self.state.resetMatch(self)
         pass
-        
-
-class ISC(Com): #in setup commands
+    
+    #setupcommands-----------------------------------------------------------
+    
+    def do_stm(self):
+        self.state.inSetup =True
+        setupmatch()
+       
+                
+class Test(cmd.Cmd):
+    
     def __init__(self):
         pass
-
-    def precmd(self, line):
-        if self.state.inSetup:
-            return line
-        else:
-            return ""
-    
-    def do_stm():
         
-        if self.state.currentMatch:
-            match = self.state.currentMatch.number + 1
-        elif self.state.lastMatch:
-            match = self.state.lastMatch + 1
+            
+    def do_testing(self, t):# stand for rendom thing i dont know what it is
+        print("hello")
+
+
+
+def init():
+    
+    Com().cmdloop()
+ 
+    t = Test()
+    t.cmdloop()
+    
+   
+def strcIn(allowed = None, message = "", typeInt = False, check = False):
+    w = True
+    while w:
+        re = input(message)
+        w = False
+        if allowed:
+                if re not in allowed:
+                    print("that is not a valid answer")
+                    w = True
+        if typeInt:
+            try:
+                v = int(re)
+                re = v
+            except (ValueError):
+                print("that is not a valid answer")
+                w= True
+        if check == True:
+            pass
+            # can I call this function within this function
+        return re
+
+def confirm(m = "is this okay - y/n"):
+    print (m)
+    a = strcIn(allowed = ["n","y"], message = "y/n-->>")
+    if a == "y":
+        return True
+    else:
+        return False
+        
+        
+        
+def setupmatch():
+        if main.state.currentMatch:
+            match = main.state.currentMatch.number + 1
+        elif main.state.lastMatch:
+            match = main.state.lastMatch + 1
         else: 
             match = 0
         print("set-up next match: #", match, " ? ")
@@ -148,63 +180,4 @@ class ISC(Com): #in setup commands
                 pass#leave function
             else:
                 c = False
-            
-        
                 
-            
-class RDC(Com): #review data commands
-    def __init__(self):
-        pass
-        
-    def precmd(self, line):
-        if self.state.inReview:
-            return line
-        else:
-
-            return ""
-
-class Test(Com): #test commands
-    def __init__(self):
-        pass
-        
-    def precmd(self, line):
-        if self.state.inTest:
-            return line
-        else:
-            return ""
-
-def init():
-    Com()
-    IMC()
-    ISC()
-    RDC()
-    Test()
-   
-def strcIn(allowed = None, message = "", typeInt = False, check = False):
-    w = True
-    while w:
-        re = input(message)
-        w = False
-        if allowed:
-                if re not in allowed:
-                    print("that is not a valid answer")
-                    w = True
-        if typeInt:
-            try:
-                v = int(re)
-                re = v
-            except (ValueError):
-                print("that is not a valid answer")
-                W = True
-        if check == True:
-            pass
-            # can I call this function within this function
-        return re
-
-def confirm(m = "is this okay - y/n"):
-    print (m)
-    a = strcIn(allowed = ["n","y"], message = "y/n-->>")
-    if a == "y":
-        return True
-    else:
-        return False
