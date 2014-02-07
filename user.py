@@ -3,17 +3,15 @@
 
 import cmd
 
-import main
-
 
 
 class Com(cmd.Cmd): #global commands
 
-    def __init__(self):
+    def __init__(self, main):
         cmd.Cmd.__init__(self)
+        self.main = main
         self.prompt = '> '
-        self.state = main.State() #This will create another instance of the main.State object.
-                                  #I'm guessing that that isn't what you want
+        self.state = self.main.state
         self.triedCommand = []
 
     
@@ -35,25 +33,19 @@ class Com(cmd.Cmd): #global commands
     
     #format
     '''
-    def do_command(self, arg):
-        if self.glob: # only want to do this once
-            #command
+    def do_command(self, t): i have no idea what it s returning for t (maybe arguments)
     ''' 
-    def do_setup(self):
-        self.state.enterSetupMode()
-
-    def do_matchMode(self):
+    def do_matchMode(self, t):
         self.state.enterMatchMode()
 
-    def do_quit(self, arg):
-        
+    def do_quit(self, t):
         if confirm(m = "quit (y/n)"):   
-            main.quit()
+            self.main.programQuit()
         else:
-                pass
-        #sys.exit(1)
+            pass
+        
 
-    def help_quit(self):
+    def help_quit(self, t):
         print("syntax: quit")
         print("-- terminates the application")
 
@@ -63,47 +55,48 @@ class Com(cmd.Cmd): #global commands
     # shortcuts
     do_q = do_quit
      
-    def do_p(self):
+    def do_p(self, t):
         self.state.togglePause()
             
-    def do_pause(self):
+    def do_pause(self, t):
         self.state.pauseSet(True)
         
-    def do_start(self):
+    def do_start(self, t):
         self.state.startMatch()
         pass
         
-    def do_end(self):
+    def do_end(self, t):
         self.state.endMatch()
         pass
         
-    def do_restart(self):
+    def do_restart(self, t):
         self.state.resetMatch(self)
         pass
     
     #setupcommands-----------------------------------------------------------
     
-    def do_stm(self):
+    def do_stm(self, t):
         self.state.inSetup =True
-        setupmatch()
+        setupmatch(self.main)
        
+    def do_gets(self, t):
+        for i in self.state.getState():
+            print(i[1],i[0])
                 
 class Test(cmd.Cmd):
     
-    def __init__(self):
+    def __init__(self, main):
         pass
         
             
-    def do_testing(self, t):# stand for rendom thing i dont know what it is
+    def do_testing(self, t):# t stands for random thing i dont know what it is
         print("hello")
 
 
 
-def init():
-    
-    Com().cmdloop()
- 
-    t = Test()
+def init(m):
+    Com(m).cmdloop()
+    t = Test(m)
     t.cmdloop()
     
    
@@ -138,7 +131,7 @@ def confirm(m = "is this okay - y/n"):
         
         
         
-def setupmatch():
+def setupmatch(main):
         if main.state.currentMatch:
             match = main.state.currentMatch.number + 1
         elif main.state.lastMatch:
@@ -170,14 +163,12 @@ def setupmatch():
             r = getRobots()
             c = confirm()
         
-        c = False
-        while not c:
-            c = True
+        c = True
+        while c:
             r = strcIn(message = ">>>>")
             if r == "commit":
-                pass #do new match stuff
+                print("functionality does not exist yet") #do new match stuff
             if r == "escape" or r == "E":
-                pass#leave function
-            else:
-                c = False
+                c = False#leave function
+            
                 
