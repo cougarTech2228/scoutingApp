@@ -7,31 +7,32 @@ import joy
 import data
 import threading
 import pygame
-import time
-
-state = None
+import sys
 
 class Main():
     def __init__(self):
         pygame.init()
-        global state 
-        state = State()
+        
+    def start(self):
+        self.state = State()
         self.inputs = joy.joystick_init(test = True)
         self.data = Data(self)
-        user.init()
-
-            
+        user.init(self)
+        
+    def programQuit(self):
+        sys.exit(1)
+                
         
 class Data(): 
     def __init__(self, main): #reminder -this must be fixed
         self.competition = data.Competition()
         self.main = main
         self.robots = data.RobotList()
-
-#        self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
-#        self.state.currentMatch = self.compList[-1][-1]
         
-        self.temp_records  = [ i for i in range(len(main.inputs))]
+#       self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
+#       self.state.currentMatch = self.compList[-1][-1]
+        
+        self.temp_records  = [ i for i in range(len(self.main.inputs))]
         self.matchEvtList = None #evt list
 
     def matchCreate(self, robots, placement=None):
@@ -128,27 +129,53 @@ class Data():
 
 class State():
     def __init__(self): #, myMain):
-#        self.main = myMain
+
         self.reset()
         
     def getState(self):
-        return self
+        return self.statelist
 
     def reset(self):
+        self.statelist = []      
+        
         self.inMatch = False
+        self.statelist.append( [self.inMatch, "inMatch"])
+        
         self.inSetup = False
+        self.statelist.append( [self.inSetup,"inSetup"])
+        
         self.inReview = False
+        self.statelist.append( [self.inReview,"inReview"])
+        
         self.inTest = False
+        self.statelist.append([self.inTest ,"inTest"])
+        
 
         self.matchReadyStart = False
+        self.statelist.append( [self.matchReadyStart,"matchReadyStart"])
+        
         self.matchReadyCommit = False
+        self.statelist.append( [self.matchReadyCommit,"matchReadyCommit"])
+        
         self.matchPaused = False
+        self.statelist.append( [self.matchPaused,"matchPaused"])
+
         self.matchEnded = False
+        self.statelist.append( [self.matchEnded,"matchEnded"])
+        
         self.matchRunning = False
+        self.statelist.append([self.matchRunning ,"matchRunning"])
+        
         
         self.currentComp = None
+        self.statelist.append( [self.currentComp,"currentComp"])
+        
         self.currentMatch = None
+        self.statelist.append( [self.currentMatch,"currentMatch"])
+        
         self.lastMatch = None
+        self.statelist.append( [self.lastMatch,"lastMatch"])
+        
         #self.matchIsSetup = False
         
         
@@ -205,7 +232,7 @@ class State():
         self.currentMatch = None
         
         
-    def enterSetup(self):
+    def enterSetupMode(self):
         self.inSetup = True
 
         
@@ -216,8 +243,10 @@ class State():
         self.currentMatch = self.currentComp[match-1]
         
         
+        
 if __name__ == "__main__": #This part is so that when it is imported, the following code doesn't run   
     main = Main()
+    main.start()
 
 
 
