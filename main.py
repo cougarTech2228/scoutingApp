@@ -12,13 +12,14 @@ import sys
 class Main():
     def __init__(self):
         pygame.init()
-        
+        pygame.event.set_grab(False)
     def start(self):
         self.state = State()
         self.inputs = joy.joystick_init(test = True)
         self.data = Data(self)
         user.init(self)
-        
+        self.t = threading.thread(target = joy.run, args = self.state)
+        t.start()
     def programQuit(self):
         sys.exit(1)
                 
@@ -137,45 +138,18 @@ class State():
 
     def reset(self):
         self.statelist = []      
-        
         self.inMatch = False
-        self.statelist.append( [self.inMatch, "inMatch"])
-        
         self.inSetup = False
-        self.statelist.append( [self.inSetup,"inSetup"])
-        
         self.inReview = False
-        self.statelist.append( [self.inReview,"inReview"])
-        
         self.inTest = False
-        self.statelist.append([self.inTest ,"inTest"])
-        
-
         self.matchReadyStart = False
-        self.statelist.append( [self.matchReadyStart,"matchReadyStart"])
-        
         self.matchReadyCommit = False
-        self.statelist.append( [self.matchReadyCommit,"matchReadyCommit"])
-        
         self.matchPaused = False
-        self.statelist.append( [self.matchPaused,"matchPaused"])
-
         self.matchEnded = False
-        self.statelist.append( [self.matchEnded,"matchEnded"])
-        
         self.matchRunning = False
-        self.statelist.append([self.matchRunning ,"matchRunning"])
-        
-        
         #self.currentComp = None
-        #self.statelist.append( [self.currentComp,"currentComp"])
-        
         self.currentMatch = None
-        self.statelist.append( [self.currentMatch,"currentMatch"])
-        
         self.lastMatch = None
-        self.statelist.append( [self.lastMatch,"lastMatch"])
-        
         #self.matchIsSetup = False
         
     def stlr(self):#state list reset
@@ -189,30 +163,24 @@ class State():
         self.statelist.append( [self.matchPaused,"matchPaused"])
         self.statelist.append( [self.matchEnded,"matchEnded"])
         self.statelist.append( [self.matchRunning ,"matchRunning"])
-        self.statelist.append( [self.currentComp,"currentComp"])
+        #self.statelist.append( [self.currentComp,"currentComp"])
         self.statelist.append( [self.currentMatch,"currentMatch"])
         self.statelist.append( [self.lastMatch,"lastMatch"])
         
     def enterMatchMode(self):
         self.inMatch = True
         self.matchReadyStart = True
-        
         self.matchPaused = True
-        joy.end = False
-        self.t = threading.thread(target = joy.run(self.matchPaused, self.matchEnded))
-        self.t.start()
+
         
     def togglePause(self):
-        if self.matchPaused == True:
-            self.matchPaused = False
-        else:
-            self.matchPaused = True
+        self.matchPaused = not self.matchPaused
             
     def pauseSet(self, set):
         self.matchPaused = set
         
     def startMatch(self):
-        self.matchPaused == False
+        self.matchPaused = False
         self.matchReadyStart = False
         self.matchRunning = True
         self.matchEnded = False

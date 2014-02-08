@@ -1,10 +1,7 @@
 #joystick interface module
 
-
+import pygame
 import main
-
-pause = False
-end = False
 
 _undoButton=10 # placeholder
 inputs= []
@@ -112,19 +109,21 @@ def joystick_init(test = False):
                         
  
      
-def run(pause, end):
-    from main import pygame
-    
-    while not end:
-         for evt in main.pygame.event.get():
-             if not pause:
-                 if evt.type == 10:
-                    inputs[evt.joy].record(evt.button)
-                    ##if echoOn and not command:
-                    ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' # possible later functionality echo
-                     
-             if evt.type == pygame.KEYDOWN:
-                 if evt.key == pygame.K_SPACE:
-                     main.toggle_pause()
-
-    
+def run(state):
+    kill = False
+    while not kill:
+        while state.matchRunning:
+             for evt in main.pygame.event.wait():
+                 if not state.matchPaused:
+                     if evt.type == 10:
+                        inputs[evt.joy].record(evt.button)
+                        ##if echoOn and not command:
+                        ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
+                        # ^possible later functionality echo^
+                        '''
+                 if evt.type == pygame.KEYDOWN:
+                     if evt.key == pygame.K_SPACE:
+                         state.toggle_pause()
+                         print("matchPaused - ",state.matchPaused)
+                        '''
+        

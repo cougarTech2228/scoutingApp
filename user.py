@@ -113,25 +113,26 @@ def init(m):
     
    
 def strcIn(allowed = None, message = "", typeInt = False, check = False):
-    w = True
-    while w:
+    while True:
         re = input(message)
-        w = False
         if allowed:
                 if re not in allowed:
                     print("that is not a valid answer")
-                    w = True
+                    continue
         if typeInt:
             try:
                 v = int(re)
                 re = v
             except (ValueError):
                 print("that is not a valid answer")
-                w= True
+                continue
+                
         if check == True:
-            pass
-            # can I call this function within this function
+            if not confirm(re):
+                continue
+            
         return re
+    
 
 def confirm(m = "is this okay - y/n"):
     print (m)
@@ -180,7 +181,7 @@ def setupmatch(main):
             print("commit or escape")
             re = strcIn(message = ">>>>")
             if re == "commit":
-                main.matchCreate(robos, match)
+                main.data.matchCreate(robos, match)
             if re == "escape" or re == "E":
                 c = False#leave function
             
