@@ -56,7 +56,9 @@ class Com(cmd.Cmd): #global commands
     do_q = do_quit
      
     def do_p(self, t):
-        self.state.togglePause()
+        if state.matchRunning:
+            self.state.togglePause()
+        else state.
             
     def do_pause(self, t):
         self.state.pauseSet(True)
@@ -98,9 +100,9 @@ class Test(cmd.Cmd):
         print(self.main.state.matchPaused)
 
 def init(m):
-    #Com(m).cmdloop()
+    Com(m).cmdloop()
     t = Test(m)
-    t.cmdloop()
+    #t.cmdloop()
     
    
 def strcIn(allowed = None, message = "", typeInt = False, check = False):

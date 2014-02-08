@@ -133,6 +133,7 @@ class State():
         self.reset()
         
     def getState(self):
+        self.stlr()
         return self.statelist
 
     def reset(self):
@@ -178,6 +179,20 @@ class State():
         
         #self.matchIsSetup = False
         
+    def stlr(self):#state list reset
+        self.statelist = []      
+        self.statelist.append( [self.inMatch, "inMatch"])
+        self.statelist.append( [self.inSetup,"inSetup"])
+        self.statelist.append( [self.inReview,"inReview"])
+        self.statelist.append( [self.inTest ,"inTest"])
+        self.statelist.append( [self.matchReadyStart,"matchReadyStart"])
+        self.statelist.append( [self.matchReadyCommit,"matchReadyCommit"])
+        self.statelist.append( [self.matchPaused,"matchPaused"])
+        self.statelist.append( [self.matchEnded,"matchEnded"])
+        self.statelist.append( [self.matchRunning ,"matchRunning"])
+        self.statelist.append( [self.currentComp,"currentComp"])
+        self.statelist.append( [self.currentMatch,"currentMatch"])
+        self.statelist.append( [self.lastMatch,"lastMatch"])
         
     def enterMatchMode(self):
         self.inMatch = True
