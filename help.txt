@@ -1,8 +1,0 @@
-Help 
-
-Command list:
-
-    help - this list
-
-(this is such an extensive help page isn't it)
-

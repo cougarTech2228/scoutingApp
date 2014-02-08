@@ -5,10 +5,10 @@ import sys
 import pygame
 from pygame.locals import *
 
-import user
-from sData import *
+#import user
 from data import *
 import joy
+import gui
 
 RED = 1
 BLUE = 2
@@ -65,7 +65,17 @@ class Main():
         self.clock = pygame.time.Clock()
 
         self.font = pygame.font.Font(None, 24)
-        
+
+        self.labels = [ gui.Label("Auto High: ",
+                                  self.screen),
+                        gui.Label("Auto Low: ",
+                                  self.screen),
+                        gui.Label("Tele High: ",
+                                  self.screen),
+                        gui.Label("Tele Low: ",
+                                  self.screen)]
+
+    
     def start_match(self):
         self.start_setup()
         
@@ -117,7 +127,9 @@ class Main():
                             
         # Redraw the screen
             self.screen.fill((0,0,0))
+            
 
+            
             # Pause message
             if self.pause is True:
                 text = self.font.render("Press [space] to start", True, (255, 255, 255))
@@ -126,6 +138,10 @@ class Main():
             else:
                 pointsDisplay = self.font.render("Points: " + str(self.points), True, (255, 255, 255))
                 self.screen.blit(pointsDisplay, (1, 1))
+
+                for i in range(4):
+                    self.labels[i].draw((1, 30*(i+1)))
+                
 
             # Update the display
             pygame.display.update()
@@ -143,12 +159,16 @@ class Main():
     # key presses
     def add_auto_high(self):
         self.gameEventList.add(Auto_HighGoalEvent())
+        self.labels[0].upValue()
     def add_auto_low(self):
         self.gameEventList.add(Auto_LowGoalEvent())
+        self.labels[1].upValue()
     def add_tele_high(self):
         self.gameEventList.add(HighGoalEvent())
+        self.labels[2].upValue()
     def add_tele_low(self):
         self.gameEventList.add(LowGoalEvent())
+        self.labels[3].upValue()
 
     def undo(self):
         self.gameEventList.undo()

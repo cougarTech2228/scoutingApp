@@ -1,102 +1,103 @@
 # Database module
-#merged some modules
 
-
-
-from sData import *
-
-    
-class CompetitianList(list):
-    def __init__():
-        pass
+"""
+class CompetitionList(list):
+    def __init__(self, test=False):
+        self.test = test
+        if self.test is True:
+            self.addComp("Test")
 
     def addComp(self, name):
         self.append(Competition(name))
-
+"""
 
 class Competition(list):
-    
-    def __init__(self, numberOfMatches=0, name="Test"):
+
+    def __init__(self, name = "test", numberOfMatches=0):
         # If numMatches = 0 then number of matches in competician is unknown
-        # name is a name given for this competitian ex) 'FLR seeding', 'FLR
-        # final', 'nationals Finals'
+        # name is a name given for this competitian ex) 'FLR seeding'
         self.name = name
         #self.current_match = 0
         #self.last_match = 0
         self.numMatches = numberOfMatches
-        
-    def newMatch(self, teamNumbers, place = None):
+
+    def newMatch(self, teamNumbers, place=None):
         # New Match takes a list of robot numbers as an argument
-        ##self[0] += 1
-        #self.last_match += 1
-        self.inMatches=len(self)+1
-        #inmatches is the # of inputed matches
-        if place = None:
-            self.append(Match(self.inMatches, robots, self.name))
+
+        self.inMatch = len(self)
+        #inmatch is the # of inputed matches
+        if place is None:
+            self.append(Match(self.inMatch, teamNumbers, self))
         else:
-            self.insert(place, Match(self.inMatches, robots, self.name))
+            self.insert(place, Match(self.inMatch, teamNumbers, self))#this will make a mess of lower objects
+            
     def editMatch(self, matchNumber, teamNumbers):
-        self[matchNumber-1] = Match(self.last_match, teamNumbers)
+        self[matchNumber-1] = Match(matchNumber-1, teamNumbers, self)
 
 
 
 # an instance of a match with a number and six robot objects
 class Match:
-    
-    def __init__(self, num, teamNumbers, compName):
-        self.events = evtList()
-        self.comp = compName
-        self.number = num
-        self.robots = [] # [0:2] red, [3:5] blue
+
+    def __init__(self, matchNum, teamNumbers, comp):
+        self.comp = comp
+        self.number = matchNum
+#        self.robots = [None, None, None, None, None] # [0:2] red, [3:5] blue
         self.events = GameEventList()
+        self.robots = [ InMatchRobot(teamNumbers[n], n, self) for n in range(6) ] #Python Magic 
+        """
         n = 0
         for teamNumber in teamNumbers:
             # This will create a new robot each time it is called
 
-            robots[n] = InMatchRobot(teamNumber,self, n, self.comp)
+            self.robots[n] = InMatchRobot(teamNumber, n)
             n += 1  # [0:2] red, [3:5] blue
-            pass
-        
- 
+        """
+
+
 class InMatchRobot:
-    
-    def __init__(self, teamNumber, myMatch, num, compName):
-        self.comp = compName
-        self.match = myMatch
+
+    def __init__(self, teamNumber, num, match):
+        self.match = match
         self.teamNumber = teamNumber
-        self.num = num
-        
-        if allianceNumber < 3:
+        self.allianceNumber = num
+
+        if self.allianceNumber < 3:
             self.alliance = 'RED'
         else:
             self.alliance = 'BLUE'
         # this does not belong here - self.matchHistory[matchNumber] = [matchNumber, alliance]
-        
-    
-        
-                
+
+
+
+
 class InMatchRobotRecords:
     def __init__(self, compName, myMatch, robot, ally):
         self.comp = compName #compatician name
         self.match = myMatch #match object
         self.roboNum = robot #robot number
         self.alliance = ally # string (RED or BLUE)
-        self.events = GameEventList() #is this right, this class could possibly extend game evt list
-        self.comments = []
+        self.events = GameEventList() 
+        self.comments = Comments()
         # variables being recorded ex)shots missed, points scored, climberlevel reached
-
-    def addEvt(event):
+        #elf.passes = 0
+        #elf.recivals = 0
+        #elf.pointScored = 0
+        #elf.
+    def addEvt(self, event):
+        self.events.add(event)
+        pass
         #add event to event list
-	
+
     def tally():
-	#tally up evt list
-    
-    
-    
+        for evt in GameEventList:
+            pass#tally up evt list
+        pass
+
+
 #---------------------------------------------------------------------------------
-    
-    
-    
+
+
 #Stored data
 # Database module
 
@@ -119,7 +120,7 @@ class RobotList(list):
     def add(self, robot):
         """
     if the list is empty it just adds the robot, like wise if it is
-    the largest member of the list. Otherwise it places the robot before
+    the largest member of the list. Othderwise it places the robot before
     the next greatest number through a binary search
     """
         #at this point if two different robots share the same number,
@@ -137,7 +138,7 @@ class RobotList(list):
         # Update the key List
         self.current_robot = robot
         self.current_robot_index = self.index(robot)
-        
+
         return True
 
 
@@ -149,11 +150,11 @@ class RobotList(list):
             "I need to look up what goes here"
         pass
 
-    
+
     def getRobot(self, teamNumber):
         # Get a robot specified by it's id (number)
         pass
-        
+
         #edit this to instead mark a robot as removed so that it can easily be recreated
         #make a reset robot match data
 
@@ -164,8 +165,7 @@ class RobotList(list):
 
     def setCurrentRobot(self, teamNumber):
         self.current_robot = self[self.robotKeys.index(teamNumber)]
-        self.current_robot_index = self.index(robot)
-
+        self.current_robot_index = self.index(self.robot)
 
     def _binSearchIndex(self, teamNumber):
         # After much consternation this works!, it returns the index of the lowest
@@ -178,41 +178,38 @@ class RobotList(list):
                 tmpRoboList = tmpRoboList[:(tmpIndex+1)]
             elif teamNumber > tmpRoboList[tmpIndex].teamNumber:
                 tmpRoboList = tmpRoboList[(tmpIndex+1):]
-                
+
         return self.index(tmpRoboList[0])
         # Returns the index of the robot just greater than the tested one, I hope
 
 
-    
+
 class Robot():
     def __init__(self, teamNumber):
         self.teamNumber = teamNumber
-        self.matches = []
+        self.matches = []#this points to  "inMatchRobotRecords" object
         self.totalPts = 0
-        # has robo record files 
+        self.specifications = pitScout()
+        # has robo record files
         #self.__deleted = False
-     
-    def addMatch(self, records): 
+
+    def addMatch(self, records):
         self.matches.append(records)
-        
+
     def calculateStats(self):
         self.totalPts = 0
         for record in self.matches:
-            for event in record:
+            for event in record.events:
                 self.totalPts += event.pointsValue
-        
+
     def getAvgPoints(self):
         return self.totalPts/len(self.matches)
-        
-        
-        
-        
-        
+
+
+
+
 #----------------------------------------------------------------------------------
-        
-        
-        
-        
+
 
 # The Game Event List is the log of all events that the user inputs, since each
 # Game event objecct points to the one before it, there is no need to order it.
@@ -225,21 +222,21 @@ class GameEventList(list):
         self.HEAD = None
         self.add(StartEvent())
 
-    
+
     def add(self, event):
         self.append(event)
         # Have the old event point to the added event
         # and the new event point to the preceding event
-        
+
         event.setPrecedingEvent(self.HEAD)
-        
+
         # This block is only going to be applicable to the StartEvent
 
         if event.precedingEvent is not None:
             self.HEAD.setAntecedingEvent(event)
         self.eventIndexCounter += 1
         self.HEAD = self[self.eventIndexCounter]
-        
+
 
     def undo(self):
         if self.HEAD.precedingEvent is not None:
@@ -318,9 +315,9 @@ class Auto_LowGoalEvent(GameEvent):
 ##            self.hot = False
 ##        else:
 ##            self.hot = hot
-##            
+##
 ##        self.pointsValue = 10
-##        
+##
 ##        if self.autonomous is True:
 ##            self.pointsValue += 5
 ##        if self.hot is True:
@@ -343,3 +340,15 @@ class TrussThrowEvent(GameEvent):
 
 class BallCatchEvent(GameEvent):
     pass
+
+
+class Comments(list):
+    def __init__():
+        pass
+    def add(c):
+        pass
+    
+class pitScout():
+    def __init__():
+        pass
+    
