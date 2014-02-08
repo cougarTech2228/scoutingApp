@@ -86,16 +86,19 @@ class Com(cmd.Cmd): #global commands
 class Test(cmd.Cmd):
     
     def __init__(self, main):
-        pass
-        
+        cmd.Cmd.__init__(self)
+        self.main = main
             
     def do_testing(self, t):# t stands for random thing i dont know what it is
         print("hello")
 
-
+    def do_gets(self, t):
+        print(self.main.state.matchPaused)
+        self.main.state.togglePause()
+        print(self.main.state.matchPaused)
 
 def init(m):
-    Com(m).cmdloop()
+    #Com(m).cmdloop()
     t = Test(m)
     t.cmdloop()
     
