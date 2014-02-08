@@ -35,12 +35,12 @@ class Data():
         self.temp_records  = [ i for i in range(len(self.main.inputs))]
         self.matchEvtList = None #evt list
 
-    def matchCreate(self, robots, placement=None):
+    def matchCreate (self, robots, placement=None):
         if placement is None:
-            self.state.currentComp.newMatch(robots)
+            self.competition.newMatch(robots)
             
         else:
-            self.state.currentComp.newMatch(robots, placement)
+            self.competition.newMatch(robots, placement)
            
     def add_matches_from_file(self, fileName="matches.txt"):
         file = open(fileName, "r")
@@ -105,8 +105,7 @@ class Data():
     def save(self):
         import pickle
         save_file = open(self.theCompetition.name + ".dat", "wb")
-        save_data = [self.theCompetition,
-                     self.robotList ]
+        save_data = [self.theCompetition,self.robotList ]
         
         pickle.dump( save_data, save_file )
         save_file.close()
@@ -168,8 +167,8 @@ class State():
         self.statelist.append([self.matchRunning ,"matchRunning"])
         
         
-        self.currentComp = None
-        self.statelist.append( [self.currentComp,"currentComp"])
+        #self.currentComp = None
+        #self.statelist.append( [self.currentComp,"currentComp"])
         
         self.currentMatch = None
         self.statelist.append( [self.currentMatch,"currentMatch"])

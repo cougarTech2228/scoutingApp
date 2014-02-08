@@ -56,17 +56,24 @@ class Com(cmd.Cmd): #global commands
     do_q = do_quit
      
     def do_p(self, t):
-        if state.matchRunning:
+        if self.state.matchRunning:
             self.state.togglePause()
-        else state.
+        else:
+            print("you cant toggle pause,no match is running")
             
     def do_pause(self, t):
-        self.state.pauseSet(True)
-        
+        if self.state.matchRunning:
+            self.state.pauseSet(True)
+        else:
+            print("you can't pause,no match is running")
+            
     def do_start(self, t):
-        self.state.startMatch()
-        pass
-        
+        if self.state.matchReadyStart:
+            self.state.startMatch()
+            print("match started")
+        else: 
+            print("you can't start a match now")
+            self.do_gets()
     def do_end(self, t):
         self.state.endMatch()
         pass
@@ -164,16 +171,17 @@ def setupmatch(main):
             
         c = False   
         while not c:
-            r=[]
-            r = getRobots()
+            robos=[]
+            robos = getRobots()
             c = confirm()
-        
+            
         c = True
         while c:
-            r = strcIn(message = ">>>>")
-            if r == "commit":
-                print("functionality does not exist yet") #do new match stuff
-            if r == "escape" or r == "E":
+            print("commit or escape")
+            re = strcIn(message = ">>>>")
+            if re == "commit":
+                main.matchCreate(robos, match)
+            if re == "escape" or re == "E":
                 c = False#leave function
             
                 
