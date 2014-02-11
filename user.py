@@ -14,7 +14,18 @@ class Com(cmd.Cmd): #global commands
         self.state = self.main.state
         self.triedCommand = []
 
-    
+    def cmdGo(self, intro=None):
+        line = self.stdin.readline()
+        if not len(line):
+            line = 'EOF'
+        else:
+            line = line.rstrip('\r\n')
+            
+        line = self.precmd(line)
+        stop = self.onecmd(line)
+        stop = self.postcmd(stop, line)
+
+
     '''
     def do_failed_message(self):
         time.sleep(.5)
@@ -107,10 +118,10 @@ class Test(cmd.Cmd):
         print(self.main.state.matchPaused)
 
 def init(m):
-    Com(m).cmdloop()
-    t = Test(m)
-    #t.cmdloop()
-    
+    commandObject=Com(m)#.cmdloop()
+    #Test(m).cmdloop()
+    return commandObject
+
    
 def strcIn(allowed = None, message = "", typeInt = False, check = False):
     while True:

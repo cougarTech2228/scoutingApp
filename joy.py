@@ -81,7 +81,6 @@ class joyBindings:
         
 def joystick_init(test = False):
     # get and check number of joysticks
-    from main import pygame
     
     if test is True:
         numJoy = 6
@@ -110,20 +109,34 @@ def joystick_init(test = False):
  
      
 def run(state):
+    print("record on")
     kill = False
     while not kill:
         while state.matchRunning:
-             for evt in main.pygame.event.wait():
+             for evt in main.pygame.event.get():
                  if not state.matchPaused:
                      if evt.type == 10:
                         inputs[evt.joy].record(evt.button)
                         ##if echoOn and not command:
                         ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
                         # ^possible later functionality echo^
-                        '''
+                        
                  if evt.type == pygame.KEYDOWN:
                      if evt.key == pygame.K_SPACE:
                          state.toggle_pause()
-                         print("matchPaused - ",state.matchPaused)
-                        '''
-        
+                        
+def check(state):
+    if state.matchRunning:
+         for evt in main.pygame.event.get():
+             if not state.matchPaused:
+                 if evt.type == 10:
+                    inputs[evt.joy].record(evt.button)
+                    ##if echoOn and not command:
+                    ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
+                    # ^possible later functionality echo^
+                    
+             if evt.type == pygame.KEYDOWN:
+                 if evt.key == pygame.K_SPACE:
+                     state.toggle_pause()
+                    
+            

@@ -17,9 +17,17 @@ class Main():
         self.state = State()
         self.inputs = joy.joystick_init(test = True)
         self.data = Data(self)
-        user.init(self)
-        self.t = threading.thread(target = joy.run, args = self.state)
-        t.start()
+        
+        #ran into some threading issues and i dont have time to fix them right now
+        #threading.Thread(target = joy.run(self.state)).start()
+        
+        com = user.init(self)
+        q = False
+        while not q:
+            com.cmdGo()
+            joy.check(self.state)
+            
+        
     def programQuit(self):
         sys.exit(1)
                 
@@ -29,7 +37,7 @@ class Data():
         self.competition = data.Competition()
         self.main = main
         self.robots = data.RobotList()
-        
+    
 #       self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
 #       self.state.currentMatch = self.compList[-1][-1]
         
@@ -129,7 +137,8 @@ class Data():
 
 class State():
     def __init__(self): #, myMain):
-
+        self.echo = True
+        
         self.reset()
         
     def getState(self):
@@ -147,10 +156,9 @@ class State():
         self.matchPaused = False
         self.matchEnded = False
         self.matchRunning = False
-        #self.currentComp = None
-        self.currentMatch = None
-        self.lastMatch = None
-        #self.matchIsSetup = False
+        self.currentMatch = None #only defined in match
+        self.lastMatch = None #previous match
+        
         
     def stlr(self):#state list reset
         self.statelist = []      
@@ -163,7 +171,6 @@ class State():
         self.statelist.append( [self.matchPaused,"matchPaused"])
         self.statelist.append( [self.matchEnded,"matchEnded"])
         self.statelist.append( [self.matchRunning ,"matchRunning"])
-        #self.statelist.append( [self.currentComp,"currentComp"])
         self.statelist.append( [self.currentMatch,"currentMatch"])
         self.statelist.append( [self.lastMatch,"lastMatch"])
         
@@ -171,13 +178,18 @@ class State():
         self.inMatch = True
         self.matchReadyStart = True
         self.matchPaused = True
-
+        if self.echo:
+            print("entering match mode")      
         
     def togglePause(self):
         self.matchPaused = not self.matchPaused
+        if self.echo:
+            print("pause", self.matchPaused)
             
     def pauseSet(self, set):
         self.matchPaused = set
+        if self.echo:
+            print("pause", self.matchPaused)
         
     def startMatch(self):
         self.matchPaused = False
@@ -185,14 +197,17 @@ class State():
         self.matchRunning = True
         self.matchEnded = False
         self.matchReadyCommit = False
-        
+        if self.echo:
+            print("match started")    
+            
     def endMatch(self):
         self.matchReadyStart = False
         self.matchReadyCommit = True
         self.matchPaused = False
         self.matchEnded = True
         self.matchRunning = False
-        pass
+        if self.echo:
+            print("match ended")        
         
     def resetMatch(self):
         data.resetMatch()
@@ -201,7 +216,8 @@ class State():
         self.matchPaused = True
         self.matchEnded = False
         self.matchRunning = False
-        pass
+        if self.echo:
+            print("match reset")      
         
     def exitMatchMode(self):
         self.inMatch = False
@@ -212,7 +228,8 @@ class State():
         self.matchRunning = False
         self.lastMatch = self.currentMatch
         self.currentMatch = None
-        
+        if self.echo:
+            print("leaving match mode")              
         
     def enterSetupMode(self):
         self.inSetup = True
