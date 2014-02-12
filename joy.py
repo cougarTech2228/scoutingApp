@@ -108,24 +108,25 @@ def joystick_init(test = False):
                         
  
      
-def run(state):
-    print("record on")
-    kill = False
-    while not kill:
+def run(state, lock):
+    #print("record on")
+    while not state.exit:
         while state.matchRunning:
-             for evt in main.pygame.event.get():
-                 if not state.matchPaused:
-                     if evt.type == 10:
-                        inputs[evt.joy].record(evt.button)
-                        ##if echoOn and not command:
-                        ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
-                        # ^possible later functionality echo^
-                        
-                 if evt.type == pygame.KEYDOWN:
-                     if evt.key == pygame.K_SPACE:
-                         state.toggle_pause()
-                        
-def check(state):
+             print("hopefully")
+             evt = main.pygame.event.wait()
+             if not state.matchPaused:
+                 if evt.type == 10:
+                    inputs[evt.joy].record(evt.button)
+                    ##if echoOn and not command:
+                    ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
+                    # ^possible later functionality echo^
+                    
+             if evt.type == pygame.KEYDOWN:
+                 if evt.key == pygame.K_SPACE:
+                     state.toggle_pause()
+    
+                 
+def check(state): #check once then return
     if state.matchRunning:
          for evt in main.pygame.event.get():
              if not state.matchPaused:

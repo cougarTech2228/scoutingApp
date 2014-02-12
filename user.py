@@ -2,28 +2,21 @@
 
 
 import cmd
-
+import sys
 
 
 class Com(cmd.Cmd): #global commands
 
-    def __init__(self, main):
+    def __init__(self, main, lock):
         cmd.Cmd.__init__(self)
+        self.lock = lock
         self.main = main
-        self.prompt = '> '
+        self.prompt = '>>>>>'
         self.state = self.main.state
         self.triedCommand = []
-
-    def cmdGo(self, intro=None):
-        line = self.stdin.readline()
-        if not len(line):
-            line = 'EOF'
-        else:
-            line = line.rstrip('\r\n')
-            
-        line = self.precmd(line)
-        stop = self.onecmd(line)
-        stop = self.postcmd(stop, line)
+        while self.state.instartup:
+            pass
+        
 
 
     '''
@@ -51,7 +44,8 @@ class Com(cmd.Cmd): #global commands
 
     def do_quit(self, t):
         if confirm(m = "quit (y/n)"):   
-            self.main.programQuit()
+            self.state.exit = True
+            sys.exit(1)
         else:
             pass
         
@@ -84,7 +78,7 @@ class Com(cmd.Cmd): #global commands
             print("match started")
         else: 
             print("you can't start a match now")
-            self.do_gets()
+            self.do_gets(t)
     def do_end(self, t):
         self.state.endMatch()
         pass
@@ -102,6 +96,9 @@ class Com(cmd.Cmd): #global commands
     def do_gets(self, t):
         for i in self.state.getState():
             print(i[1],i[0])
+            
+    def do_echon(self, t):
+        self.state.echo = not self.state.echo
                 
 class Test(cmd.Cmd):
     
@@ -118,9 +115,9 @@ class Test(cmd.Cmd):
         print(self.main.state.matchPaused)
 
 def init(m):
-    commandObject=Com(m)#.cmdloop()
+    Com(m, m.lock).cmdloop()
     #Test(m).cmdloop()
-    return commandObject
+
 
    
 def strcIn(allowed = None, message = "", typeInt = False, check = False):

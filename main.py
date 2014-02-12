@@ -8,28 +8,83 @@ import data
 import threading
 import pygame
 import sys
+import time
 
 class Main():
     def __init__(self):
         pygame.init()
         pygame.event.set_grab(False)
-    def start(self):
-        self.state = State()
-        self.inputs = joy.joystick_init(test = True)
-        self.data = Data(self)
         
-        #ran into some threading issues and i dont have time to fix them right now
-        #threading.Thread(target = joy.run(self.state)).start()
-        
-        com = user.init(self)
-        q = False
-        while not q:
-            com.cmdGo()
-            joy.check(self.state)
+    def start(self, delay = True):
+        if delay:
+            #added delays so it will look cooler when loading
+            print ("program loading")
+            time.sleep(1)
+            self.state = State()
+            print("initiated program state")
+            time.sleep(.2)
+            self.inputs = joy.joystick_init(test = True)
+            print("joysticks initialised")
+            time.sleep(.2)
+            self.data = Data(self)
+            print("created data structure ")
+            time.sleep(.2)
+            print("working ")
+            time.sleep(1)
+            self.lock = threading.Lock()
+            self._comThread = threading.Thread(target = user.init, args = (self,))
+            self._joyThread = threading.Thread(target = joy.run, args = (self.state, self.lock))
+            self._joyThread.start()
+            print("scouter input listener initialised ")
+            self._comThread.start()
+            time.sleep(.1)
+            print("user input object created")
+            time.sleep(1)
+            self.state.instartup = False
+            print("\nprogram running")
+            '''
+            q = False
+            while not q:
+                com.cmdGo()
+                joy.check(self.state)
+                print ("loop")
+            '''
+            while not self.state.exit:
+                pass
             
-        
-    def programQuit(self):
-        sys.exit(1)
+            print("program closing")
+            time.sleep(1)
+            sys.exit(1)
+        else:
+            #added delays so it will look cooler when loading
+            print ("program loading")
+            self.state = State()
+            print("initiated program state")
+            self.inputs = joy.joystick_init(test = True)
+            print("joysticks initialised")
+            self.data = Data(self)
+            print("created data structure ")
+            print("working ")
+            self.lock = threading.Lock()
+            self._comThread = threading.Thread(target = user.init, args = (self,))
+            self._joyThread = threading.Thread(target = joy.run, args = (self.state, self.lock))
+            self._joyThread.start()
+            print("scouter input listener initialised ")
+            self._comThread.start()
+            print("user input object created")
+            self.state.instartup = False
+            print("\nprogram running")
+            '''
+            q = False
+            while not q:
+                com.cmdGo()
+                joy.check(self.state)
+                print ("loop")
+            '''
+            while not self.state.exit:
+                pass
+            print("program closing")
+            sys.exit(1)
                 
         
 class Data(): 
@@ -137,10 +192,10 @@ class Data():
 
 class State():
     def __init__(self): #, myMain):
-        self.echo = True
-        
+        self.echo = False
+        self.exit = False
         self.reset()
-        
+        self.instartup = True
     def getState(self):
         self.stlr()
         return self.statelist
