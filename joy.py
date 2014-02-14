@@ -1,26 +1,23 @@
 #joystick interface module
 
 import pygame
-import main
-
 _undoButton=10 # placeholder
-inputs= []
 
-class input:
+class inputOb:
  # a pointer to a joystick or other input device
  # will have bindings
 
-    def __init__(self,N, myJoystick):
-        myJoystick.init
+    def __init__(self,N, myJoystick, main):
+        print("joystick ", N, " initialised")
         self.myJoystick = myJoystick
         self.bind = joyBindings()
         self.num = N
         self.type = "joystick" #FOR NOW
-        
+        self.main = main
     def record(self,j, b):
         # will record event
         evt = self.bind.evtCheck(b)
-        main.gameEvtInput(self.num, evt) 
+        self.main.gameEvtInpumaint(self.num, evt) 
 
     def getRobot(self):
         return self.robot
@@ -78,66 +75,71 @@ class joyBindings:
            return None#something
         else:
            pass
-        
-def joystick_init(test = False):
-    # get and check number of joysticks
-    
-    if test is True:
-        numJoy = 6
-
-    else:
+class Joy():
+    def __init__(self, main, test = False):
+        # get and check number of joysticks
+        pygame.init()
+        pygame.joystick.init()
+        self.inputObs= []
         numJoy = pygame.joystick.get_count()
-
-    if numJoy == 6:
-        print ("system detected 6 joysticks")
-    elif numJoy < 6:
-        print ("system detected %s joysticks \n this application needs at least 6 joysticks to work \n please plug in the required number of joysticks and try again" % (numJoy))
-    elif numJoy > 6:
-        print ("system detected %s joysticks \n this application needs only 6 joysticks to operate \n please note that one joystick will not be in use" % (numJoy))
-
-    
-    for i in range(numJoy):
-        if test is not True:
-            inputs[i] = input(i, pygame.joystick.Joystick(i))
-
-    if test is True:
-        return []
-    
-    return inputs
-
-                        
- 
-     
-def run(state, lock):
-    #print("record on")
-    while not state.exit:
-        while state.matchRunning:
-             print("hopefully")
-             evt = main.pygame.event.wait()
-             if not state.matchPaused:
-                 if evt.type == 10:
-                    inputs[evt.joy].record(evt.button)
-                    ##if echoOn and not command:
-                    ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
-                    # ^possible later functionality echo^
-                    
-             if evt.type == pygame.KEYDOWN:
-                 if evt.key == pygame.K_SPACE:
-                     state.toggle_pause()
-    
-                 
-def check(state): #check once then return
-    if state.matchRunning:
-         for evt in main.pygame.event.get():
-             if not state.matchPaused:
-                 if evt.type == 10:
-                    inputs[evt.joy].record(evt.button)
-                    ##if echoOn and not command:
-                    ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
-                    # ^possible later functionality echo^
-                    
-             if evt.type == pygame.KEYDOWN:
-                 if evt.key == pygame.K_SPACE:
-                     state.toggle_pause()
-                    
+        
+        if test:
+            print ("system detected %s joysticks -- test is true" % (numJoy))
+            for i in range(numJoy):
+                pygame.joystick.Joystick(i).init()
+                self.inputObs.append(inputOb(i, pygame.joystick.Joystick(i), main))
+        else:      
+                
+            if numJoy == 6:
+                print ("system detected 6 joysticks")
+                
+            elif numJoy < 6:
+                print ("system detected %s joysticks \n this application needs at least 6 joysticks to work \n please plug in the required number of joysticks and try again" % (numJoy))
+                main.state.exit = True    
+                
+            elif numJoy > 6:
+                print ("system detected %s joysticks \n this application needs only 6 joysticks to operate \n please note that one joystick will not be in use" % (numJoy))
+                main.state.exit = True    
             
+            for i in range(numJoy):
+                pygame.joystick.Joystick(i).init()
+                self.inputObs[i] = input(i, pygame.joystick.Joystick(i), main)
+                
+    
+                            
+     
+         
+    def run(self, state, main):
+        print("record on")
+        while not state.exit:
+            while state.matchRunning and not state.exit:
+                 evt = pygame.event.poll()
+                 print(evt)
+                 if not state.matchPaused:
+                     if evt.type == 10:
+                        self.inputObs[evt.joy].record(evt.button)
+                        ##if echoOn and not command:
+                        ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
+                        # ^possible later functionality echo^
+                        
+                 if evt.type == pygame.KEYDOWN:
+                     if evt.key == pygame.K_SPACE:
+                         state.toggle_pause()
+    
+                     
+    def check(self, state, main): #check once then return
+        import pygame
+        if state.matchRunning:
+            for evt in pygame.event.get():
+                 if not state.matchPaused:
+                     if evt.type == 10:
+                        self.inputObs[evt.joy].record(evt.button)
+                        ##if echoOn and not command:
+                        ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
+                        # ^possible later functionality echo^
+                        
+                 if evt.type == pygame.KEYDOWN:
+                     if evt.key == pygame.K_SPACE:
+                         state.toggle_pause()
+                        
+                

@@ -9,11 +9,13 @@ class Com(cmd.Cmd): #global commands
 
     def __init__(self, main, lock):
         cmd.Cmd.__init__(self)
-        self.lock = lock
+        self.lock = lock #unused as of yet, may be needed for later issueswith threading
+        self.lock.acquire()        
         self.main = main
         self.prompt = '>>>>>'
         self.state = self.main.state
         self.triedCommand = []
+        self.lock.release()
         while self.state.instartup:
             pass
         
