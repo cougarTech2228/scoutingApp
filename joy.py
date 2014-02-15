@@ -19,10 +19,8 @@ class inputOb:
         # will record event
         #possible laterfunctionality time to reconstruct matches in real time
         evt = self.bind.evtCheck(b)
-        self.main.data.gameEvtRecord(self.number, evt) 
+        self.main.connector.portEvt(self, evt) 
 
-    def getRobot(self):
-        return self.robot
 
 #This should be done with pygame, they have an elegent method of handling it.        
 class joyBindings:
@@ -85,6 +83,9 @@ class Joy():
         pygame.event.set_blocked(7)
         pygame.event.set_blocked(11)
         self.inputObs= []
+        self.stopRun =False
+        self.main = main
+        self.test = test
         numJoy = pygame.joystick.get_count()
         
         if test:
@@ -109,13 +110,23 @@ class Joy():
                 self.inputObs[i] = input(i, pygame.joystick.Joystick(i), main)
                 
     
-                            
-     
+    def reset(self):
+        self.stopRun = True                        
+        self.__init__(self.main, self.test)
+        self.stopRun = False
+         
+    def getInputs(self):
+        return self.inputObs
          
     def run(self, state, main):
         print("record on")
         while not state.exit:
-            while state.matchRunning and not state.exit:
+            first = True
+            while state.matchRunning and not state.exit and not self.stopRun:
+                 if first:
+                     pygame.evt.get()
+                     first = False
+                     
                  evt = pygame.event.poll()
                  if evt.type is not 0:
                      print(evt)

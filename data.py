@@ -27,20 +27,25 @@ class Competition(list):
         self.inMatch = len(self)
         #inmatch is the # of inputed matches
         if matchNum is None:
-            matchNum = len(self) + 1
+            place = len(self)
+        else:
+            place = matchNum-1
             
-        if self[matchNum-1]:
-            if self[matchNum-1] is not None:
-                if force:
-                    return
-                
+        print (matchNum)
+
         try:
-            self[matchNum-1] = Match(self.inMatch+1, teamNumbers, self)
+            if self[place]:
+                print("tester1")
+                if not force:
+                    return
+            self[place] = Match(self.inMatch+1, teamNumbers, self)       
             
         except IndexError:
-            for x in range(matchNum - inMatch):
+            for x in range(matchNum - self.inMatch):
                 self.append(None)
-            self[-1] = Match(matchNum, teamNumbers, self)
+            self.append(Match(matchNum, teamNumbers, self))
+            print (self)
+            
             
     def editMatch(self, matchNumber, teamNumbers):
         self[matchNumber-1] = Match(matchNumber-1, teamNumbers, self)
@@ -280,6 +285,7 @@ class GameEvent():
         self.precedingEvent = None
         self.antecedingEvent = None
         self.pointsValue = 0
+        self.time = None
 
 ##    def undo(self):
 ##        self.precedingEvent.antecedingEvent = self

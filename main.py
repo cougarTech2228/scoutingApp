@@ -21,20 +21,22 @@ class Main():
         else:
             print ("program loading")
             self.state = State()
+            
             global tester
             self.state.inTest = tester
             print("initiated program state")
             
+            self.data = Data(self)
+            print("created data structure ")            
+            
             self.Joy = joy.Joy(self, test = True)
-            self.inputs =self.Joy.inputObs
             if self.state.exit:
                 print("program closing")               
                 sys.exit(1)
-            
             print("all joysticks initialised")
-
-            self.data = Data(self)
-            print("created data structure ")
+            
+            self.connect = Connecter(self)            
+            print("created input connector")              
             
             self.lock = threading.Lock()
             self._comThread = threading.Thread(target = user.init, args = (self,))
@@ -49,6 +51,8 @@ class Main():
             
             self.Joy.run(self.state, self)#will run untill program quit
             sys.exit(1)
+            
+    
             
     def logic(self):
         #AN EMPTY UNUSED FUNCTION THAT EXISTS SOLELY TO AID IN THE FIX FOR A REALLY ANNOYING THREADING ISSUE
@@ -67,7 +71,7 @@ class Data():
 #       self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
 #       self.state.currentMatch = self.compList[-1][-1]
         
-        self.temp_records  = []
+        self.temp_records  = [None,None,None,None,None,None]
         self.matchEvtList = None #evt list
 
     def matchCreate (self, robots, placement=None):
@@ -76,9 +80,12 @@ class Data():
             
         else:
             self.competition.newMatch(robots, placement)
-    def getUndefinedMatch():
-        for m in self.competitian:
-            if 
+    def getUndefinedMatch(self):
+        for m in range(len(self.competition)):
+            if self.competition[m] == None:
+                return m+1 #returns match number
+        return len(self.competition)+1
+        
     def add_matches_from_file(self, fileName="matches.txt"):
         file = open(fileName, "r")
         for line in file:
@@ -118,26 +125,27 @@ class Data():
         
         
            
-    def setRobots(self, joy, robot): #set robots for match with inputs
+    def setRobots(self, port, robot): #set robots for match temp_records
         try:
-            self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
+            self.temp_records[port] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
         except:
-            while len(self.temp_records)-1 < joy:
-                self.temp_records.append(None)
-                
-            self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)  
+            print("temp_records only has six ports")
     
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
         for teamNumber in file:
             self.robotList.addRobot(data.Robot(teamNumber.strip()))
             
-    def gameEvtRecord(self, joy, evt):
+    def gameEvtRecord(self, port, evt):
     # record correct bot and evt
-        if not self.main.state.inTest:
-            self.temp_records[joy].addEvt(evt)
-            self.matchEvtList.add(evt) #add evt
-
+        try:
+            if not self.main.state.inTest:
+                self.temp_records[port].addEvt(evt)
+                self.matchEvtList.add(evt)#add evt
+                
+        except:
+            print("temp_records only has six ports")
+    
     def commitMatch(self):
         for i in self.temp_records:
             i.tally
@@ -193,7 +201,7 @@ class State():
         self.matchRunning = False
         self.currentMatch = None #only defined in match
         self.lastMatch = None #previous match
-        
+        self.nextMatch = None
         
     def stlr(self):#state list reset
         self.statelist = []      
@@ -213,18 +221,16 @@ class State():
         self.inMatch = True
         self.matchReadyStart = True
         self.matchPaused = True
-        if self.echo:
-            print("entering match mode")      
+        self.currentmatch = self.nextMatch
+        print("entering match mode")      
         
     def togglePause(self):
         self.matchPaused = not self.matchPaused
-        if self.echo:
-            print("pause", self.matchPaused)
+        print("pause", self.matchPaused)
             
     def pauseSet(self, set):
         self.matchPaused = set
-        if self.echo:
-            print("pause", self.matchPaused)
+        print("pause", self.matchPaused)
         
     def startMatch(self):
         self.matchPaused = False
@@ -232,8 +238,7 @@ class State():
         self.matchRunning = True
         self.matchEnded = False
         self.matchReadyCommit = False
-        if self.echo:
-            print("match started")    
+        print("match started")    
             
     def endMatch(self):
         self.matchReadyStart = False
@@ -241,8 +246,7 @@ class State():
         self.matchPaused = False
         self.matchEnded = True
         self.matchRunning = False
-        if self.echo:
-            print("match ended")        
+        print("match ended")        
         
     def resetMatch(self):
         data.resetMatch()
@@ -251,8 +255,7 @@ class State():
         self.matchPaused = True
         self.matchEnded = False
         self.matchRunning = False
-        if self.echo:
-            print("match reset")      
+        print("match reset")      
         
     def exitMatchMode(self):
         self.inMatch = False
@@ -263,11 +266,7 @@ class State():
         self.matchRunning = False
         self.lastMatch = self.currentMatch
         self.currentMatch = None
-        if self.echo:
-            print("leaving match mode")              
-        
-    def enterSetupMode(self):
-        self.inSetup = True
+        print("leaving match mode")              
 
         
     def setMatch(self, match, comp = None):
@@ -275,6 +274,31 @@ class State():
             self.currentComp = self.main.dataMain.compList.getComp(comp)
             pass
         self.currentMatch = self.currentComp[match-1]
+        
+class Connecter():
+    def __init__(self, main):
+        self.data = main.data
+        self.main = main
+        
+        self._inputs = self.main.Joy.getInputs()
+        self.porter = {(id(j),None) for j in self._inputs}
+        print(self.porter)
+        
+    def reset(self):
+        self.main.Joy.reset()        
+        self._inputs = self.main.Joy.getInputs()
+        self.porter = {(id(j),None) for j in self._inputs}
+        print(self.porter)
+        
+    def setPorting(self, INPUT, port):
+        self.porter[id(INPUT)]=port
+        pass
+    
+    def portEvt(self, INPUT, evt):
+        try:
+            self.data.gameEventRecord(self.porter[id(INPUT)],evt)
+        except:
+            print("port failed")
         
         
         
