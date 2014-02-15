@@ -9,6 +9,8 @@ import threading
 import time
 import sys
 
+tester =  True
+
 class Main():
     def __init__(self):
         pass
@@ -19,11 +21,17 @@ class Main():
         else:
             print ("program loading")
             self.state = State()
+            global tester
+            self.state.inTest = tester
             print("initiated program state")
             
             self.Joy = joy.Joy(self, test = True)
             self.inputs =self.Joy.inputObs
-            print("joysticks initialised")
+            if self.state.exit:
+                print("program closing")               
+                sys.exit(1)
+            
+            print("all joysticks initialised")
 
             self.data = Data(self)
             print("created data structure ")
@@ -40,7 +48,7 @@ class Main():
             print("\nprogram running")
             
             self.Joy.run(self.state, self)#will run untill program quit
-
+            sys.exit(1)
             
     def logic(self):
         #AN EMPTY UNUSED FUNCTION THAT EXISTS SOLELY TO AID IN THE FIX FOR A REALLY ANNOYING THREADING ISSUE
@@ -59,7 +67,7 @@ class Data():
 #       self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
 #       self.state.currentMatch = self.compList[-1][-1]
         
-        self.temp_records  = [ i for i in range(len(self.main.inputs))]
+        self.temp_records  = []
         self.matchEvtList = None #evt list
 
     def matchCreate (self, robots, placement=None):
@@ -68,7 +76,9 @@ class Data():
             
         else:
             self.competition.newMatch(robots, placement)
-           
+    def getUndefinedMatch():
+        for m in self.competitian:
+            if 
     def add_matches_from_file(self, fileName="matches.txt"):
         file = open(fileName, "r")
         for line in file:
@@ -109,8 +119,14 @@ class Data():
         
            
     def setRobots(self, joy, robot): #set robots for match with inputs
-        self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
-
+        try:
+            self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
+        except:
+            while len(self.temp_records)-1 < joy:
+                self.temp_records.append(None)
+                
+            self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)  
+    
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
         for teamNumber in file:
@@ -118,8 +134,9 @@ class Data():
             
     def gameEvtRecord(self, joy, evt):
     # record correct bot and evt
-        self.temp_records[joy].addEvt(evt)
-        self.matchEvtList.add(evt) #add evt
+        if not self.main.state.inTest:
+            self.temp_records[joy].addEvt(evt)
+            self.matchEvtList.add(evt) #add evt
 
     def commitMatch(self):
         for i in self.temp_records:
@@ -155,7 +172,7 @@ class Data():
 
 class State():
     def __init__(self): #, myMain):
-        self.echo = False
+        self.echo = True
         self.exit = False
         self.reset()
         self.instartup = True

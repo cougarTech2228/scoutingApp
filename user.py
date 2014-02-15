@@ -146,8 +146,8 @@ def strcIn(allowed = None, message = "", typeInt = False, check = False):
 
 def confirm(m = "is this okay - y/n"):
     print (m)
-    a = strcIn(allowed = ["n","y"], message = "y/n-->>")
-    if a == "y":
+    a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No"], message = "y/n-->>")
+    if a in ["y","Y","yes","Yes"]:
         return True
     else:
         return False
@@ -159,14 +159,16 @@ def setupmatch(main):
             match = main.state.currentMatch.number + 1
         elif main.state.lastMatch:
             match = main.state.lastMatch + 1
-        else: 
+        else:
             match = 0
         print("set-up next match: #", match, " ? ")
-        i = strcIn(allowed = ["n","y"], message = "--y/n-->>")
-        if i == "n":
-            print ("what match to set-up: (number)", match)
-            num = strcIn(typeInt = True, message = "match number>>")
-            match = num
+        if not confirm():
+            match = main.data.getUndefinedMatch()
+            print("setup next undefined match: # ",match," ?" )
+            if not confirm:
+                print ("what match to set-up: (number)", match)
+                num = strcIn(typeInt = True, message = "match number>>")
+                match = num
         
         def getRobots():# can this be done
             robots = []
@@ -174,10 +176,11 @@ def setupmatch(main):
             robots.append(strcIn(typeInt = True, message ="Red alliance robot 1->>"))
             robots.append(strcIn(typeInt = True, message ="Red alliance robot 2->>"))
             robots.append(strcIn(typeInt = True, message ="Red alliance robot 3->>"))
+            
             #enter blue alliance
-            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 4->>"))
-            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 5->>"))
-            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 6->>"))
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 1->>"))
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 2->>"))
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 3->>"))
             return robots
             
         c = False   
@@ -186,13 +189,17 @@ def setupmatch(main):
             robos = getRobots()
             c = confirm()
             
-        c = True
-        while c:
+        while True:
             print("commit or escape")
             re = strcIn(message = ">>>>")
             if re == "commit":
                 main.data.matchCreate(robos, match)
-            if re == "escape" or re == "E":
-                c = False#leave function
+                
+            elif re == "escape" or re == "E":
+                pass#leave function
+                
+            else:
+                continue
             
+            break
                 
