@@ -2,19 +2,25 @@
 
 
 import cmd
-
+import sys
 
 
 class Com(cmd.Cmd): #global commands
 
-    def __init__(self, main):
+    def __init__(self, main, lock):
         cmd.Cmd.__init__(self)
+        self.lock = lock #unused as of yet, may be needed for later issueswith threading
+        self.lock.acquire()        
         self.main = main
-        self.prompt = '> '
+        self.prompt = '>>>>>'
         self.state = self.main.state
         self.triedCommand = []
+        self.lock.release()
+        while self.state.instartup:
+            pass
+        
 
-    
+
     '''
     def do_failed_message(self):
         time.sleep(.5)
@@ -40,7 +46,8 @@ class Com(cmd.Cmd): #global commands
 
     def do_quit(self, t):
         if confirm(m = "quit (y/n)"):   
-            self.main.programQuit()
+            self.state.exit = True
+            sys.exit(1)
         else:
             pass
         
@@ -56,15 +63,24 @@ class Com(cmd.Cmd): #global commands
     do_q = do_quit
      
     def do_p(self, t):
-        self.state.togglePause()
+        if self.state.matchRunning:
+            self.state.togglePause()
+        else:
+            print("you cant toggle pause,no match is running")
             
     def do_pause(self, t):
-        self.state.pauseSet(True)
-        
+        if self.state.matchRunning:
+            self.state.pauseSet(True)
+        else:
+            print("you can't pause,no match is running")
+            
     def do_start(self, t):
-        self.state.startMatch()
-        pass
-        
+        if self.state.matchReadyStart:
+            self.state.startMatch()
+            print("match started")
+        else: 
+            print("you can't start a match now")
+            self.do_gets(t)
     def do_end(self, t):
         self.state.endMatch()
         pass
@@ -82,6 +98,9 @@ class Com(cmd.Cmd): #global commands
     def do_gets(self, t):
         for i in self.state.getState():
             print(i[1],i[0])
+            
+    def do_echon(self, t):
+        self.state.echo = not self.state.echo
                 
 class Test(cmd.Cmd):
     
@@ -98,36 +117,37 @@ class Test(cmd.Cmd):
         print(self.main.state.matchPaused)
 
 def init(m):
-    #Com(m).cmdloop()
-    t = Test(m)
-    t.cmdloop()
-    
+    Com(m, m.lock).cmdloop()
+    #Test(m).cmdloop()
+
+
    
 def strcIn(allowed = None, message = "", typeInt = False, check = False):
-    w = True
-    while w:
+    while True:
         re = input(message)
-        w = False
         if allowed:
                 if re not in allowed:
                     print("that is not a valid answer")
-                    w = True
+                    continue
         if typeInt:
             try:
                 v = int(re)
                 re = v
             except (ValueError):
                 print("that is not a valid answer")
-                w= True
+                continue
+                
         if check == True:
-            pass
-            # can I call this function within this function
+            if not confirm(re):
+                continue
+            
         return re
+    
 
 def confirm(m = "is this okay - y/n"):
     print (m)
-    a = strcIn(allowed = ["n","y"], message = "y/n-->>")
-    if a == "y":
+    a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No"], message = "y/n-->>")
+    if a in ["y","Y","yes","Yes"]:
         return True
     else:
         return False
@@ -139,14 +159,16 @@ def setupmatch(main):
             match = main.state.currentMatch.number + 1
         elif main.state.lastMatch:
             match = main.state.lastMatch + 1
-        else: 
+        else:
             match = 0
         print("set-up next match: #", match, " ? ")
-        i = strcIn(allowed = ["n","y"], message = "--y/n-->>")
-        if i == "n":
-            print ("what match to set-up: (number)", match)
-            num = strcIn(typeInt = True, message = "match number>>")
-            match = num
+        if not confirm():
+            match = main.data.getUndefinedMatch()
+            print("setup next undefined match: # ",match," ?" )
+            if not confirm:
+                print ("what match to set-up: (number)", match)
+                num = strcIn(typeInt = True, message = "match number>>")
+                match = num
         
         def getRobots():# can this be done
             robots = []
@@ -154,24 +176,30 @@ def setupmatch(main):
             robots.append(strcIn(typeInt = True, message ="Red alliance robot 1->>"))
             robots.append(strcIn(typeInt = True, message ="Red alliance robot 2->>"))
             robots.append(strcIn(typeInt = True, message ="Red alliance robot 3->>"))
+            
             #enter blue alliance
-            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 4->>"))
-            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 5->>"))
-            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 6->>"))
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 1->>"))
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 2->>"))
+            robots.append(strcIn(typeInt = True, message ="Blue alliance robot 3->>"))
             return robots
             
         c = False   
         while not c:
-            r=[]
-            r = getRobots()
+            robos=[]
+            robos = getRobots()
             c = confirm()
-        
-        c = True
-        while c:
-            r = strcIn(message = ">>>>")
-            if r == "commit":
-                print("functionality does not exist yet") #do new match stuff
-            if r == "escape" or r == "E":
-                c = False#leave function
             
+        while True:
+            print("commit or escape")
+            re = strcIn(message = ">>>>")
+            if re == "commit":
+                main.data.matchCreate(robos, match)
+                
+            elif re == "escape" or re == "E":
+                pass#leave function
+                
+            else:
+                continue
+            
+            break
                 

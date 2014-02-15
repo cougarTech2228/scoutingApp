@@ -21,15 +21,26 @@ class Competition(list):
         #self.last_match = 0
         self.numMatches = numberOfMatches
 
-    def newMatch(self, teamNumbers, place=None):
+    def newMatch(self, teamNumbers, matchNum=None, force =False): #matchNum starts at 1 not o
         # New Match takes a list of robot numbers as an argument
 
         self.inMatch = len(self)
         #inmatch is the # of inputed matches
-        if place is None:
-            self.append(Match(self.inMatch, teamNumbers, self))
-        else:
-            self.insert(place, Match(self.inMatch, teamNumbers, self))#this will make a mess of lower objects
+        if matchNum is None:
+            matchNum = len(self) + 1
+            
+        if self[matchNum-1]:
+            if self[matchNum-1] is not None:
+                if force:
+                    return
+                
+        try:
+            self[matchNum-1] = Match(self.inMatch+1, teamNumbers, self)
+            
+        except IndexError:
+            for x in range(matchNum - inMatch):
+                self.append(None)
+            self[-1] = Match(matchNum, teamNumbers, self)
             
     def editMatch(self, matchNumber, teamNumbers):
         self[matchNumber-1] = Match(matchNumber-1, teamNumbers, self)
