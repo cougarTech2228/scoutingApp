@@ -42,16 +42,19 @@ class Com(cmd.Cmd): #global commands
     def do_command(self, t): i have no idea what it s returning for t (maybe arguments)
     ''' 
     def do_matchMode(self, t):
-        self.state.enterMatchMode()
-
+        if self.state.nextMatch:
+            self.state.enterMatchMode()
+        else:
+            print("must first prepare match")
     def do_quit(self, t):
         if confirm(m = "quit (y/n)"):   
             self.state.exit = True
             sys.exit(1)
         else:
             pass
+    def do_preMatch(self,t):    
+        prepareMatch(self.main)
         
-
     def help_quit(self, t):
         print("syntax: quit")
         print("-- terminates the application")
@@ -96,7 +99,7 @@ class Com(cmd.Cmd): #global commands
     
     #setupcommands-----------------------------------------------------------
     
-    def do_stm(self, t):
+    def do_setupMatch(self, t):
         self.state.inSetup =True
         setupmatch(self.main)
        
@@ -106,7 +109,26 @@ class Com(cmd.Cmd): #global commands
             
     def do_echon(self, t):
         self.state.echo = not self.state.echo
+        
+    def do_show(self, t):
+        if "ds" in t:
+            for m in self.main.data.competition:
+                if m:
+                    print("match ",m.number)
+                    for r in m.robots:
+                        print("    team ", r.teamNumber)
+                        
+        else:
+            print("show needs a parameter")
+                        
+    def do_save(self, t):
+        self.main.data.save()
                 
+                
+    do_stm = do_setupMatch
+    do_pms = do_preMatch
+    do_s = do_save 
+    
 class Test(cmd.Cmd):
     
     def __init__(self, main):
@@ -159,41 +181,40 @@ def confirm(m = "is this okay - y/n"):
         
         
         
-def setupmatch(main, match=None):
+def setupmatch(main, match=None, nor = 1):
     if match:   
-        pass
-    elif main.state.currentMatch:
-        match = main.state.currentMatch.number + 1
-    elif main.state.lastMatch:
-        match = main.state.lastMatch.number + 1
-    else:
-        match = 1
-    print("set-up next match: #", match, "? ")
-    if not confirm():
-        match = main.data.getUndefinedMatch()
-        print("setup next undefined match: #",match,"?" )
-        if not confirm():
-            print ("what match to set-up: (number)")
-            num = strcIn(typeInt = True, message = "match number>>")
-            match = num
+        print("setting up match")
     
-    def getRobots():# can this be done
+    else:
+        if main.state.currentMatch:
+            match = main.state.currentMatch.number + 1
+        elif main.state.lastMatch:
+            match = main.state.lastMatch.number + 1
+        else:
+            match = 1
+        print("set-up next match: #", match, "? ")
+        if not confirm():
+            match = main.data.getUndefinedMatch()
+            print("setup next undefined match: #",match,"?" )
+            if not confirm():
+                print ("what match to set-up: (number)")
+                num = strcIn(typeInt = True, message = "match number>>")
+                match = num
+        
+    def getRobots(num):# can this be done
         robots = []
         #enter red alliance
-        robots.append(strcIn(typeInt = True, message ="Red alliance robot 1->>"))
-        robots.append(strcIn(typeInt = True, message ="Red alliance robot 2->>"))
-        robots.append(strcIn(typeInt = True, message ="Red alliance robot 3->>"))
-        
-        #enter blue alliance
-        robots.append(strcIn(typeInt = True, message ="Blue alliance robot 1->>"))
-        robots.append(strcIn(typeInt = True, message ="Blue alliance robot 2->>"))
-        robots.append(strcIn(typeInt = True, message ="Blue alliance robot 3->>"))
+        for color in ("RED","BLUE"):
+            for n in range(num):
+                string = color + " alliance robot #" + str(n+1) + " >>>"
+                robots.append(strcIn(typeInt = True, message = string))
+            
         return robots
         
     c = False   
     while not c:
         robos=[]
-        robos = getRobots()
+        robos = getRobots(nor)
         c = confirm()
         
     while True:
@@ -210,15 +231,17 @@ def setupmatch(main, match=None):
         
             
 def prepareMatch(main):
-    if main.state.matchMode:
+    if main.state.inMatch:
         print("you cant prepare for next math in match")
-    if main.state.lastMatch:
+    elif main.state.nextMatch:
+        match = main.state.nextMatch
+    elif main.state.lastMatch:
         match = main.state.lastMatch.number+1
     else:
         match = 1
     
     print ("prepare next match: #",match," ?")
-    if not confirm:
+    if not confirm():
         match = strcIn(m="what match to prepare:",typeInt=True,check=True )
         
     try:
@@ -231,11 +254,17 @@ def prepareMatch(main):
                 print("aborting prepare match")
                 return
                 
-        while True:
-            c = False
-            while not c:
-                for r in main.data.competition[match-1].robots:
-                    print("press button one on joyStick for robot:",r.teamNumber)
-                    inputOb = main.Joy.getJoy()
-                c = confirm()
-                
+    c = False
+    while not c:
+        port=0
+        for robot in main.data.competition[match-1].robots:
+            print("press button one on joyStick for robot:",robot.teamNumber)
+            inputOb = main.Joy.getJoy()#returns id
+            main.data.setPort(port,robot)
+            main.connect.setPorting(inputOb, port)                
+            port+=1
+        c = confirm()
+            
+    main.state.nextMatch =match
+        
+       

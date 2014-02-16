@@ -27,25 +27,33 @@ class Competition(list):
         self.inMatch = len(self)
         #inmatch is the # of inputed matches
         if matchNum is None:
-            place = len(self)
+            index = len(self)
         else:
-            place = matchNum-1
+            index = matchNum-1
             
-        print (matchNum)
+        print ("creating match #",matchNum)
 
         try:
-            if self[place]:
-                print("tester1")
+            if self[index]:
+                print("match already exists")
                 if not force:
+                    print("aborting")
                     return
-            self[place] = Match(self.inMatch+1, teamNumbers, self)       
+                else:
+                    print("forcing  override")
+                    
+            elif self[index] == None:
+                print("match already allocated - creating match")
+            self[index] = Match(self.inMatch+1, teamNumbers, self)       
+            print("match created")   
             
         except IndexError:
             for x in range(matchNum - self.inMatch):
+                print("allocatingMatch")    
                 self.append(None)
-            self.append(Match(matchNum, teamNumbers, self))
-            print (self)
-            
+            self[index] = (Match(matchNum, teamNumbers, self))
+            print("match created")
+            #print(self)
             
     def editMatch(self, matchNumber, teamNumbers):
         self[matchNumber-1] = Match(matchNumber-1, teamNumbers, self)
@@ -60,7 +68,7 @@ class Match:
         self.number = matchNum
 #        self.robots = [None, None, None, None, None] # [0:2] red, [3:5] blue
         self.events = GameEventList()
-        self.robots = [ InMatchRobot(teamNumbers[n], n, self) for n in range(6) ] #Python Magic 
+        self.robots = [ InMatchRobot(teamNumbers[n], n, self) for n in range(len(teamNumbers))] #Python Magic 
         """
         n = 0
         for teamNumber in teamNumbers:

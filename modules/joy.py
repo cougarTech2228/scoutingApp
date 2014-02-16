@@ -19,7 +19,7 @@ class inputOb:
         # will record event
         #possible laterfunctionality time to reconstruct matches in real time
         evt = self.bind.evtCheck(b)
-        self.main.connector.portEvt(self, evt) 
+        self.main.connect.portEvt(self, evt) 
 
 
 #This should be done with pygame, they have an elegent method of handling it.        
@@ -124,7 +124,7 @@ class Joy():
             first = True
             while state.matchRunning and not state.exit and not self.stopRun:
                  if first:
-                     pygame.evt.get()
+                     pygame.event.get()
                      first = False
                      
                  evt = pygame.event.poll()
@@ -149,12 +149,16 @@ class Joy():
                  if not state.matchPaused:
                      if evt.type == 10:
                         self.inputObs[evt.joy].record(evt.button, )
-                        ##if echoOn and not command:
-                        ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
-                        # ^possible later functionality echo^
+                        if state.echoOn:
+                            print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))
+                        
                         
                  if evt.type == pygame.KEYDOWN:
                      if evt.key == pygame.K_SPACE:
                          state.toggle_pause()
                         
-                
+    def getJoy(self):
+        while True:
+            evt = pygame.event.wait()
+            if evt.type == 10:
+                return(self.inputObs[evt.joy])

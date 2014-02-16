@@ -27,7 +27,7 @@ class Main():
             print("initiated program state")
             
             self.data = Data(self)
-            print("created data structure ")            
+            print("loaded data structure ")            
             
             self.Joy = joy.Joy(self, test = True)
             if self.state.exit:
@@ -64,7 +64,11 @@ class Main():
         
 class Data(): 
     def __init__(self, main): #reminder -this must be fixed
-        self.competition = data.Competition()
+        #if not self.load:
+        cstr = input("competition name? >>>")
+        if not self.load(cstr):
+            self.competition = data.Competition(name = cstr)
+            
         self.main = main
         self.robots = data.RobotList()
     
@@ -73,6 +77,7 @@ class Data():
         
         self.temp_records  = [None,None,None,None,None,None]
         self.matchEvtList = None #evt list
+        
 
     def matchCreate (self, robots, placement=None):
         if placement is None:
@@ -125,11 +130,11 @@ class Data():
         
         
            
-    def setRobots(self, port, robot): #set robots for match temp_records
+    def setPort(self, port, robot): #set robots for match temp_records
         try:
             self.temp_records[port] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
         except:
-            print("temp_records only has six ports")
+            print("temp_records only has six ports: (0-5)")
     
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
@@ -156,18 +161,24 @@ class Data():
 
     def save(self):
         import pickle
-        save_file = open(self.theCompetition.name + ".dat", "wb")
-        save_data = [self.theCompetition,self.robotList ]
+        save_file = open(self.competition.name + ".dat", "wb")
+        save_data = [self.competition,self.robots ]
         
         pickle.dump( save_data, save_file )
         save_file.close()
 
     def load(self, fileName):
         import pickle
-        load_data = pickle.load( open(fileName, "rb") )
-        self.theCompetition = load_data[0]
-        self.robotList = load_data[1]
-        
+        try:
+            load_data = pickle.load( open(fileName + ".dat", "rb") )
+            self.competition = load_data[0]
+            self.robots = load_data[1]
+            print("loaded save: ",fileName)
+            return True
+        except:
+            print("new competition:", fileName)
+            print('--to save type: "save"')
+            return False
     def matchReset(self):
         pass
 '''
@@ -216,12 +227,14 @@ class State():
         self.statelist.append( [self.matchRunning ,"matchRunning"])
         self.statelist.append( [self.currentMatch,"currentMatch"])
         self.statelist.append( [self.lastMatch,"lastMatch"])
+        self.statelist.append( [self.nextMatch,"nextMatch"])
         
     def enterMatchMode(self):
         self.inMatch = True
         self.matchReadyStart = True
         self.matchPaused = True
         self.currentmatch = self.nextMatch
+        self.nextMatch = None
         print("entering match mode")      
         
     def togglePause(self):
@@ -281,8 +294,9 @@ class Connecter():
         self.main = main
         
         self._inputs = self.main.Joy.getInputs()
-        self.porter = {(id(j),None) for j in self._inputs}
-        print(self.porter)
+        self.porter = dict([(id(j),None) for j in self._inputs])
+        #print(type(self.porter))
+        #print(self.porter)
         
     def reset(self):
         self.main.Joy.reset()        
@@ -292,6 +306,7 @@ class Connecter():
         
     def setPorting(self, INPUT, port):
         self.porter[id(INPUT)]=port
+        print(self.porter)
         pass
     
     def portEvt(self, INPUT, evt):
