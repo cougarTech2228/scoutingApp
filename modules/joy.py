@@ -11,70 +11,58 @@ class inputOb:
         print("joystick ", N, " initialised")
         self.myJoystick = myJoystick
         self.myJoystick.init()
-        self.bind = joyBindings()
+        self.bind = Bind(main)
         self.number = N
         self.type = "joystick" #FOR NOW
         self.main = main
+        self.buttonBuffer = []
+        
     def record(self, b,time):
         # will record event
         #possible laterfunctionality time to reconstruct matches in real time
-        evt = self.bind.evtCheck(b)
-        self.main.connect.portEvt(self, evt) 
-
-
-#This should be done with pygame, they have an elegent method of handling it.        
-class joyBindings:
-    def __init__(self):
-        pass
         
-    def evtCheck(self, button):
-        if button == 0:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 1:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 2:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 3:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 4:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 5:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 6:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 7:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 8:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 9: 
-            evt = None#init a game event and return it
-            return evt       
-        elif button == 10:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 11:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 12:
-            evt = None#init a game event and return it
-            return evt
-        elif button == 13:
-            evt = None#init a game event and return it
-            return evt
-        elif button == _undoButton:
-                #undo some how
-           return None#something
+        self.buttonBuffer.append([b,time])
+        
+        if b == self.bind.UNDO:
+            if not self.bind.isAttribute(self.buttonBuffer[-2]):
+                self.buttonBuffer.remove[-1]
+                self.buttonBuffer.remove[-1]
+            else:
+                pass#complicated undo code
+                
+        elif self.bind.isAttribute(b) and self.bind.isEvt(self.buttonBuffer[-2]):
+            evt = self.bind.makeEvent(self.buttonBuffer)
+            self.main.connect.portEvt(self, evt) 
+        
+class Bind():
+    def __init__(self, main):
+        self.UNDO = 8
+        self.SUCCESS = 11
+        self.FAILURE = 10
+        self.main = main
+    
+    def isAttribute(self, button):
+        if button == self.SUCCESS:
+            return True
+        elif button == self.FAILURE:
+            return True
         else:
-           pass
+            return False
+            
+    def isEvent(self, button):
+        if button in [1,2,3,4,5,9,6,7]:
+            return True
+        else:
+            return False
+        
+    def makeEvent(self, buttonBuffer):
+        attribute = buttonBuffer[-1][0]
+        event = buttonBuffer[-2][0]
+        timespan = [buttonBuffer[-2][1],buttonBuffer[-1][1]]
+        #at this time timespan is not used- possible later functionality
+        
+        
+        
 class Joy():
     def __init__(self, main, test = False):
         # get and check number of joysticks
@@ -141,6 +129,8 @@ class Joy():
                      if evt.key == pygame.K_SPACE:
                          state.toggle_pause()
                  '''
+            if first == False:
+                pass #get third axis for rating of robot preformance
                      
     def check(self, state, main): #check once then return this does not work
         import pygame

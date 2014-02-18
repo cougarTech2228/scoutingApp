@@ -59,7 +59,17 @@ class Com(cmd.Cmd): #global commands
         print("syntax: quit")
         print("-- terminates the application")
 
-
+    def do_autoEnd(self, t):
+        if "on" in t:
+            self.main.state.autoEndMatch = True
+            print ("automatically end matches is on")
+        elif "off" in t:
+            self.main.state.autoEndMatch = False
+            print ("automatically end matches is off")
+            
+        else:
+            print('"',t,'" is not a valid command')
+            print("try 'autoEnd off' or 'autoEnd on'")
     #match commands----------------------------------------------------------
 
     # shortcuts
@@ -96,6 +106,10 @@ class Com(cmd.Cmd): #global commands
                 self.state.resetMatch(self)   
         else:
             print("no match to reset")
+            
+    def do_esc(self, t):
+        if self.state.matchMode:
+            self.main.state.exitMatchMode()
     
     #setupcommands-----------------------------------------------------------
     
@@ -181,26 +195,40 @@ def confirm(m = "is this okay - y/n"):
         
         
         
-def setupmatch(main, match=None, nor = 1):
-    if match:   
+def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
+    if match:
         print("setting up match")
     
     else:
-        if main.state.currentMatch:
-            match = main.state.currentMatch.number + 1
-        elif main.state.lastMatch:
-            match = main.state.lastMatch.number + 1
-        else:
-            match = 1
-        print("set-up next match: #", match, "? ")
+        match = main.data.getUndefinedMatch()
+        print("setup next undefined match: #",match,"?" )
         if not confirm():
-            match = main.data.getUndefinedMatch()
-            print("setup next undefined match: #",match,"?" )
+            
+            if main.state.currentMatch:
+                match = main.state.currentMatch.number + 1
+            elif main.state.lastMatch:
+                match = main.state.lastMatch.number + 1
+            else:
+                match = 1
+                
+            print("set-up next match: #", match, "? ")
             if not confirm():
                 print ("what match to set-up: (number)")
                 num = strcIn(typeInt = True, message = "match number>>")
                 match = num
-        
+                if main.state.currentMatch.number == match:
+                    print("you cant setup that match, you are already in it")
+                    return
+    try:
+       if main.data.competition[match-1]:
+            print("match already exists, would you like to override it.\n (this could be a destructive process)")
+            if not confirm():
+                return
+            else:
+                f = True#must force override of match
+    except:
+        pass
+            
     def getRobots(num):# can this be done
         robots = []
         #enter red alliance
@@ -221,7 +249,7 @@ def setupmatch(main, match=None, nor = 1):
         print("commit or escape")
         re = strcIn(message = ">>>>")
         if re == "commit":
-            main.data.matchCreate(robos, match)
+            main.data.matchCreate(robos, match, force = f)
             return True
             
         elif re == "escape" or re == "E":
@@ -233,8 +261,12 @@ def setupmatch(main, match=None, nor = 1):
 def prepareMatch(main):
     if main.state.inMatch:
         print("you cant prepare for next math in match")
+        
     elif main.state.nextMatch:
         match = main.state.nextMatch
+        print("Match already prepared. Would you like to continue?")
+        if not confirm():
+            return
     elif main.state.lastMatch:
         match = main.state.lastMatch.number+1
     else:
@@ -265,6 +297,6 @@ def prepareMatch(main):
             port+=1
         c = confirm()
             
-    main.state.nextMatch =match
+    main.state.nextMatch = match
         
        
