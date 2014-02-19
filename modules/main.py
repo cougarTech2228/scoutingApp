@@ -86,12 +86,8 @@ class Data():
         self.matchEvtList = [] #evt list
         
 
-    def matchCreate (self, robots, placement=None):
-        if placement is None:
-            self.competition.newMatch(robots)
-            
-        else:
-            self.competition.newMatch(robots, placement)
+    def matchCreate (self, robots, placement ,force):
+            self.competition.newMatch(robots, matchNum=placement, force = force)
             
     def getUndefinedMatch(self):
         for m in range(len(self.competition)):

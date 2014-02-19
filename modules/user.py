@@ -196,6 +196,8 @@ def confirm(m = "is this okay - y/n"):
         
         
 def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
+    f = False
+    
     if match:
         print("setting up match")
     
@@ -249,7 +251,7 @@ def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
         print("commit or escape")
         re = strcIn(message = ">>>>")
         if re == "commit":
-            main.data.matchCreate(robos, match, force = f)
+            main.data.matchCreate(robos, match, f)
             return True
             
         elif re == "escape" or re == "E":
