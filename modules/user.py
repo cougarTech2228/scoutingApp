@@ -214,7 +214,7 @@ def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
             print("set-up next match: #", match, "? ")
             if not confirm():
                 print ("what match to set-up: (number)")
-                num = strcIn(typeInt = True, message = "match number>>")
+                num = strcIn(typeInt=True, message="match number>>")
                 match = num
                 if main.state.currentMatch.number == match:
                     print("you cant setup that match, you are already in it")
@@ -271,11 +271,23 @@ def prepareMatch(main):
         match = main.state.lastMatch.number+1
     else:
         match = 1
-    
-    print ("prepare next match: #",match," ?")
-    if not confirm():
-        match = strcIn(m="what match to prepare:",typeInt=True,check=True )
         
+    while True:
+        print ("prepare next match: #",match," ?")
+        if not confirm():
+            print("Do you want to enter another match?")
+            ans = confirm()
+            if ans is True:
+                match = strcIn(allowed=range(1,1000), message="what match to prepare:",typeInt=True,check=True )
+                #TODO remove '1000' as parameter in above range(), replace with length of matchlist
+                break
+            else:
+                print("Do you wan't to exit?")
+                nother_ans = confirm()
+                if nother_ans:
+                    return 1
+                else:
+                    break
     try:
         main.data.competition[match-1]
         
