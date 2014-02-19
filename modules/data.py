@@ -27,20 +27,33 @@ class Competition(list):
         self.inMatch = len(self)
         #inmatch is the # of inputed matches
         if matchNum is None:
-            matchNum = len(self) + 1
+            index = len(self)
+        else:
+            index = matchNum-1
             
-        if self[matchNum-1]:
-            if self[matchNum-1] is not None:
-                if force:
-                    return
-                
+        print ("creating match #",matchNum)
+
         try:
-            self[matchNum-1] = Match(self.inMatch+1, teamNumbers, self)
+            if self[index]:
+                print("match already exists")
+                if not force:
+                    print("aborting")
+                    return
+                else:
+                    print("forcing  override")
+                    
+            elif self[index] == None:
+                print("match already allocated - creating match")
+            self[index] = Match(self.inMatch+1, teamNumbers, self)       
+            print("match created")   
             
         except IndexError:
-            for x in range(matchNum - inMatch):
+            for x in range(matchNum - self.inMatch):
+                print("allocatingMatch")    
                 self.append(None)
-            self[-1] = Match(matchNum, teamNumbers, self)
+            self[index] = (Match(matchNum, teamNumbers, self))
+            print("match created")
+            #print(self)
             
     def editMatch(self, matchNumber, teamNumbers):
         self[matchNumber-1] = Match(matchNumber-1, teamNumbers, self)
@@ -55,7 +68,7 @@ class Match:
         self.number = matchNum
 #        self.robots = [None, None, None, None, None] # [0:2] red, [3:5] blue
         self.events = GameEventList()
-        self.robots = [ InMatchRobot(teamNumbers[n], n, self) for n in range(6) ] #Python Magic 
+        self.robots = [ InMatchRobot(teamNumbers[n], n, self) for n in range(len(teamNumbers))] #Python Magic 
         """
         n = 0
         for teamNumber in teamNumbers:
@@ -89,12 +102,9 @@ class InMatchRobotRecords:
         self.roboNum = robot #robot number
         self.alliance = ally # string (RED or BLUE)
         self.events = GameEventList() 
-        self.comments = Comments()
+        self.comments = []
         # variables being recorded ex)shots missed, points scored, climberlevel reached
-        #elf.passes = 0
-        #elf.recivals = 0
-        #elf.pointScored = 0
-        #elf.
+        
     def addEvt(self, event):
         self.events.add(event)
         pass
@@ -130,15 +140,15 @@ class RobotList(list):
 
     def add(self, robot):
         """
-    if the list is empty it just adds the robot, like wise if it is
-    the largest member of the list. Othderwise it places the robot before
-    the next greatest number through a binary search
-    """
-        #at this point if two different robots share the same number,
-        #it will try to add the robot, but may end up freaking out.
-        if robot in self:
-            return False
-        elif self == []:
+        if the list is empty it just adds the robot, like wise if it is
+        the largest member of the list. Othderwise it places the robot before
+        the next greatest number through a binary search
+        """
+        for r in self:
+            if r.teamNumber == robot.teamNumber:
+                return False
+            
+        if self == []:
             self.append(robot)
         elif robot.teamNumber >= self[-1].teamNumber:
             self.append(robot)
@@ -280,6 +290,7 @@ class GameEvent():
         self.precedingEvent = None
         self.antecedingEvent = None
         self.pointsValue = 0
+        self.time = None
 
 ##    def undo(self):
 ##        self.precedingEvent.antecedingEvent = self
@@ -301,21 +312,33 @@ class StartEvent(GameEvent):
         #overwrites GameEvent to do nothing on undo
         pass
 
+class Auto_MoveForwandEvent(GameEvent):
+     def __init__(self, success=True):#success may not apply
+        GameEvent.__init__(self)
+        self.success = success
+        if success:
+            self.pointsValue = 5
+
+
 class Auto_HighGoalEvent(GameEvent):
-    def __init__(self, hot=False):
+    def __init__(self, success, hot=False):
         self.hot = hot
         GameEvent.__init__(self)
-        self.pointsValue = 15
-        if hot is True:
-            self.pointsValue += 5
+        self.success = success
+        if success:
+            self.pointsValue = 15
+            if hot is True:
+                self.pointsValue += 5
 
 class Auto_LowGoalEvent(GameEvent):
-    def __init__(self, hot=False):
+    def __init__(self, success, hot=False):
         self.hot = hot
         GameEvent.__init__(self)
-        self.pointsValue = 6
-        if hot is True:
-            self.pointsValue += 5
+        self.success = success
+        if success:
+            self.pointsValue = 6
+            if hot is True:
+                self.pointsValue += 5
 
 #Was going to use this class as a super for H/L Goal and Auto H/L goal, but too complex
 ##class GoalEvent(GameEvent):
@@ -335,30 +358,53 @@ class Auto_LowGoalEvent(GameEvent):
 ##            self.pointsValue += 5
 
 class HighGoalEvent(GameEvent):
-
-    def __init__(self):
+    def __init__(self, success):
         GameEvent.__init__(self)
-        self.pointsValue = 10
+        self.success = success
+        if success:
+            self.pointsValue = 10
 
 class LowGoalEvent(GameEvent):
-    def __init__(self):
+    def __init__(self, success):
         GameEvent.__init__(self)
-        self.pointsValue = 1
+        self.success = success
+        if success:
+            self.pointsValue = 1
 
 # Dummy classes for potential future event
 class TrussThrowEvent(GameEvent):
-    pass
+    def __init__(self, success):
+        GameEvent.__init__(self)
+        self.success = success
+        if success:
+            self.pointsValue = 10
 
-class BallCatchEvent(GameEvent):
-    pass
 
-
-class Comments(list):
-    def __init__():
-        pass
-    def add(c):
-        pass
+class TrussCatchEvent(GameEvent):
+    def __init__(self, success):
+        GameEvent.__init__(self)
+        self.success = success
+        if success:
+            self.pointsValue = 10
     
+class AssistPassEvent(GameEvent):#does not record points
+    def __init__(self, success):
+        GameEvent.__init__(self)
+        self.success = success
+        
+    
+class AssistRecieveEvent(GameEvent):#does not record points
+    def __init__(self, success):
+        GameEvent.__init__(self)
+        self.success = success
+        
+    
+class Comment():
+    def __init__(self,title, description="",ranking=None):
+        self.title = title
+        self.description=description
+        self.ranking = ranking
+        
 class pitScout():
     def __init__():
         pass

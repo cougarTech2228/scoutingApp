@@ -2,12 +2,14 @@
 
 # As of this build main.py is inoperational.
 # To test the program, open test.py or run main_test.py
+import datetime
 import user
 import joy
 import data
 import threading
 import time
 import sys
+import os
 
 tester =  True
 
@@ -19,22 +21,25 @@ class Main():
         if delay:
             pass
         else:
-            print ("program loading")
-            self.state = State()
+            print ("\nprogram loading")
+            self.state = State(self)
+            
             global tester
             self.state.inTest = tester
             print("initiated program state")
             
+            self.data = Data(self)
+            print("loaded data structure ")            
+            
             self.Joy = joy.Joy(self, test = True)
-            self.inputs =self.Joy.inputObs
             if self.state.exit:
                 print("program closing")               
                 sys.exit(1)
-            
+                
             print("all joysticks initialised")
-
-            self.data = Data(self)
-            print("created data structure ")
+            
+            self.connect = Connecter(self)            
+            print("created input connector")              
             
             self.lock = threading.Lock()
             self._comThread = threading.Thread(target = user.init, args = (self,))
@@ -50,25 +55,36 @@ class Main():
             self.Joy.run(self.state, self)#will run untill program quit
             sys.exit(1)
             
+    
+            
     def logic(self):
         #AN EMPTY UNUSED FUNCTION THAT EXISTS SOLELY TO AID IN THE FIX FOR A REALLY ANNOYING THREADING ISSUE
         while not self.state.exit:
-            time.sleep(1)
-            
+            if self.state.matchRunning:
+                time.sleep(150)
+                self.state.endMatch()
+ 
         print("program closing")
         sys.exit(1)
         
 class Data(): 
     def __init__(self, main): #reminder -this must be fixed
-        self.competition = data.Competition()
+        #if not self.load:
+        print("\n \n competition save files...")
+        self.getSaves()
+        print("\n open or create a save file... \n")
+        cstr = input("competition name? >>>")
+        print ("\n \n")
+        self.load(cstr)            
         self.main = main
         self.robots = data.RobotList()
     
 #       self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
 #       self.state.currentMatch = self.compList[-1][-1]
         
-        self.temp_records  = []
-        self.matchEvtList = None #evt list
+        self.temp_records  = [None,None,None,None,None,None]
+        self.matchEvtList = [] #evt list
+        
 
     def matchCreate (self, robots, placement=None):
         if placement is None:
@@ -76,9 +92,13 @@ class Data():
             
         else:
             self.competition.newMatch(robots, placement)
-    def getUndefinedMatch():
-        for m in self.competitian:
-            if 
+            
+    def getUndefinedMatch(self):
+        for m in range(len(self.competition)):
+            if self.competition[m] == None:
+                return m+1 #returns match number
+        return len(self.competition)+1
+        
     def add_matches_from_file(self, fileName="matches.txt"):
         file = open(fileName, "r")
         for line in file:
@@ -117,27 +137,27 @@ class Data():
                 self.competition.newMatch(robotNums, matchNum)
         
         
-           
-    def setRobots(self, joy, robot): #set robots for match with inputs
-        try:
-            self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)
-        except:
-            while len(self.temp_records)-1 < joy:
-                self.temp_records.append(None)
-                
-            self.temp_records[joy] = data.InMatchRobotRecords(robot.myMatch.comp.name, robot.myMatch.matchNum, robot.alliance)  
+    def setPort(self, port, robot): #set robots for match temp_records
+        #try:
+        self.temp_records[port] = data.InMatchRobotRecords(robot.match.comp.name, robot.match.number, robot.teamNumber, robot.alliance)
+        #except:
+            #print("temp_records only has six ports: (0-5)")
     
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
         for teamNumber in file:
             self.robotList.addRobot(data.Robot(teamNumber.strip()))
             
-    def gameEvtRecord(self, joy, evt):
+    def gameEvtRecord(self, port, evt):
     # record correct bot and evt
-        if not self.main.state.inTest:
-            self.temp_records[joy].addEvt(evt)
-            self.matchEvtList.add(evt) #add evt
-
+        try:
+            if not self.main.state.inTest:
+                self.temp_records[port].addEvt(evt)
+                self.matchEvtList.add(evt)#add evt
+                print(evt, self.temp_records[port].roboNum )
+        except:
+            print("temp_records only has six ports: (0-5)")
+    
     def commitMatch(self):
         for i in self.temp_records:
             i.tally
@@ -148,18 +168,33 @@ class Data():
 
     def save(self):
         import pickle
-        save_file = open(self.theCompetition.name + ".dat", "wb")
-        save_data = [self.theCompetition,self.robotList ]
+        save_file = open("resources/save_files/" + self.competition.name + ".dat", "wb")
+        save_data = [self.competition,self.robots ]
         
         pickle.dump( save_data, save_file )
         save_file.close()
 
     def load(self, fileName):
         import pickle
-        load_data = pickle.load( open(fileName, "rb") )
-        self.theCompetition = load_data[0]
-        self.robotList = load_data[1]
-        
+        try:
+            load_data = pickle.load( open("resources/save_files/" + fileName + ".dat", "rb") )
+            self.competition = load_data[0]
+            self.robots = load_data[1]
+            print("loaded save: ",fileName)
+            return True
+            
+        except:
+            print(os.getcwd())
+            self.competition = data.Competition(name = fileName)
+            print("new competition:", fileName)
+            print('--to save: type "save"')
+            return False
+            
+    def getSaves(self):
+        for file in os.listdir("resources/save_files/"):
+            if file.endswith(".dat"):
+                print ("    ",file)
+                
     def matchReset(self):
         pass
 '''
@@ -171,11 +206,14 @@ class Data():
     
 
 class State():
-    def __init__(self): #, myMain):
+    def __init__(self, main): #, myMain):
         self.echo = True
+        self.autoEndMatch = True
         self.exit = False
         self.reset()
         self.instartup = True
+        self.main = main
+        
     def getState(self):
         self.stlr()
         return self.statelist
@@ -183,23 +221,24 @@ class State():
     def reset(self):
         self.statelist = []      
         self.inMatch = False
-        self.inSetup = False
-        self.inReview = False
+        #self.inSetup = False
+        #self.inReview = False
         self.inTest = False
         self.matchReadyStart = False
         self.matchReadyCommit = False
         self.matchPaused = False
         self.matchEnded = False
         self.matchRunning = False
+        self.matchStartTime = None
         self.currentMatch = None #only defined in match
         self.lastMatch = None #previous match
-        
+        self.nextMatch = None
         
     def stlr(self):#state list reset
         self.statelist = []      
         self.statelist.append( [self.inMatch, "inMatch"])
-        self.statelist.append( [self.inSetup,"inSetup"])
-        self.statelist.append( [self.inReview,"inReview"])
+        #self.statelist.append( [self.inSetup,"inSetup"])
+        #self.statelist.append( [self.inReview,"inReview"])
         self.statelist.append( [self.inTest ,"inTest"])
         self.statelist.append( [self.matchReadyStart,"matchReadyStart"])
         self.statelist.append( [self.matchReadyCommit,"matchReadyCommit"])
@@ -208,32 +247,32 @@ class State():
         self.statelist.append( [self.matchRunning ,"matchRunning"])
         self.statelist.append( [self.currentMatch,"currentMatch"])
         self.statelist.append( [self.lastMatch,"lastMatch"])
+        self.statelist.append( [self.nextMatch,"nextMatch"])
         
     def enterMatchMode(self):
         self.inMatch = True
         self.matchReadyStart = True
         self.matchPaused = True
-        if self.echo:
-            print("entering match mode")      
+        self.currentmatch = self.nextMatch
+        self.nextMatch = None
+        print("entering match mode")      
         
     def togglePause(self):
         self.matchPaused = not self.matchPaused
-        if self.echo:
-            print("pause", self.matchPaused)
+        print("pause", self.matchPaused)
             
     def pauseSet(self, set):
         self.matchPaused = set
-        if self.echo:
-            print("pause", self.matchPaused)
+        print("pause", self.matchPaused)
         
     def startMatch(self):
+        self.matchStartTime = datetime.datetime.now()
         self.matchPaused = False
         self.matchReadyStart = False
-        self.matchRunning = True
+        self.matchRunning = True 
         self.matchEnded = False
         self.matchReadyCommit = False
-        if self.echo:
-            print("match started")    
+        print("match started")
             
     def endMatch(self):
         self.matchReadyStart = False
@@ -241,20 +280,20 @@ class State():
         self.matchPaused = False
         self.matchEnded = True
         self.matchRunning = False
-        if self.echo:
-            print("match ended")        
+        print("match ended")        
         
     def resetMatch(self):
         data.resetMatch()
+        self.matchStartTime = None
         self.matchReadyStart = True
         self.matchReadyCommit = False
         self.matchPaused = True
         self.matchEnded = False
         self.matchRunning = False
-        if self.echo:
-            print("match reset")      
+        print("match reset")      
         
-    def exitMatchMode(self):
+    def exitMatchMode(self, purge=True):
+        self.matchStartTime = None
         self.inMatch = False
         self.matchReadyStart = False
         self.matchReadyCommit = False
@@ -263,11 +302,9 @@ class State():
         self.matchRunning = False
         self.lastMatch = self.currentMatch
         self.currentMatch = None
-        if self.echo:
-            print("leaving match mode")              
-        
-    def enterSetupMode(self):
-        self.inSetup = True
+        if purge:
+            self.main.connect.purge()
+        print("leaving match mode")              
 
         
     def setMatch(self, match, comp = None):
@@ -276,7 +313,36 @@ class State():
             pass
         self.currentMatch = self.currentComp[match-1]
         
+class Connecter():
+    def __init__(self, main):
+        self.data = main.data
+        self.main = main
         
+        self._inputs = self.main.Joy.getInputs()
+        self.porter = dict([(id(j),None) for j in self._inputs])
+        #print(type(self.porter))
+        #print(self.porter)
+        
+    def reset(self):
+        self.main.Joy.reset()        
+        self._inputs = self.main.Joy.getInputs()
+        self.porter = {(id(j),None) for j in self._inputs}
+        print(self.porter)
+        
+    def setPorting(self, INPUT, port):
+        self.porter[id(INPUT)]=port
+        print(self.porter)
+        pass
+    
+    def portEvt(self, INPUT, evt):
+        try:
+            self.data.gameEventRecord(self.porter[id(INPUT)],evt)
+        except:
+            print("port failed")
+        
+    def purge(self):
+        self.porter = None        
+        self.porter = dict([(id(j),None) for j in self._inputs])
         
 if __name__ == "__main__": #This part is so that when it is imported, the following code doesn't run   
     main = Main()
