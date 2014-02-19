@@ -138,10 +138,10 @@ class Data():
         
         
     def setPort(self, port, robot): #set robots for match temp_records
-        #try:
-        self.temp_records[port] = data.InMatchRobotRecords(robot.match.comp.name, robot.match.number, robot.teamNumber, robot.alliance)
-        #except:
-            #print("temp_records only has six ports: (0-5)")
+        try:
+            self.temp_records[port] = data.InMatchRobotRecords(robot.match.comp.name, robot.match.number, robot.teamNumber, robot.alliance)
+        except:
+            print("temp_records only has six ports: (0-5)")
     
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
@@ -173,6 +173,7 @@ class Data():
         
         pickle.dump( save_data, save_file )
         save_file.close()
+        print(self.competition.name,"competition saved")
 
     def load(self, fileName):
         import pickle
@@ -184,7 +185,6 @@ class Data():
             return True
             
         except:
-            print(os.getcwd())
             self.competition = data.Competition(name = fileName)
             print("new competition:", fileName)
             print('--to save: type "save"')
@@ -195,6 +195,17 @@ class Data():
             if file.endswith(".dat"):
                 print ("    ",file)
                 
+                
+
+    def destroySaves(self):
+        files = [f for f in os.listdir(".\\")]
+        print("this function is a bad idea- are you absolutely sure you want to delete ALL save files")
+        if user.confirm():
+            for file in files:
+                if file[-3:] == "dat":
+                    os.remove(file)
+                    print()
+
     def matchReset(self):
         pass
 '''
