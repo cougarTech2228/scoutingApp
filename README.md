@@ -15,4 +15,18 @@ The goal is to have a simple and effective means to scout FRC Competitions
 which can easily be modified to be usable for the 2014 FRC Challenge Aerial Assist
 
 This program should be coded according to the guidelines outlined in PEP8, (This means spaces, no tabs)
+
+/***
+ * ___ _ _____ ___ _ ___ _____ _
+ * / __| /_\|_ _|/ __| (_) / __| ___ _ _ __ _ __ _ _ _|_ _|___ __ | |_
+ * | (__ / _ \ | | \__ \ _ | (__ / _ \| || |/ _` |/ _` || '_| | | / -_)/ _|| ' \
+ * \___|/_/ \_\|_| |___/ (_) \___|\___/ \_,_|\__, |\__,_||_| |_| \___|\__||_||_|
+ * |___/
+ * ___ _ _ _ _ _ _ _
+ * / __| __ ___ _ _ | |_ (_) _ _ __ _ /_\ _ __ _ __ | |(_) __ __ _ | |_ (_) ___ _ _
+ * \__ \/ _|/ _ \| || || _|| || ' \ / _` | / _ \ | '_ \| '_ \| || |/ _|/ _` || _|| |/ _ \| ' \
+ * |___/\__|\___/ \_,_| \__||_||_||_|\__, | /_/ \_\| .__/| .__/|_||_|\__|\__,_| \__||_|\___/|_||_|
+ * |___/ |_| |_|
+ *
+ * 
 						 
