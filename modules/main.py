@@ -61,7 +61,10 @@ class Main():
         #AN EMPTY UNUSED FUNCTION THAT EXISTS SOLELY TO AID IN THE FIX FOR A REALLY ANNOYING THREADING ISSUE
         while not self.state.exit:
             if self.state.matchRunning:
-                time.sleep(150)
+                time.sleep(30)
+                self.state.autonomous = False
+                print("entering teleop")
+                time.sleep(120)
                 self.state.endMatch()
  
         print("program closing")
@@ -157,9 +160,11 @@ class Data():
     def commitMatch(self):
         for i in self.temp_records:
             i.tally
-            for r in self.state.currentMatch.robots:
+            for r in self.main.state.currentMatch.robots:
                 if r.name == i.name:
                     r.records = i
+                    print("saving a match record")
+                    
         self.state.currentMatch.events = self.matchEvtList
 
     def save(self):
@@ -233,6 +238,7 @@ class State():
         self.inTest = False
         self.matchReadyStart = False
         self.matchReadyCommit = False
+        self.autonomous = False
         self.matchPaused = False
         self.matchEnded = False
         self.matchRunning = False
@@ -273,6 +279,7 @@ class State():
         print("pause", self.matchPaused)
         
     def startMatch(self):
+        self.autonomous = True
         self.matchStartTime = datetime.datetime.now()
         self.matchPaused = False
         self.matchReadyStart = False
@@ -280,6 +287,7 @@ class State():
         self.matchEnded = False
         self.matchReadyCommit = False
         print("match started")
+        print("entering autonomous")
             
     def endMatch(self):
         self.matchReadyStart = False
@@ -342,10 +350,10 @@ class Connecter():
         pass
     
     def portEvt(self, INPUT, evt):
-        try:
-            self.data.gameEventRecord(self.porter[id(INPUT)],evt)
-        except:
-            print("port failed")
+        #try:
+        self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
+        #except:
+           # print("port failed")
         
     def purge(self):
         self.porter = None        

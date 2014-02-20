@@ -1,6 +1,7 @@
 #joystick interface module
 import datetime
 import pygame
+import data
 _undoButton=10 # placeholder
 
 class inputOb:
@@ -20,25 +21,37 @@ class inputOb:
     def record(self, b,time):
         # will record event
         #possible laterfunctionality time to reconstruct matches in real time
-        
         self.buttonBuffer.append([b,time])
         
         if b == self.bind.UNDO:
-            if not self.bind.isAttribute(self.buttonBuffer[-2]):
-                self.buttonBuffer.remove[-1]
-                self.buttonBuffer.remove[-1]
+            if self.bind.isEvent(self.buttonBuffer[-2]):
+                self.buttonBuffer.remove(-1)
+                self.buttonBuffer.remove(-1)
             else:
                 pass#complicated undo code
                 
-        elif self.bind.isAttribute(b) and self.bind.isEvt(self.buttonBuffer[-2]):
+        elif self.bind.isAttribute(b) and self.bind.isEvent(self.buttonBuffer[-2]):
             evt = self.bind.makeEvent(self.buttonBuffer)
-            self.main.connect.portEvt(self, evt) 
+            print(evt)
+            if evt:
+                self.main.connect.portEvt(self, evt)
         
 class Bind():
     def __init__(self, main):
         self.UNDO = 8
-        self.SUCCESS = 11
-        self.FAILURE = 10
+        self.SUCCESS = 10
+        self.FAILURE = 9
+        
+        self.LowGoal = 1
+        self.HighGoal = 2
+        self.Pass = 3
+        self.Receive = 4
+        self.TrussThrow = 0
+        self.TrussCatch = 7
+        self.BlockGoal = 5
+        self.Defense = 6
+        self.MoveForward = 0
+        
         self.main = main
     
     def isAttribute(self, button):
@@ -50,15 +63,69 @@ class Bind():
             return False
             
     def isEvent(self, button):
-        if button in [1,2,3,4,5,9,6,7]:
+        if button not in [self.SUCCESS, self.FAILURE,self.UNDO]:
             return True
         else:
             return False
         
     def makeEvent(self, buttonBuffer):
-        attribute = buttonBuffer[-1][0]
-        event = buttonBuffer[-2][0]
         timespan = [buttonBuffer[-2][1],buttonBuffer[-1][1]]
+        
+        if buttonBuffer[-1][0] == self.SUCCESS:
+            success = True
+        elif buttonBuffer[-1][0] == self.FAILURE:
+            success = False
+        else:
+            raise
+            
+        button = buttonBuffer[-2][0]
+        
+        if self.main.state.autonomous:
+            
+            if button == self.MoveForward:
+                return data.Auto_MoveForwandEvent(success)
+                     
+            elif button == self.LowGoal:
+                return data.Auto_LowGoalEvent(success)
+            
+            elif button == self.HighGoal:
+                return data.Auto_HighGoalEvent(success)
+                
+            elif button == self.BlockGoal:
+                return None#temporary
+                
+            else:
+                return None
+            
+        else:
+            
+            if button == self.LowGoal:
+                return data.LowGoalEvent(success)
+                
+            elif button == self.HighGoal:
+                return data.HighGoalEvent(success)
+                
+            elif button == self.TrussThrow:
+                return data.TrussThrowEvent(success)
+            
+            elif button == self.TrussCatch:
+                return data.TrussCatchEvent(success)
+                
+            elif button == self.Pass:
+                return data.AssistPassEvent(success)
+                
+            elif button == self.Receive:
+                return data.AssistRecieveEvent(success)
+            
+            elif button == self.Defense:
+                return None#temporary
+                
+            elif button == self.BlockGoal:
+                return None#temporary
+            
+            else:
+                return None
+            
         #at this time timespan is not used- possible later functionality
         
         
@@ -116,8 +183,6 @@ class Joy():
                      first = False
                      
                  evt = pygame.event.poll()
-                 if evt.type is not 0:
-                     print(evt)
                  if not state.matchPaused:
                      if evt.type == 10:
                         self.inputObs[evt.joy].record(evt.button, datetime.datetime.now())
