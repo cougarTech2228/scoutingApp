@@ -276,7 +276,7 @@ def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
 def prepareMatch(main):
     if main.state.inMatch:
         print("you cant prepare for next math in match")
-        
+        return
     elif main.state.nextMatch:
         match = main.state.nextMatch
         print("Match already prepared. Would you like to continue?")

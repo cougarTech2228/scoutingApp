@@ -86,7 +86,7 @@ class Data():
 #       self.state.currentMatch = self.compList[-1][-1]
         
         self.temp_records  = [None,None,None,None,None,None]
-        self.matchEvtList = [] #evt list
+        self.matchEvtList = data.GameEventList()#evt list
         
 
     def matchCreate (self, robots, placement ,force):
@@ -150,11 +150,13 @@ class Data():
     def gameEvtRecord(self, port, evt):
     # record correct bot and evt
         try:
-            if not self.main.state.inTest:
-                self.temp_records[port].addEvt(evt)
-                self.matchEvtList.add(evt)#add evt
-                print(evt, self.temp_records[port].roboNum )
-        except:
+            print("in data game evt record",evt, self.temp_records[port].teamnumber)
+            self.temp_records[port].addEvt(evt)
+            evt.robot = self.temp_records[port].teamnumber
+            self.matchEvtList.add(evt)#add evt
+            print("data game evt record finished")
+            
+        except IndexError:
             print("temp_records only has six ports: (0-5)")
     
     def commitMatch(self):
@@ -343,6 +345,7 @@ class Connecter():
         self._inputs = self.main.Joy.getInputs()
         self.porter = {(id(j),None) for j in self._inputs}
         print(self.porter)
+        
         
     def setPorting(self, INPUT, port):
         self.porter[id(INPUT)]=port

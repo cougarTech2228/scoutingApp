@@ -24,12 +24,15 @@ class inputOb:
         self.buttonBuffer.append([b,time])
         
         if b == self.bind.UNDO:
-            if self.bind.isEvent(self.buttonBuffer[-2]):
-                self.buttonBuffer.remove(-1)
-                self.buttonBuffer.remove(-1)
-            else:
-                pass#complicated undo code
-                
+            try:
+                if self.bind.isEvent(self.buttonBuffer[-2]):
+                    self.buttonBuffer.pop(-1)
+                    self.buttonBuffer.pop(-1)
+                else:
+                    pass#complicated undo code
+            except IndexError:
+                pass                    
+               
         elif self.bind.isAttribute(b) and self.bind.isEvent(self.buttonBuffer[-2]):
             evt = self.bind.makeEvent(self.buttonBuffer)
             print(evt)
