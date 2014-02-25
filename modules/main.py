@@ -61,7 +61,10 @@ class Main():
         #AN EMPTY UNUSED FUNCTION THAT EXISTS SOLELY TO AID IN THE FIX FOR A REALLY ANNOYING THREADING ISSUE
         while not self.state.exit:
             if self.state.matchRunning:
-                time.sleep(150)
+                time.sleep(30)
+                self.state.autonomous = False
+                print("entering teleop")
+                time.sleep(120)
                 self.state.endMatch()
  
         print("program closing")
@@ -83,15 +86,11 @@ class Data():
 #       self.state.currentMatch = self.compList[-1][-1]
         
         self.temp_records  = [None,None,None,None,None,None]
-        self.matchEvtList = [] #evt list
+        self.matchEvtList = data.GameEventList()#evt list
         
 
-    def matchCreate (self, robots, placement=None):
-        if placement is None:
-            self.competition.newMatch(robots)
-            
-        else:
-            self.competition.newMatch(robots, placement)
+    def matchCreate (self, robots, placement ,force):
+            self.competition.newMatch(robots, matchNum=placement, force = force)
             
     def getUndefinedMatch(self):
         for m in range(len(self.competition)):
@@ -138,10 +137,10 @@ class Data():
         
         
     def setPort(self, port, robot): #set robots for match temp_records
-        #try:
-        self.temp_records[port] = data.InMatchRobotRecords(robot.match.comp.name, robot.match.number, robot.teamNumber, robot.alliance)
-        #except:
-            #print("temp_records only has six ports: (0-5)")
+        try:
+            self.temp_records[port] = data.InMatchRobotRecords(robot.match.comp.name, robot.match.number, robot.teamNumber, robot.alliance)
+        except:
+            print("temp_records only has six ports: (0-5)")
     
     def add_robots_from_file(self, fileName="robots_test.txt"):
         file = open(fileName).readlines()
@@ -151,19 +150,23 @@ class Data():
     def gameEvtRecord(self, port, evt):
     # record correct bot and evt
         try:
-            if not self.main.state.inTest:
-                self.temp_records[port].addEvt(evt)
-                self.matchEvtList.add(evt)#add evt
-                print(evt, self.temp_records[port].roboNum )
-        except:
+            print("in data game evt record",evt, self.temp_records[port].teamnumber)
+            self.temp_records[port].addEvt(evt)
+            evt.robot = self.temp_records[port].teamnumber
+            self.matchEvtList.add(evt)#add evt
+            print("data game evt record finished")
+            
+        except IndexError:
             print("temp_records only has six ports: (0-5)")
     
     def commitMatch(self):
         for i in self.temp_records:
             i.tally
-            for r in self.state.currentMatch.robots:
+            for r in self.main.state.currentMatch.robots:
                 if r.name == i.name:
                     r.records = i
+                    print("saving a match record")
+                    
         self.state.currentMatch.events = self.matchEvtList
 
     def save(self):
@@ -173,6 +176,7 @@ class Data():
         
         pickle.dump( save_data, save_file )
         save_file.close()
+        print(self.competition.name,"competition saved")
 
     def load(self, fileName):
         import pickle
@@ -184,7 +188,6 @@ class Data():
             return True
             
         except:
-            print(os.getcwd())
             self.competition = data.Competition(name = fileName)
             print("new competition:", fileName)
             print('--to save: type "save"')
@@ -195,6 +198,17 @@ class Data():
             if file.endswith(".dat"):
                 print ("    ",file)
                 
+                
+
+    def destroySaves(self):
+        files = [f for f in os.listdir(".\\")]
+        print("this function is a bad idea- are you absolutely sure you want to delete ALL save files")
+        if user.confirm():
+            for file in files:
+                if file[-3:] == "dat":
+                    os.remove(file)
+                    print()
+
     def matchReset(self):
         pass
 '''
@@ -226,6 +240,7 @@ class State():
         self.inTest = False
         self.matchReadyStart = False
         self.matchReadyCommit = False
+        self.autonomous = False
         self.matchPaused = False
         self.matchEnded = False
         self.matchRunning = False
@@ -266,6 +281,7 @@ class State():
         print("pause", self.matchPaused)
         
     def startMatch(self):
+        self.autonomous = True
         self.matchStartTime = datetime.datetime.now()
         self.matchPaused = False
         self.matchReadyStart = False
@@ -273,6 +289,7 @@ class State():
         self.matchEnded = False
         self.matchReadyCommit = False
         print("match started")
+        print("entering autonomous")
             
     def endMatch(self):
         self.matchReadyStart = False
@@ -329,16 +346,17 @@ class Connecter():
         self.porter = {(id(j),None) for j in self._inputs}
         print(self.porter)
         
+        
     def setPorting(self, INPUT, port):
         self.porter[id(INPUT)]=port
         print(self.porter)
         pass
     
     def portEvt(self, INPUT, evt):
-        try:
-            self.data.gameEventRecord(self.porter[id(INPUT)],evt)
-        except:
-            print("port failed")
+        #try:
+        self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
+        #except:
+           # print("port failed")
         
     def purge(self):
         self.porter = None        

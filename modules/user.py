@@ -90,10 +90,15 @@ class Com(cmd.Cmd): #global commands
     def do_start(self, t):
         if self.state.matchReadyStart:
             self.state.startMatch()
-            print("match started")
         else: 
             print("you can't start a match now")
             self.do_gets(t)
+            
+    def do_commit(self,t):
+        if self.state.matchReadyCommit:                
+            if confirm():
+                self.main.data.commitMatch()
+            
     def do_end(self, t):
         if self.state.matchRunning:
             self.state.endMatch()
@@ -185,17 +190,27 @@ def strcIn(allowed = None, message = "", typeInt = False, check = False):
         return re
     
 
-def confirm(m = "is this okay - y/n"):
+def confirm(m = "is this okay", safe = True):
     print (m)
-    a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No"], message = "y/n-->>")
-    if a in ["y","Y","yes","Yes"]:
-        return True
+    if safe:
+        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No"], message = "y/n-->>")
+        if a in ["y","Y","yes","Yes"]:
+            return True
+        else:
+            return False
     else:
-        return False
-        
+        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No", ""], message = "y/n-->>")
+        if a in ["y","Y","yes","Yes"]:
+            return True
+        elif a == "":
+            return True
+        else: 
+            return False
         
         
 def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
+    f = False
+    
     if match:
         print("setting up match")
     
@@ -218,12 +233,12 @@ def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
                 match = num
                 if main.state.currentMatch.number == match:
                     print("you cant setup that match, you are already in it")
-                    return
+                    return False
     try:
        if main.data.competition[match-1]:
             print("match already exists, would you like to override it.\n (this could be a destructive process)")
             if not confirm():
-                return
+                return False
             else:
                 f = True#must force override of match
     except:
@@ -249,7 +264,7 @@ def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
         print("commit or escape")
         re = strcIn(message = ">>>>")
         if re == "commit":
-            main.data.matchCreate(robos, match, force = f)
+            main.data.matchCreate(robos, match, f)
             return True
             
         elif re == "escape" or re == "E":
@@ -261,7 +276,7 @@ def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
 def prepareMatch(main):
     if main.state.inMatch:
         print("you cant prepare for next math in match")
-        
+        return
     elif main.state.nextMatch:
         match = main.state.nextMatch
         print("Match already prepared. Would you like to continue?")
@@ -272,22 +287,11 @@ def prepareMatch(main):
     else:
         match = 1
         
-    while True:
-        print ("prepare next match: #",match," ?")
-        if not confirm():
-            print("Do you want to enter another match?")
-            ans = confirm()
-            if ans is True:
-                match = strcIn(allowed=range(1,1000), message="what match to prepare:",typeInt=True,check=True )
-                #TODO remove '1000' as parameter in above range(), replace with length of matchlist
-                break
-            else:
-                print("Do you wan't to exit?")
-                nother_ans = confirm()
-                if nother_ans:
-                    return 1
-                else:
-                    break
+    print ("prepare next match: #",match," ?")
+    if not confirm():
+        match = strcIn(message="what match to prepare:",typeInt=True,check=True )
+        print ("prepare match ", match)        
+        
     try:
         main.data.competition[match-1]
         
@@ -297,6 +301,9 @@ def prepareMatch(main):
             if not setupmatch(main,match=match):
                 print("aborting prepare match")
                 return
+        else:
+            print("aborting prepare match")
+            return
                 
     c = False
     while not c:
@@ -309,6 +316,6 @@ def prepareMatch(main):
             port+=1
         c = confirm()
             
-    main.state.nextMatch = match
+    main.state.nextMatch = main.data.competition[match-1]
         
        
