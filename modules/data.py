@@ -99,21 +99,30 @@ class InMatchRobotRecords:
     def __init__(self, compName, myMatch, robot, ally):
         self.comp = compName #compatician name
         self.match = myMatch #match object
-        self.roboNum = robot #robot number
+        self.teamnumber = robot #robot number
         self.alliance = ally # string (RED or BLUE)
         self.events = GameEventList() 
         self.comments = []
+        self.records =  dict([])#dictionary of evt types with lists of failures and successes
         # variables being recorded ex)shots missed, points scored, climberlevel reached
+        self.points = 0        
         
     def addEvt(self, event):
         self.events.add(event)
         pass
         #add event to event list
 
-    def tally():
+    def tally(self):
         for evt in GameEventList:
-            pass#tally up evt list
-        pass
+            if not evt.__name__ in self.records:
+                self.records[evt.__name__]=[0, 0] #failures and successes
+            
+            if evt.success:
+                self.records[evt.__name__][1] += 1
+            else:
+                self.records[evt.__name__][0] += 1
+                    
+            self.points += evt.pointsValue
 
 
 #---------------------------------------------------------------------------------
@@ -257,7 +266,6 @@ class GameEventList(list):
             self.HEAD.setAntecedingEvent(event)
         self.eventIndexCounter += 1
         self.HEAD = self[self.eventIndexCounter]
-
 
     def undo(self):
         if self.HEAD.precedingEvent is not None:
