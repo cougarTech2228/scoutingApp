@@ -3,6 +3,7 @@
 
 import cmd
 import sys
+from main import NUMBERROBOTSPERMATCH 
 
 
 class Com(cmd.Cmd): #global commands
@@ -208,7 +209,7 @@ def confirm(m = "is this okay", safe = True):
             return False
         
         
-def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
+def setupmatch(main, match=None, nor = NUMBERROBOTSPERMATCH): #nor  = number of robots per alliance
     f = False
     
     if match:
@@ -231,9 +232,13 @@ def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
                 print ("what match to set-up: (number)")
                 num = strcIn(typeInt=True, message="match number>>")
                 match = num
-                if main.state.currentMatch.number == match:
-                    print("you cant setup that match, you are already in it")
-                    return False
+                try:
+                    if main.state.currentMatch.number == match:
+                        print("you cant setup that match, you are already in it")
+                        return False
+                except:
+                    pass
+                
     try:
        if main.data.competition[match-1]:
             print("match already exists, would you like to override it.\n (this could be a destructive process)")

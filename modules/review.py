@@ -53,15 +53,19 @@ class Data():
         self.competition = comp
     
     def printMD(level = 1, scope = None):#scope is range of matches should be alist of numbers ex) [2,3,4,5,6,7]
-        for m in [competition[n-1] for n in scope]:
+        for m in [self.competition[n-1] for n in scope]:
             print m.number
+            if m.notRun:
+                print("*")
             if level>=2:
                 for r in m.robots:
-                    print(r.teamnumber)
-                    if level>=3
+                    print("    ",r.teamnumber)
+                    if level>=3:
+                        '''
                         for key in r.record.records:#must get keys
                             pass
-        
+                        '''
+                        pass
                    
        
 class cmdr(cmd.Cmd):
@@ -75,8 +79,9 @@ class cmdr(cmd.Cmd):
     
     def do_save(self,t):
         pass
+    
     def do_search(self,t):
-        
+        pass
 
   
 Main()

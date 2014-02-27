@@ -99,7 +99,7 @@ class InMatchRobotRecords:
     def __init__(self, compName, myMatch, robot, ally):
         self.comp = compName #compatician name
         self.match = myMatch #match object
-        self.teamnumber = robot #robot number
+        self.teamNumber = robot #robot number
         self.alliance = ally # string (RED or BLUE)
         self.events = GameEventList() 
         self.comments = []

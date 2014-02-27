@@ -11,7 +11,7 @@ class inputOb:
     def __init__(self,N, myJoystick, main):
         self.myJoystick = myJoystick
         self.myJoystick.init()
-        if N < 3:
+        if N > 2:
             self.type = "Controller"
             print("controller ", N, " initialised")
         else:
@@ -27,23 +27,26 @@ class inputOb:
         # will record event
         #possible laterfunctionality time to reconstruct matches in real time
         self.buttonBuffer.append([b,time])
-        
-        if b == self.bind.UNDO:
-            try:
+        try:
+            if b == self.bind.UNDO:
                 if self.bind.isEvent(self.buttonBuffer[-2]):
                     self.buttonBuffer.pop(-1)
                     self.buttonBuffer.pop(-1)
                 else:
                     pass#complicated undo code
-            except IndexError:
-                pass                    
-               
-        elif self.bind.isAttribute(b) and self.bind.isEvent(self.buttonBuffer[-2]):
-            evt = self.bind.makeEvent(self.buttonBuffer)
-            print(evt)
-            if evt:
-                self.main.connect.portEvt(self, evt)
-        
+                 
+             
+            
+            elif self.bind.isAttribute(b) and self.bind.isEvent(self.buttonBuffer[-2][0]):
+                evt = self.bind.makeEvent(self.buttonBuffer)
+                print(evt)
+                if evt:
+                    self.main.connect.portEvt(self, evt)
+                    
+        except IndexError:
+            pass
+            
+            
 class Bind():
     def __init__(self, main, mode = "Joystick"):
         if mode == "Controller":
@@ -58,7 +61,7 @@ class Bind():
             self.TrussThrow = 10
             self.TrussCatch = 11
             self.Penalty = None#set to hat button
-            self.GoalBlock = 0
+            self.BlockGoal = 0
             self.MoveForward = 0
             
         else:#joysticks
@@ -73,9 +76,9 @@ class Bind():
             self.TrussThrow = 0
             self.TrussCatch = 7
             self.BlockGoal = 5
-            self.Penalty = None#set to hat button
-            self.MoveForward = 0
-            
+            self.Penalty = None  #set to hat button
+            self.MoveForward = 0 
+                                 
         self.main = main
         self.mode = mode
     
@@ -142,9 +145,6 @@ class Bind():
                 
             elif button == self.Receive:
                 return data.AssistRecieveEvent(success)
-            
-            elif button == self.Defense:
-                return None#temporary
                 
             elif button == self.BlockGoal:
                 return None#temporary
@@ -188,7 +188,7 @@ class Joy():
             
             for i in range(numJoy):
                 self.inputObs[i] = input(i, pygame.joystick.Joystick(i), main)
-                
+        
     
     def reset(self):
         self.stopRun = True                        
