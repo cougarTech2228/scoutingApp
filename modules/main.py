@@ -172,7 +172,8 @@ class Data():
                     print("saving a match record")
                     
         self.state.currentMatch.events = self.matchEvtList
-
+        self.state.currentMatch.notRun = False        
+        
     def save(self):
         import pickle
         save_file = open("resources/save_files/" + self.competition.name + ".dat", "wb")
@@ -358,13 +359,11 @@ class Connecter():
     
     def portEvt(self, INPUT, evt):
         try:
-            if self.porter[id(INPUT)]:
-                self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
-            else:
-                print("port failed")
-        except:
-            print("some thing weird happened")
-        
+            self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
+
+        except KeyError:
+            print("port failed")
+            
     def purge(self):
         self.porter = None        
         self.porter = dict([(id(j),None) for j in self._inputs])

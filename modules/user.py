@@ -3,6 +3,7 @@
 
 import cmd
 import sys
+import os
 from main import NUMBERROBOTSPERMATCH 
 
 
@@ -56,7 +57,7 @@ class Com(cmd.Cmd): #global commands
     def do_preMatch(self,t):    
         prepareMatch(self.main)
         
-    def help_quit(self, t):
+    def help_quit(self):
         print("syntax: quit")
         print("-- terminates the application")
 
@@ -130,6 +131,16 @@ class Com(cmd.Cmd): #global commands
     def do_echon(self, t):
         self.state.echo = not self.state.echo
         
+    def do_review(self, t):
+        if "-i" in t:
+            try:
+                import review.py
+
+            except StopIteration:
+                pass
+        else:    
+            os.system('./REVIEW.sh')
+    
     def do_show(self, t):
         if "ds" in t:
             for m in self.main.data.competition:
@@ -146,7 +157,7 @@ class Com(cmd.Cmd): #global commands
                 
                 
     do_stm = do_setupMatch
-    do_pms = do_preMatch
+    do_pfm = do_preMatch
     do_s = do_save 
     
 class Test(cmd.Cmd):

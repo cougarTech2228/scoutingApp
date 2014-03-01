@@ -64,6 +64,7 @@ class Competition(list):
 class Match:
 
     def __init__(self, matchNum, teamNumbers, comp):
+        self.notRun = True
         self.comp = comp
         self.number = matchNum
 #        self.robots = [None, None, None, None, None] # [0:2] red, [3:5] blue
