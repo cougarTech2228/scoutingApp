@@ -12,10 +12,14 @@ import sys
 import os
 
 tester =  True
+NUMBERROBOTSPERMATCH = 3 #actually it is robots per alliance
 
 class Main():
     def __init__(self):
-        pass
+        print ("not this program requires three joysticks and three controllers PLUGED IN IN THAT ORDER")
+        print ("if you have not done this: close this window, unplug all usb's, plug in in right order, restart app")
+        time.sleep(.2)
+        
         
     def start(self, delay = False):
         if delay:
@@ -81,7 +85,7 @@ class Data():
         self.load(cstr)            
         self.main = main
         self.robots = data.RobotList()
-    
+        self.state = self.main.state
 #       self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
 #       self.state.currentMatch = self.compList[-1][-1]
         
@@ -150,9 +154,9 @@ class Data():
     def gameEvtRecord(self, port, evt):
     # record correct bot and evt
         try:
-            print("in data game evt record",evt, self.temp_records[port].teamnumber)
+            print("in data game evt record",evt, self.temp_records[port].teamNumber)
             self.temp_records[port].addEvt(evt)
-            evt.robot = self.temp_records[port].teamnumber
+            evt.robot = self.temp_records[port].teamNumber
             self.matchEvtList.add(evt)#add evt
             print("data game evt record finished")
             
@@ -163,12 +167,13 @@ class Data():
         for i in self.temp_records:
             i.tally
             for r in self.main.state.currentMatch.robots:
-                if r.name == i.name:
+                if r.teamNumber == i.teamNumber:
                     r.records = i
                     print("saving a match record")
                     
         self.state.currentMatch.events = self.matchEvtList
-
+        self.state.currentMatch.notRun = False        
+        
     def save(self):
         import pickle
         save_file = open("resources/save_files/" + self.competition.name + ".dat", "wb")
@@ -268,7 +273,7 @@ class State():
         self.inMatch = True
         self.matchReadyStart = True
         self.matchPaused = True
-        self.currentmatch = self.nextMatch
+        self.currentMatch = self.nextMatch
         self.nextMatch = None
         print("entering match mode")      
         
@@ -353,11 +358,12 @@ class Connecter():
         pass
     
     def portEvt(self, INPUT, evt):
-        #try:
-        self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
-        #except:
-           # print("port failed")
-        
+        try:
+            self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
+
+        except KeyError:
+            print("port failed")
+            
     def purge(self):
         self.porter = None        
         self.porter = dict([(id(j),None) for j in self._inputs])

@@ -9,12 +9,17 @@ class inputOb:
  # will have bindings
 
     def __init__(self,N, myJoystick, main):
-        print("joystick ", N, " initialised")
         self.myJoystick = myJoystick
         self.myJoystick.init()
-        self.bind = Bind(main)
+        if N > 2:
+            self.type = "Controller"
+            print("controller ", N, " initialised")
+        else:
+            self.type = "joystick" 
+            print("joystick ", N, " initialised")
+
+        self.bind = Bind(main, self.type)
         self.number = N
-        self.type = "joystick" #FOR NOW
         self.main = main
         self.buttonBuffer = []
         
@@ -22,40 +27,60 @@ class inputOb:
         # will record event
         #possible laterfunctionality time to reconstruct matches in real time
         self.buttonBuffer.append([b,time])
-        
-        if b == self.bind.UNDO:
-            try:
+        try:
+            if b == self.bind.UNDO:
                 if self.bind.isEvent(self.buttonBuffer[-2]):
                     self.buttonBuffer.pop(-1)
                     self.buttonBuffer.pop(-1)
                 else:
                     pass#complicated undo code
-            except IndexError:
-                pass                    
-               
-        elif self.bind.isAttribute(b) and self.bind.isEvent(self.buttonBuffer[-2]):
-            evt = self.bind.makeEvent(self.buttonBuffer)
-            print(evt)
-            if evt:
-                self.main.connect.portEvt(self, evt)
-        
+                 
+             
+            
+            elif self.bind.isAttribute(b) and self.bind.isEvent(self.buttonBuffer[-2][0]):
+                evt = self.bind.makeEvent(self.buttonBuffer)
+                print(evt)
+                if evt:
+                    self.main.connect.portEvt(self, evt)
+                    
+        except IndexError:
+            pass
+            
+            
 class Bind():
-    def __init__(self, main):
-        self.UNDO = 8
-        self.SUCCESS = 10
-        self.FAILURE = 9
-        
-        self.LowGoal = 1
-        self.HighGoal = 2
-        self.Pass = 3
-        self.Receive = 4
-        self.TrussThrow = 0
-        self.TrussCatch = 7
-        self.BlockGoal = 5
-        self.Defense = 6
-        self.MoveForward = 0
-        
+    def __init__(self, main, mode = "Joystick"):
+        if mode == "Controller":
+            self.UNDO = 3
+            self.SUCCESS = 1
+            self.FAILURE = 2
+            
+            self.LowGoal = 4
+            self.HighGoal = 5
+            self.Pass = 6
+            self.Receive = 7
+            self.TrussThrow = 10
+            self.TrussCatch = 11
+            self.Penalty = None#set to hat button
+            self.BlockGoal = 0
+            self.MoveForward = 0
+            
+        else:#joysticks
+            self.UNDO = 8
+            self.SUCCESS = 10
+            self.FAILURE = 9
+            
+            self.LowGoal = 1
+            self.HighGoal = 2
+            self.Pass = 3
+            self.Receive = 4
+            self.TrussThrow = 0
+            self.TrussCatch = 7
+            self.BlockGoal = 5
+            self.Penalty = None  #set to hat button
+            self.MoveForward = 0 
+                                 
         self.main = main
+        self.mode = mode
     
     def isAttribute(self, button):
         if button == self.SUCCESS:
@@ -70,8 +95,9 @@ class Bind():
             return True
         else:
             return False
-        
+            
     def makeEvent(self, buttonBuffer):
+
         timespan = [buttonBuffer[-2][1],buttonBuffer[-1][1]]
         
         if buttonBuffer[-1][0] == self.SUCCESS:
@@ -95,7 +121,7 @@ class Bind():
                 return data.Auto_HighGoalEvent(success)
                 
             elif button == self.BlockGoal:
-                return None#temporary
+                return None#temporary 
                 
             else:
                 return None
@@ -119,18 +145,14 @@ class Bind():
                 
             elif button == self.Receive:
                 return data.AssistRecieveEvent(success)
-            
-            elif button == self.Defense:
-                return None#temporary
                 
             elif button == self.BlockGoal:
                 return None#temporary
             
             else:
                 return None
-            
-        #at this time timespan is not used- possible later functionality
-        
+    #at this time timespan is not used- possible later functionality
+
         
         
 class Joy():
@@ -166,7 +188,7 @@ class Joy():
             
             for i in range(numJoy):
                 self.inputObs[i] = input(i, pygame.joystick.Joystick(i), main)
-                
+        
     
     def reset(self):
         self.stopRun = True                        
@@ -189,14 +211,12 @@ class Joy():
                  if not state.matchPaused:
                      if evt.type == 10:
                         self.inputObs[evt.joy].record(evt.button, datetime.datetime.now())
-                        ##if echoOn and not command:
-                        ##print("joystick: %s ---Button: %s  " % (evt.joy, evt.button))''' 
-                        # ^possible later functionality echo^
-                 '''     
-                 if evt.type == pygame.KEYDOWN:
-                     if evt.key == pygame.K_SPACE:
-                         state.toggle_pause()
-                 '''
+                        
+                        '''
+                     if evt.type == 9:
+                        self.inputObs[evt.joy].recordHat(evt.value)
+                        '''
+                 
             if first == False:
                 pass #get third axis for rating of robot preformance
                      

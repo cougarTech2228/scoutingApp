@@ -3,6 +3,8 @@
 
 import cmd
 import sys
+import os
+from main import NUMBERROBOTSPERMATCH 
 
 
 class Com(cmd.Cmd): #global commands
@@ -55,7 +57,7 @@ class Com(cmd.Cmd): #global commands
     def do_preMatch(self,t):    
         prepareMatch(self.main)
         
-    def help_quit(self, t):
+    def help_quit(self):
         print("syntax: quit")
         print("-- terminates the application")
 
@@ -129,6 +131,16 @@ class Com(cmd.Cmd): #global commands
     def do_echon(self, t):
         self.state.echo = not self.state.echo
         
+    def do_review(self, t):
+        if "-i" in t:
+            try:
+                import review.py
+
+            except StopIteration:
+                pass
+        else:    
+            os.system('./REVIEW.sh')
+    
     def do_show(self, t):
         if "ds" in t:
             for m in self.main.data.competition:
@@ -145,7 +157,7 @@ class Com(cmd.Cmd): #global commands
                 
                 
     do_stm = do_setupMatch
-    do_pms = do_preMatch
+    do_pfm = do_preMatch
     do_s = do_save 
     
 class Test(cmd.Cmd):
@@ -208,7 +220,7 @@ def confirm(m = "is this okay", safe = True):
             return False
         
         
-def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
+def setupmatch(main, match=None, nor = NUMBERROBOTSPERMATCH): #nor  = number of robots per alliance
     f = False
     
     if match:
@@ -231,9 +243,13 @@ def setupmatch(main, match=None, nor = 1): #nor  = number of robots per alliance
                 print ("what match to set-up: (number)")
                 num = strcIn(typeInt=True, message="match number>>")
                 match = num
-                if main.state.currentMatch.number == match:
-                    print("you cant setup that match, you are already in it")
-                    return False
+                try:
+                    if main.state.currentMatch.number == match:
+                        print("you cant setup that match, you are already in it")
+                        return False
+                except:
+                    pass
+                
     try:
        if main.data.competition[match-1]:
             print("match already exists, would you like to override it.\n (this could be a destructive process)")

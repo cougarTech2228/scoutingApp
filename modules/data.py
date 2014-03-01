@@ -64,6 +64,7 @@ class Competition(list):
 class Match:
 
     def __init__(self, matchNum, teamNumbers, comp):
+        self.notRun = True
         self.comp = comp
         self.number = matchNum
 #        self.robots = [None, None, None, None, None] # [0:2] red, [3:5] blue
@@ -99,7 +100,7 @@ class InMatchRobotRecords:
     def __init__(self, compName, myMatch, robot, ally):
         self.comp = compName #compatician name
         self.match = myMatch #match object
-        self.teamnumber = robot #robot number
+        self.teamNumber = robot #robot number
         self.alliance = ally # string (RED or BLUE)
         self.events = GameEventList() 
         self.comments = []
