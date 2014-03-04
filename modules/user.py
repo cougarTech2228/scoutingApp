@@ -48,18 +48,32 @@ class Com(cmd.Cmd): #global commands
             self.state.enterMatchMode()
         else:
             print("must first prepare match")
+            
+    def help_matchMode(self):
+        print("syntax: matchMode")
+        print("Puts the program into a state such that it can start the match")
+            
     def do_quit(self, t):
         if confirm(m = "quit (y/n)"):   
             self.state.exit = True
             sys.exit(1)
         else:
             pass
-    def do_preMatch(self,t):    
-        prepareMatch(self.main)
         
     def help_quit(self):
         print("syntax: quit")
+        print("shortcut: q")
         print("-- terminates the application")
+        
+    def do_preMatch(self,t):    
+        prepareMatch(self.main)
+        
+    def help_preMatch(self):
+        print("syntax: preMatch")
+        print("shortcut: pfm")
+        print("""Enter the prematch setup, it defaults to prepare for a new match \r
+                indexed after the last match in the registry.  If no match is set up \r
+                the program enters setup match""")
 
     def do_autoEnd(self, t):
         if "on" in t:
@@ -72,22 +86,32 @@ class Com(cmd.Cmd): #global commands
         else:
             print('"',t,'" is not a valid command')
             print("try 'autoEnd off' or 'autoEnd on'")
+            
+    def help_autoEnd(self):
+        print("syntax: autoEnd <on/off>")
+        print("""Sets the state of autoEnd, if autoEnd is set to on the match \r
+                will end automatically in the set time, when set to off the user \r
+                will have to end the program manually""")
     #match commands----------------------------------------------------------
 
     # shortcuts
     do_q = do_quit
+    help_q = help_quit
      
-    def do_p(self, t):
+    def do_pause(self, t):
         if self.state.matchRunning:
             self.state.togglePause()
         else:
             print("you cant toggle pause,no match is running")
             
-    def do_pause(self, t):
-        if self.state.matchRunning:
-            self.state.pauseSet(True)
-        else:
-            print("you can't pause,no match is running")
+    do_p = do_pause
+    
+    def help_pause(self):
+        print("syntax: pause")
+        print("shortcut: p")
+        print("Pauses the game is the game is running, unpauses if paused")
+        
+    help_p = help_pause
             
     def do_start(self, t):
         if self.state.matchReadyStart:
@@ -96,16 +120,27 @@ class Com(cmd.Cmd): #global commands
             print("you can't start a match now")
             self.do_gets(t)
             
+    def help_start(self):
+        print("""When a match is setup, prepared and matchMode has been activated, \r
+              this command starts the match""")
+            
     def do_commit(self,t):
         if self.state.matchReadyCommit:                
             if confirm():
                 self.main.data.commitMatch()
+                
+    def help_commit(self):
+        print("Confirms a choice when prompted to commit")
             
     def do_end(self, t):
         if self.state.matchRunning:
             self.state.endMatch()
         else:
             print ("you can't end a match: no match running")
+            
+    def help_end(self):
+        print("syntax: end")
+        print("-- ends the match when a match is running")
         
     def do_restart(self, t):
         if self.state.matchMode:
@@ -114,9 +149,17 @@ class Com(cmd.Cmd): #global commands
         else:
             print("no match to reset")
             
+    def help_restart(self):
+        print("syntax: restart")
+        print("Starts a match over again if there is a match running")
+            
     def do_esc(self, t):
         if self.state.matchMode:
             self.main.state.exitMatchMode()
+            
+    def help_esc(self):
+        print("syntax: esc")
+        print("When a match is running, this command exits the match")
     
     #setupcommands-----------------------------------------------------------
     
@@ -154,11 +197,22 @@ class Com(cmd.Cmd): #global commands
                         
     def do_save(self, t):
         self.main.data.save()
+        
+    def help_save(self):
+        print("syntax: save")
+        print("shortcut: s")
+        print("saves the game data to  <competition_name>.dat in ./resources/save_files")
                 
                 
     do_stm = do_setupMatch
     do_pfm = do_preMatch
+<<<<<<< HEAD
     do_s = do_save 
+=======
+    help_pfm = help_preMatch
+    do_s = do_save
+    help_s = help_save
+>>>>>>> 4b5ae30cbbaa8a160b325cf74ec2e382be9f1f54
     
 class Test(cmd.Cmd):
     
