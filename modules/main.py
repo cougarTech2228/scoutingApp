@@ -11,14 +11,14 @@ import time
 import sys
 import os
 
-tester =  True
+
 NUMBERROBOTSPERMATCH = 3 #actually it is robots per alliance
 
 class Main():
     def __init__(self):
-        print ("not this program requires three joysticks and three controllers PLUGED IN IN THAT ORDER")
-        print ("if you have not done this: close this window, unplug all usb's, plug in in right order, restart app")
-        time.sleep(.2)
+        print ("""Note this program requires three joysticks and three controllers \rPLUGED IN IN THAT ORDER""")
+        print ("""If you have not done this: close this window, unplug all usb's, \rplug in in right order, restart app""")
+#        time.sleep(.2)
         
         
     def start(self, delay = False):
@@ -30,7 +30,10 @@ class Main():
             
             global tester
             self.state.inTest = tester
-            print("initiated program state")
+            if self.state.inTest:
+                print("Initiated program in Test mode")
+            else:
+                print("Initiated program")
             
             self.data = Data(self)
             print("loaded data structure ")            
@@ -369,6 +372,10 @@ class Connecter():
         self.porter = dict([(id(j),None) for j in self._inputs])
         
 if __name__ == "__main__": #This part is so that when it is imported, the following code doesn't run   
+    if '-test' in sys.argv:
+        tester =  True
+    else:
+        tester = False
     main = Main()
     main.start()
 
