@@ -206,13 +206,10 @@ class Com(cmd.Cmd): #global commands
                 
     do_stm = do_setupMatch
     do_pfm = do_preMatch
-<<<<<<< HEAD
-    do_s = do_save 
-=======
+
     help_pfm = help_preMatch
     do_s = do_save
     help_s = help_save
->>>>>>> 4b5ae30cbbaa8a160b325cf74ec2e382be9f1f54
     
 class Test(cmd.Cmd):
     
@@ -378,12 +375,23 @@ def prepareMatch(main):
     c = False
     while not c:
         port=0
-        for robot in main.data.competition[match-1].robots:
+        used = []
+        def getInput(robot, port, used, main):
             print("press button one on joyStick for robot:",robot.teamNumber)
             inputOb = main.Joy.getJoy()#returns id
+            if inputOb in used:
+                print("joystick already used")
+                return False
             main.data.setPort(port,robot)
-            main.connect.setPorting(inputOb, port)                
+            main.connect.setPorting(inputOb, port)        
+            return True
+            
+        for robot in main.data.competition[match-1].robots:
+            while not getInput(robot, port, used, main): 
+                pass
+        
             port+=1
+
         c = confirm()
             
     main.state.nextMatch = main.data.competition[match-1]

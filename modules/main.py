@@ -154,7 +154,7 @@ class Data():
     def gameEvtRecord(self, port, evt):
     # record correct bot and evt
         try:
-            print("in data game evt record",evt, self.temp_records[port].teamNumber)
+            if self.main.state.echo: print("in data game evt record",evt.__class__.__name__, self.temp_records[port].teamNumber)
             self.temp_records[port].addEvt(evt)
             evt.robot = self.temp_records[port].teamNumber
             self.matchEvtList.add(evt)#add evt
@@ -359,8 +359,8 @@ class Connecter():
     
     def portEvt(self, INPUT, evt):
         try:
+            if self.main.state.echo: print("porting event with port ", self.porter[id(INPUT)])
             self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
-
         except KeyError:
             print("port failed")
             

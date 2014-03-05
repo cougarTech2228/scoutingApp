@@ -27,6 +27,8 @@ class inputOb:
         # will record event
         #possible laterfunctionality time to reconstruct matches in real time
         self.buttonBuffer.append([b,time])
+        if self.main.state.echo: print("button press recieved")
+
         try:
             if b == self.bind.UNDO:
                 if self.bind.isEvent(self.buttonBuffer[-2]):
@@ -38,8 +40,9 @@ class inputOb:
              
             
             elif self.bind.isAttribute(b) and self.bind.isEvent(self.buttonBuffer[-2][0]):
+                if self.main.state.echo: print("is attribute")
                 evt = self.bind.makeEvent(self.buttonBuffer)
-                print(evt)
+                if self.main.state.echo: print("recieved event and sending to connector")
                 if evt:
                     self.main.connect.portEvt(self, evt)
                     
@@ -97,20 +100,23 @@ class Bind():
             return False
             
     def makeEvent(self, buttonBuffer):
-
+        if self.main.state.echo: print("making event")
         timespan = [buttonBuffer[-2][1],buttonBuffer[-1][1]]
         
         if buttonBuffer[-1][0] == self.SUCCESS:
             success = True
+            if self.main.state.echo: print("success")
         elif buttonBuffer[-1][0] == self.FAILURE:
             success = False
+            if self.main.state.echo: print("failure")
         else:
+            print("lacking attribute error")
             raise
             
         button = buttonBuffer[-2][0]
         
         if self.main.state.autonomous:
-            
+            if self.main.state.echo: print("auto")
             if button == self.MoveForward:
                 return data.Auto_MoveForwandEvent(success)
                      
@@ -127,7 +133,7 @@ class Bind():
                 return None
             
         else:
-            
+            if self.main.state.echo: print("tele-op")
             if button == self.LowGoal:
                 return data.LowGoalEvent(success)
                 
@@ -210,6 +216,7 @@ class Joy():
                  evt = pygame.event.poll()
                  if not state.matchPaused:
                      if evt.type == 10:
+                        if state.echo: print("button pressed")
                         self.inputObs[evt.joy].record(evt.button, datetime.datetime.now())
                         
                         '''

@@ -109,22 +109,27 @@ class InMatchRobotRecords:
         self.points = 0        
         
     def addEvt(self, event):
+        print("adding event in matchrobot records")
         self.events.add(event)
         pass
         #add event to event list
 
     def tally(self):
-        for evt in GameEventList:
-            if not evt.__name__ in self.records:
-                self.records[evt.__name__]=[0, 0] #failures and successes
-            
+        print("going to tally events")
+        for evt in self.events.getMainList:
+            print("there actually is an event")
+            if not evt.__class__.__name__ in self.records:
+                self.records[evt.__class__.__name__]=[0, 0] #failures and successes
+                print("created list for ", evt.__class__.__name__)
+                
             if evt.success:
-                self.records[evt.__name__][1] += 1
+                self.records[evt.__class__.__name__][1] += 1
+                print("success event in ", evt.__class__.__name__)
             else:
-                self.records[evt.__name__][0] += 1
+                print("failure event in ", evt.__class__.__name__)
+                self.records[evt.__class__.__name__][0] += 1
                     
             self.points += evt.pointsValue
-
 
 #---------------------------------------------------------------------------------
 
@@ -255,6 +260,7 @@ class GameEventList(list):
 
 
     def add(self, event):
+        print("adding event to list")
         self.append(event)
         # Have the old event point to the added event
         # and the new event point to the preceding event
@@ -300,7 +306,7 @@ class GameEvent():
         self.antecedingEvent = None
         self.pointsValue = 0
         self.time = None
-
+        print("made event ", self.__class__.__name__)
 ##    def undo(self):
 ##        self.precedingEvent.antecedingEvent = self
 ##        return self.precedingEvent
