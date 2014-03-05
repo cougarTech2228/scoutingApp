@@ -388,7 +388,7 @@ def prepareMatch(main):
             return True
             
         for robot in main.data.competition[match-1].robots:
-            while getInput(robot, port, used, main): 
+            while getInput(robot, port, used, main):
                 pass
         
             port+=1
