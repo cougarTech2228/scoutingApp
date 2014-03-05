@@ -352,12 +352,12 @@ def setupmatch(main, match=None, nor = NUMBERROBOTSPERMATCH): #nor  = number of 
                     else:
                         print("That robot isn't created yet")
                         ans = confirm("Do you want to create that robot?")
-                            if ans:
-                                from data import Robot
-                                self.main.data.robots.addRobot(Robot(robotNumber))
-                                validRobot = True
-                            else:
-                                validRobot = False
+                        if ans:
+                            from data import Robot
+                            self.main.data.robots.addRobot(Robot(robotNumber))
+                            validRobot = True
+                        else:
+                            validRobot = False
         return robots
         
     c = False   
