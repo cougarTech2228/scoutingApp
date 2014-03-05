@@ -152,6 +152,10 @@ class Com(cmd.Cmd): #global commands
     def help_restart(self):
         print("syntax: restart")
         print("Starts a match over again if there is a match running")
+        
+    def do_robots(self, t):
+        for robot in self.main.data.robots:
+            print(robot)
             
     def do_esc(self, t):
         if self.state.matchMode:
@@ -166,6 +170,18 @@ class Com(cmd.Cmd): #global commands
     def do_setupMatch(self, t):
         self.state.inSetup =True
         setupmatch(self.main)
+    
+    def do_addRobots(self, t):
+        ans = confirm(m="Do you want to read from robots.txt?", quit_=True)
+        if ans == 0:
+            return 0
+            
+        elif ans is True:
+            self.main.data.add_robots_from_file()
+            
+        else:
+            fileName = input("What file")
+            self.main.data.add_robots_from_file(fileName)
        
     def do_gets(self, t):
         for i in self.state.getState():
@@ -253,14 +269,24 @@ def strcIn(allowed = None, message = "", typeInt = False, check = False):
         return re
     
 
-def confirm(m = "is this okay", safe = True):
+def confirm(m = "is this okay", safe = True, quit_=False):
     print (m)
-    if safe:
-        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No"], message = "y/n-->>")
+    if safe and not quit_:
+        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No"], message = "y/n ->>")
         if a in ["y","Y","yes","Yes"]:
             return True
-        else:
+        elif a in ["n", "N", "no", "No"]:
             return False
+            
+    if quit_:
+        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No", "q", "Q", "quit", "Quit"], message = "y/n/quit-->>")
+        if a in ["y","Y","yes","Yes"]:
+            return True
+        elif a in ["n", "N", "no", "No"]:
+            return False
+        else:
+            return 0
+            
     else:
         a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No", ""], message = "y/n-->>")
         if a in ["y","Y","yes","Yes"]:
@@ -316,9 +342,22 @@ def setupmatch(main, match=None, nor = NUMBERROBOTSPERMATCH): #nor  = number of 
         #enter red alliance
         for color in ("RED","BLUE"):
             for n in range(num):
-                string = color + " alliance robot #" + str(n+1) + " >>>"
-                robots.append(strcIn(typeInt = True, message = string))
-            
+                validRobot = False
+                while not validRobot:
+                    string = color + " alliance robot #" + str(n+1) + " >>>"
+                    robotNumber = strcIn(typeInt = True, message = string)
+                    if robotNumber in main.data.robots:
+                        validRobot = True
+                        robots.append(robotNumber)
+                    else:
+                        print("That robot isn't created yet")
+                        ans = confirm("Do you want to create that robot?")
+                        if ans:
+                            from data import Robot
+                            self.main.data.robots.addRobot(Robot(robotNumber))
+                            validRobot = True
+                        else:
+                            validRobot = False
         return robots
         
     c = False   

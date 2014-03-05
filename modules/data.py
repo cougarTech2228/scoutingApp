@@ -151,7 +151,7 @@ class RobotList(dict):
         return list(self.keys())
 
 
-    def add(self, robot):
+    def addRobot(self, robot):
         """
         if the list is empty it just adds the robot, like wise if it is
         the largest member of the list. Othderwise it places the robot before
@@ -416,6 +416,6 @@ class Comment():
         self.ranking = ranking
         
 class pitScout():
-    def __init__():
+    def __init__(self):
         pass
     
