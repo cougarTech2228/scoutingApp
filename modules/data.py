@@ -86,7 +86,7 @@ class InMatchRobot:
         self.match = match
         self.teamNumber = teamNumber
         self.allianceNumber = num
-
+        self.records = None
         if self.allianceNumber < 3:
             self.alliance = 'RED'
         else:
@@ -116,7 +116,7 @@ class InMatchRobotRecords:
 
     def tally(self):
         print("going to tally events")
-        for evt in self.events.getMainList:
+        for evt in self.events.getMainList():
             print("there actually is an event")
             if not evt.__class__.__name__ in self.records:
                 self.records[evt.__class__.__name__]=[0, 0] #failures and successes

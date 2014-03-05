@@ -378,16 +378,17 @@ def prepareMatch(main):
         used = []
         def getInput(robot, port, used, main):
             print("press button one on joyStick for robot:",robot.teamNumber)
-            inputOb = main.Joy.getJoy()#returns id
-            if inputOb in used:
-                print("joystick already used")
+            inputOb = main.Joy.getJoy()
+            if inputOb not in used:
+                main.data.setPort(port,robot)
+                main.connect.setPorting(inputOb, port)  
                 return False
-            main.data.setPort(port,robot)
-            main.connect.setPorting(inputOb, port)        
+                
+            print("joystick already used")
             return True
             
         for robot in main.data.competition[match-1].robots:
-            while not getInput(robot, port, used, main): 
+            while getInput(robot, port, used, main): 
                 pass
         
             port+=1
