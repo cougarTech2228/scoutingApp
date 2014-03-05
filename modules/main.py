@@ -2,22 +2,22 @@
 
 # As of this build main.py is inoperational.
 # To test the program, open test.py or run main_test.py
+import threading
+import time, sys, os
+
+
 import datetime
 import user
 import joy
 import data
-import threading
-import time
-import sys
-import os
 
 
 NUMBERROBOTSPERMATCH = 3 #actually it is robots per alliance
 
 class Main():
     def __init__(self):
-        print ("""Note this program requires three joysticks and three controllers \rPLUGED IN IN THAT ORDER""")
-        print ("""If you have not done this: close this window, unplug all usb's, \rplug in in right order, restart app""")
+        print ("""\nNote this program requires three joysticks and three controllers \nPLUGED IN IN THAT ORDER""")
+        print ("""\nIf you have not done this: close this window, unplug all usb's, \nplug in in right order, restart app""")
 #        time.sleep(.2)
         
         
@@ -25,7 +25,7 @@ class Main():
         if delay:
             pass
         else:
-            print ("\nprogram loading")
+            print ("\n\nProgram loading")
             self.state = State(self)
             
             global tester
@@ -36,7 +36,7 @@ class Main():
                 print("Initiated program")
             
             self.data = Data(self)
-            print("loaded data structure ")            
+            print("Loaded data structure ")            
             
             self.Joy = joy.Joy(self, test = True)
             if self.state.exit:
@@ -84,7 +84,7 @@ class Main():
 class Data(): 
     def __init__(self, main): #reminder -this must be fixed
         #if not self.load:
-        print("\n \n competition save files...")
+        print("\n competition save files...")
         self.getSaves()
         print("\n open or create a save file... \n")
         cstr = input("competition name? >>>")
@@ -153,10 +153,10 @@ class Data():
         except:
             print("temp_records only has six ports: (0-5)")
     
-    def add_robots_from_file(self, fileName="robots_test.txt"):
-        file = open(fileName).readlines()
+    def add_robots_from_file(self, fileName="robots.txt"):
+        file = open("./resources/"+fileName).readlines()
         for teamNumber in file:
-            self.robotList.addRobot(data.Robot(teamNumber.strip()))
+            self.robots.addRobot(data.Robot(teamNumber.strip()))
             
     def gameEvtRecord(self, port, evt):
     # record correct bot and evt
