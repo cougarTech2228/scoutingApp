@@ -59,13 +59,21 @@ class Data():
             print (m.number)
             for r in m.robots:
                 print ("    ",r.teamNumber)
-                keys = list(r.records.records.keys())
-                for k in keys:
-                    f = r.records[k][0]
-                    s = r.records[k][1]
-                    a = f + s
-                    print ("        ",k," attempted-",a," failures-",f," successes-",s)
+                
+                try:
+                    print(r.records.events.getMainList())
+                    keys = r.records.records.keys()
+                    print(keys)
+                    print(list(keys))
+                    for k in keys:
+                        print("something")
+                        f = r.records[k][0]
+                        s = r.records[k][1]
+                        a = f + s
+                        print ("        ",k," attempted-",a," failures-",f," successes-",s)
                         
+                except:
+                    print("there is no records")                 
                    
     def printMD(self, level = 1, robots = None, matches = None):#scope is range of matches should be alist of numbers ex) [2,3,4,5,6,7]
         if not matches:
@@ -89,7 +97,7 @@ class Data():
                             s = r.records[k][1]
                             a = f + s
                             print ("        ",k," attempted-",a," failures-",f," successes-",s)
-                        
+                
                    
        
 class cmdr():

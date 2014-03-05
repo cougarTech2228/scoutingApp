@@ -62,6 +62,10 @@ class Main():
             self.Joy.run(self.state, self)#will run untill program quit
             sys.exit(1)
             
+    def restart(self):
+        self._joyThread = threading.Thread(target = self.Joy.run(self.state, self))#just to create another thread
+        self._joyThread.start()
+        
     
             
     def logic(self):
@@ -168,7 +172,7 @@ class Data():
     
     def commitMatch(self):
         for i in self.temp_records:
-            i.tally
+            i.tally()
             for r in self.main.state.currentMatch.robots:
                 if r.teamNumber == i.teamNumber:
                     r.records = i
@@ -363,9 +367,13 @@ class Connecter():
     def portEvt(self, INPUT, evt):
         try:
             if self.main.state.echo: print("porting event with port ", self.porter[id(INPUT)])
-            self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
+            if self.porter[id(INPUT)]:
+                self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
+            else:
+                print("port failed- input with port id 0")
+                
         except KeyError:
-            print("port failed")
+            print("port failed, key error")
             
     def purge(self):
         self.porter = None        
