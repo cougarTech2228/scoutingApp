@@ -91,7 +91,6 @@ class Data():
         print ("\n \n")
         self.load(cstr)            
         self.main = main
-        self.robots = data.RobotList()
         self.state = self.main.state
 #       self.state.currentComp = self.competitionList[-1]  #This isn't going to work, the list is empty
 #       self.state.currentMatch = self.compList[-1][-1]
@@ -201,6 +200,7 @@ class Data():
             
         except:
             self.competition = data.Competition(name = fileName)
+            self.robots = data.RobotList()
             print("new competition:", fileName)
             print('--to save: type "save"')
             return False
@@ -367,10 +367,10 @@ class Connecter():
     def portEvt(self, INPUT, evt):
         try:
             if self.main.state.echo: print("porting event with port ", self.porter[id(INPUT)])
-            if self.porter[id(INPUT)]:
+            if self.porter[id(INPUT)]==None:
                 self.data.gameEvtRecord(self.porter[id(INPUT)],evt)
             else:
-                print("port failed- input with port id 0")
+                print("port failed- input with port id None")
                 
         except KeyError:
             print("port failed, key error")

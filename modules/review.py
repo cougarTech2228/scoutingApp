@@ -57,25 +57,24 @@ class Data():
     def printAll(self):
         for m in self.competition:
             print (m.number)
+            if m.notRun: print("*")
             for r in m.robots:
                 print ("    ",r.teamNumber)
-                
                 try:
-                    print(r.records.events.getMainList())
                     keys = r.records.records.keys()
-                    print(keys)
-                    print(list(keys))
-                    for k in keys:
-                        print("something")
-                        f = r.records[k][0]
-                        s = r.records[k][1]
-                        a = f + s
-                        print ("        ",k," attempted-",a," failures-",f," successes-",s)
-                        
-                except:
-                    print("there is no records")                 
-                   
-    def printMD(self, level = 1, robots = None, matches = None):#scope is range of matches should be alist of numbers ex) [2,3,4,5,6,7]
+                
+                except AttributeError:
+                    keys = []
+                    
+                #print(keys)
+                #print(list(keys))
+                for k in keys:
+                    f = r.records.records[k][0]
+                    s = r.records.records[k][1]
+                    a = f + s
+                    print ("        ",k," attempted-",a," failures-",f," successes-",s)
+                    
+    def printMD(self, level = 1, robots = None, matches = None):
         if not matches:
             matches = range(len(self.competition))
             

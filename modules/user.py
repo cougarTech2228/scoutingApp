@@ -337,7 +337,7 @@ def setupmatch(main, match=None, nor = NUMBERROBOTSPERMATCH): #nor  = number of 
     except:
         pass
             
-    def getRobots(num):# can this be done
+    def getRobots(main, num):# can this be done
         robots = []
         #enter red alliance
         for color in ("RED","BLUE"):
@@ -346,24 +346,24 @@ def setupmatch(main, match=None, nor = NUMBERROBOTSPERMATCH): #nor  = number of 
                 while not validRobot:
                     string = color + " alliance robot #" + str(n+1) + " >>>"
                     robotNumber = strcIn(typeInt = True, message = string)
-                    if robotNumber in main.data.robots:
-                        validRobot = True
-                        robots.append(robotNumber)
-                    else:
+                    if robotNumber not in main.data.robots.keys():
                         print("That robot isn't created yet")
                         ans = confirm("Do you want to create that robot?")
                         if ans:
                             from data import Robot
-                            self.main.data.robots.addRobot(Robot(robotNumber))
+                            main.data.robots.addRobot(Robot(robotNumber))
                             validRobot = True
                         else:
                             validRobot = False
+                            continue
+                    robots.append(robotNumber)
+                    validRobot = True
         return robots
         
     c = False   
     while not c:
         robos=[]
-        robos = getRobots(nor)
+        robos = getRobots(main, nor)
         c = confirm()
         
     while True:
@@ -421,6 +421,7 @@ def prepareMatch(main):
             if inputOb not in used:
                 main.data.setPort(port,robot)
                 main.connect.setPorting(inputOb, port)  
+                used.append(inputOb)
                 return False
                 
             print("joystick already used")
@@ -437,3 +438,4 @@ def prepareMatch(main):
     main.state.nextMatch = main.data.competition[match-1]
         
        
+
