@@ -4,173 +4,30 @@
 import cmd
 import sys
 import os
-from main import NUMBERROBOTSPERMATCH 
+import data
 
+autosave = True
 
 class Com(cmd.Cmd): #global commands
 
-    def __init__(self, main, lock):
+    def __init__(self, main):
         cmd.Cmd.__init__(self)
-        self.lock = lock #unused as of yet, may be needed for later issueswith threading
-        self.lock.acquire()        
         self.main = main
-        self.prompt = '>>>>>'
-        self.state = self.main.state
-        self.triedCommand = []
-        self.lock.release()
-        while self.state.instartup:
-            pass
-        
-
-
-    '''
-    def do_failed_message(self):
-        time.sleep(.5)
-        if self.glob:
-            if len(triedCommmand) == 5:#each command object could not process it
-                for s in self.triedCommand:
-                    if(s[1:] == s[:-1]):# no idea how this works but should check if all list elements are equal (according to the internet)
-                        print("sorry, ", self.triedCommand, " is not a valid command in this mode")
-                        print("please refer to help for command information")
-
-        else:
-            pass
-    '''
-            
-    #put global commands here
+        self.prompt = '>>>>>'   
+    #setupcommands-----------------------------------------------------------    
     
-    #format
-    '''
-    def do_command(self, t): i have no idea what it s returning for t (maybe arguments)
-    ''' 
-    def do_matchMode(self, t):
-        if self.state.nextMatch:
-            self.state.enterMatchMode()
-        else:
-            print("must first prepare match")
-            
-    def help_matchMode(self):
-        print("syntax: matchMode")
-        print("Puts the program into a state such that it can start the match")
-            
+    def do_inputMatch(self, t):
+        try:
+            inputMatch(self.main)
+        except:
+            pass
     def do_quit(self, t):
         if confirm(m = "quit (y/n)"):   
-            self.state.exit = True
+            self.main.data.save()
             sys.exit(1)
         else:
             pass
         
-    def help_quit(self):
-        print("syntax: quit")
-        print("shortcut: q")
-        print("-- terminates the application")
-        
-    def do_preMatch(self,t):    
-        prepareMatch(self.main)
-        
-    def help_preMatch(self):
-        print("syntax: preMatch")
-        print("shortcut: pfm")
-        print("""Enter the prematch setup, it defaults to prepare for a new match \r
-                indexed after the last match in the registry.  If no match is set up \r
-                the program enters setup match""")
-
-    def do_autoEnd(self, t):
-        if "on" in t:
-            self.main.state.autoEndMatch = True
-            print ("automatically end matches is on")
-        elif "off" in t:
-            self.main.state.autoEndMatch = False
-            print ("automatically end matches is off")
-            
-        else:
-            print('"',t,'" is not a valid command')
-            print("try 'autoEnd off' or 'autoEnd on'")
-            
-    def help_autoEnd(self):
-        print("syntax: autoEnd <on/off>")
-        print("""Sets the state of autoEnd, if autoEnd is set to on the match \r
-                will end automatically in the set time, when set to off the user \r
-                will have to end the program manually""")
-    #match commands----------------------------------------------------------
-
-    # shortcuts
-    do_q = do_quit
-    help_q = help_quit
-     
-    def do_pause(self, t):
-        if self.state.matchRunning:
-            self.state.togglePause()
-        else:
-            print("you cant toggle pause,no match is running")
-            
-    do_p = do_pause
-    
-    def help_pause(self):
-        print("syntax: pause")
-        print("shortcut: p")
-        print("Pauses the game is the game is running, unpauses if paused")
-        
-    help_p = help_pause
-            
-    def do_start(self, t):
-        if self.state.matchReadyStart:
-            self.state.startMatch()
-        else: 
-            print("you can't start a match now")
-            self.do_gets(t)
-            
-    def help_start(self):
-        print("""When a match is setup, prepared and matchMode has been activated, \r
-              this command starts the match""")
-            
-    def do_commit(self,t):
-        if self.state.matchReadyCommit:                
-            if confirm():
-                self.main.data.commitMatch()
-                
-    def help_commit(self):
-        print("Confirms a choice when prompted to commit")
-            
-    def do_end(self, t):
-        if self.state.matchRunning:
-            self.state.endMatch()
-        else:
-            print ("you can't end a match: no match running")
-            
-    def help_end(self):
-        print("syntax: end")
-        print("-- ends the match when a match is running")
-        
-    def do_restart(self, t):
-        if self.state.matchMode:
-            if confirm():
-                self.state.resetMatch(self)   
-        else:
-            print("no match to reset")
-            
-    def help_restart(self):
-        print("syntax: restart")
-        print("Starts a match over again if there is a match running")
-        
-    def do_robots(self, t):
-        for robot in self.main.data.robots:
-            print(robot)
-            
-    def do_esc(self, t):
-        if self.state.matchMode:
-            self.main.state.exitMatchMode()
-            
-    def help_esc(self):
-        print("syntax: esc")
-        print("When a match is running, this command exits the match")
-    
-    #setupcommands-----------------------------------------------------------
-    
-    def do_setupMatch(self, t):
-        self.state.inSetup =True
-        setupmatch(self.main)
-    
     def do_addRobots(self, t):
         ans = confirm(m="Do you want to read from robots.txt?", quit_=True)
         if ans == 0:
@@ -182,18 +39,11 @@ class Com(cmd.Cmd): #global commands
         else:
             fileName = input("What file")
             self.main.data.add_robots_from_file(fileName)
-       
-    def do_gets(self, t):
-        for i in self.state.getState():
-            print(i[1],i[0])
-            
-    def do_echon(self, t):
-        self.state.echo = not self.state.echo
         
     def do_review(self, t):
         if "-i" in t:
             try:
-                import review.py
+                import review
 
             except StopIteration:
                 pass
@@ -206,7 +56,7 @@ class Com(cmd.Cmd): #global commands
                 if m:
                     print("match ",m.number)
                     for r in m.robots:
-                        print("    team ", r.teamNumber)
+                        print("    team ", r)
                         
         else:
             print("show needs a parameter")
@@ -214,48 +64,32 @@ class Com(cmd.Cmd): #global commands
     def do_save(self, t):
         self.main.data.save()
         
+    def do_debug(self, t):
+        import pdb; pdb.set_trace()
+
     def help_save(self):
         print("syntax: save")
         print("shortcut: s")
         print("saves the game data to  <competition_name>.dat in ./resources/save_files")
                 
                 
-    do_stm = do_setupMatch
-    do_pfm = do_preMatch
-
-    help_pfm = help_preMatch
+    do_stm = do_inputMatch
     do_s = do_save
     help_s = help_save
-    
-class Test(cmd.Cmd):
-    
-    def __init__(self, main):
-        cmd.Cmd.__init__(self)
-        self.main = main
-            
-    def do_testing(self, t):# t stands for random thing i dont know what it is
-        print("hello")
 
-    def do_gets(self, t):
-        print(self.main.state.matchPaused)
-        self.main.state.togglePause()
-        print(self.main.state.matchPaused)
-
-def init(m):
-    Com(m, m.lock).cmdloop()
-    #Test(m).cmdloop()
-
-
-   
-def strcIn(allowed = None, message = "", typeInt = False, check = False):
+def strcIn(allowed = None, message = "", typeInt = False, check = False, quit_ = True):
     while True:
         re = input(message)
+        if re == "!E" and quit_:
+            raise
         if allowed:
                 if re not in allowed:
                     print("that is not a valid answer")
                     continue
         if typeInt:
             try:
+                if re == "":
+                    return 0
                 v = int(re)
                 re = v
             except (ValueError):
@@ -263,179 +97,149 @@ def strcIn(allowed = None, message = "", typeInt = False, check = False):
                 continue
                 
         if check == True:
-            if not confirm(re):
+            if not confirm(re, safe = False):
                 continue
             
         return re
     
 
-def confirm(m = "is this okay", safe = True, quit_=False):
+def confirm(m = "is this okay", safe = True, quit_=False, weird=False):
     print (m)
-    if safe and not quit_:
+    if safe and not weird:
         a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No"], message = "y/n ->>")
         if a in ["y","Y","yes","Yes"]:
             return True
         elif a in ["n", "N", "no", "No"]:
             return False
             
-    if quit_:
-        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No", "q", "Q", "quit", "Quit"], message = "y/n/quit-->>")
+    if weird:
+        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No", "","!E"], message = "y/n-->>")
         if a in ["y","Y","yes","Yes"]:
             return True
-        elif a in ["n", "N", "no", "No"]:
+        elif a == "!E":
+            raise
+        elif a in ["n", "N", "no", "No", ""]:
             return False
         else:
             return 0
             
     else:
-        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No", ""], message = "y/n-->>")
+        a = strcIn(allowed = ["n","y","Y","N","yes","no","Yes","No", "", "!E"], message = "y/n-->>")
         if a in ["y","Y","yes","Yes"]:
             return True
         elif a == "":
             return True
+        elif a == "!E":
+            raise
         else: 
             return False
         
         
-def setupmatch(main, match=None, nor = NUMBERROBOTSPERMATCH): #nor  = number of robots per alliance
-    f = False
-    
-    if match:
-        print("setting up match")
-    
-    else:
-        match = main.data.getUndefinedMatch()
-        print("setup next undefined match: #",match,"?" )
-        if not confirm():
-            
-            if main.state.currentMatch:
-                match = main.state.currentMatch.number + 1
-            elif main.state.lastMatch:
-                match = main.state.lastMatch.number + 1
-            else:
-                match = 1
+def inputMatch(main, match=None): #nor  = number of robots per alliance
+    if not match:
+        match = get_matchNum(main)
+    main.data.competition.newMatch(matchNum = match)
+    for x in range(6):
+        rn, ally = get_robot(main, x+1)
+        print("robot ",rn)
+        rrr = data.InMatchRobotRecords(match, rn, ally)      
+        records = rrr.records
+
+        records["move_forward_auto"] =confirm(m="moved forward in auto?", weird = True) 
+        records["start_goalie_zone"] =confirm(m="started in goalie zone?", weird = True)         
+        
+         
+        records["pass_success"] =strcIn(message = "Pass Success>>>",typeInt =True, check = True)
+        records["pass_failure"] =strcIn(message = "Pass Failure>>>",typeInt =True,check = True)
+        records["receive_success"] =strcIn(message = "Receive Success>>>",typeInt =True,check = True)
+        records["receive_fail"] =strcIn(message = "Receive Failure>>>",typeInt =True,check = True)
+        
+        records["truss_throw_success"] =strcIn(message = "Truss Throw Success>>>",typeInt =True,check = True)
+        records["truss_throw_success"] =strcIn(message = "Truss Throw Failures>>>",typeInt =True,check = True)   
+        
+        records["truss_catch_success"] =strcIn(message = "Truss Catch Success>>>",typeInt =True,check = True)
+        records["truss_catch_success"] =strcIn(message = "Truss Catch Failures>>>",typeInt =True,check = True)   
+        
+        records["auto_high_goal_success"] =strcIn(message = "Autonomous High Goal Success>>>",typeInt =True,check = True)
+        records["high_goal_success"] =strcIn(message = "High Goal Success>>>",typeInt =True,check = True)
+        records["auto_high_goal_failure"] =strcIn(message = "Autonomous High Goal Failure>>>",typeInt =True,check = True)
+        records["high_goal_failure"] =strcIn(message = "High Goal Failure>>>",typeInt =True,check = True)
+        records["auto_low_goal_success"] =strcIn(message = "Autonomous Low Goal Success>>>",typeInt =True,check = True)
+        records["low_goal_success"] = strcIn(message = "Low Goal Success>>>",typeInt =True,check = True)
+        records["auto_low_goal_failure"] =strcIn(message = "Autonomous Low Goal Failure>>>",typeInt =True,check = True)
+        records["low_goal_failure"] =strcIn(message = "Low Goal Failure>>>",typeInt =True,check = True)
+        
+        records["auto_blocking_success"] =strcIn(message = "Auto Goal Blocking Success>>>",typeInt =True,check = True)
+        records["goal_blocking_success"] =strcIn(message = "Auto Blocking Success>>>",typeInt =True,check = True)
+        records["auto_blocking_failure"] =strcIn(message = "Auto Goal Blocking Failure>>>",typeInt =True,check = True)          
+        records["goal_blocking_failure"] =strcIn(message = "Goal Blocking Failure>>>",typeInt =True,check = True)
+        records["pushing_def_success"] =strcIn(message = "Pushing/Defensive Success>>>",typeInt =True,check = True)
+        records["pushing_def_failure"] =strcIn(message = "Pushing/Defensive Failure>>>",typeInt =True,check = True)
                 
-            print("set-up next match: #", match, "? ")
-            if not confirm():
-                print ("what match to set-up: (number)")
-                num = strcIn(typeInt=True, message="match number>>")
-                match = num
-                try:
-                    if main.state.currentMatch.number == match:
-                        print("you cant setup that match, you are already in it")
-                        return False
-                except:
-                    pass
+        rrr.penalties=strcIn(message = "Penalties? ")
+        rrr.stagety=strcIn(message = "Stategy? ")
+        rrr.comments.append(strcIn(message = "Comment? "))
+        
+        main.data.robots[rn].addMatch(rrr)
+        main.data.competition[match-1].robots[rn]=rrr
+        if autosave:
+            main.data.save()            
+
+
+        
+        
+def get_robot(main, num):# can this be done
+    if num>3:
+        alliance  = "BLUE"
+    else:
+        alliance = "RED"
+    s = "enter " + alliance + " alliance robot number>>>" 
+    while True:
+        robotNumber = strcIn(message = s, typeInt = True)
+        if robotNumber not in main.data.robots.keys():
+            print("That robot isn't created yet")
+            if confirm("Do you want to create that robot?"):
+                from data import Robot
+                main.data.robots.addRobot(Robot(robotNumber))
+            else:
+                continue
+        return robotNumber, alliance
+        
+            
+def get_matchNum(main):
+    match = main.data.getUndefinedMatch()
+    print("input next undefined match: #",match,"?" )
+    if not confirm():
+        
+        if main.state.currentMatch:
+            match = main.state.currentMatch.number + 1
+        elif main.state.lastMatch:
+            match = main.state.lastMatch.number + 1
+        else:
+            match = 1
+            
+        print("set-up next match: #", match, "? ")
+        if not confirm():
+            print ("what match to set-up: (number)")
+            num = strcIn(typeInt=True, message="match number>>")
+            match = num
+            try:
+                if main.state.currentMatch.number == match:
+                    print("you cant setup that match, you are already in it")
+                    return False
+            except:
+                pass
                 
     try:
        if main.data.competition[match-1]:
             print("match already exists, would you like to override it.\n (this could be a destructive process)")
             if not confirm():
                 return False
-            else:
-                f = True#must force override of match
+                
     except:
         pass
-            
-    def getRobots(main, num):# can this be done
-        robots = []
-        #enter red alliance
-        for color in ("RED","BLUE"):
-            for n in range(num):
-                validRobot = False
-                while not validRobot:
-                    string = color + " alliance robot #" + str(n+1) + " >>>"
-                    robotNumber = strcIn(typeInt = True, message = string)
-                    if robotNumber not in main.data.robots.keys():
-                        print("That robot isn't created yet")
-                        ans = confirm("Do you want to create that robot?")
-                        if ans:
-                            from data import Robot
-                            main.data.robots.addRobot(Robot(robotNumber))
-                            validRobot = True
-                        else:
-                            validRobot = False
-                            continue
-                    robots.append(robotNumber)
-                    validRobot = True
-        return robots
-        
-    c = False   
-    while not c:
-        robos=[]
-        robos = getRobots(main, nor)
-        c = confirm()
-        
-    while True:
-        print("commit or escape")
-        re = strcIn(message = ">>>>")
-        if re == "commit":
-            main.data.matchCreate(robos, match, f)
-            return True
-            
-        elif re == "escape" or re == "E":
-            print("aborting setup match")
-            return False#leave function
-            
-        
-            
-def prepareMatch(main):
-    if main.state.inMatch:
-        print("you cant prepare for next math in match")
-        return
-    elif main.state.nextMatch:
-        match = main.state.nextMatch
-        print("Match already prepared. Would you like to continue?")
-        if not confirm():
-            return
-    elif main.state.lastMatch:
-        match = main.state.lastMatch.number+1
-    else:
-        match = 1
-        
-    print ("prepare next match: #",match," ?")
-    if not confirm():
-        match = strcIn(message="what match to prepare:",typeInt=True,check=True )
-        print ("prepare match ", match)        
-        
-    try:
-        main.data.competition[match-1]
-        
-    except:
-        print("you cant prepare a undefined match, would you like to set it up now?")
-        if confirm():
-            if not setupmatch(main,match=match):
-                print("aborting prepare match")
-                return
-        else:
-            print("aborting prepare match")
-            return
-                
-    c = False
-    while not c:
-        port=0
-        used = []
-        def getInput(robot, port, used, main):
-            print("press button one on joyStick for robot:",robot.teamNumber)
-            inputOb = main.Joy.getJoy()
-            if inputOb not in used:
-                main.data.setPort(port,robot)
-                main.connect.setPorting(inputOb, port)  
-                used.append(inputOb)
-                return False
-                
-            print("joystick already used")
-            return True
-            
-        for robot in main.data.competition[match-1].robots:
-            while getInput(robot, port, used, main):
-                pass
-        
-            port+=1
-
-        c = confirm()
-            
-    main.state.nextMatch = main.data.competition[match-1]
-        
-       
+    
+    return match
+    
+    
 

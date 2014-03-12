@@ -31,13 +31,8 @@ class inputOb:
 
         try:
             if b == self.bind.UNDO:
-                if self.bind.isEvent(self.buttonBuffer[-2]):
-                    self.buttonBuffer.pop(-1)
-                    self.buttonBuffer.pop(-1)
-                else:
-                    pass#complicated undo code
-                 
-             
+                self.buttonBuffer = []
+                self.main.connect.portEvt(self, data.UndoEvent())
             
             elif self.bind.isAttribute(b) and self.bind.isEvent(self.buttonBuffer[-2][0]):
                 if self.main.state.echo: print("is attribute")
