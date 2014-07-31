@@ -17,3 +17,5 @@ which can easily be modified to be usable for the 2014 FRC Challenge Aerial Assi
 This program should be coded according to the guidelines outlined in PEP8, (This means spaces, no tabs)
 
 			 
+			 
+!!!this project has been abandoned in a alpha state due to a change in our scouting stragety
